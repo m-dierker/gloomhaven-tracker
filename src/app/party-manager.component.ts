@@ -45,10 +45,15 @@ export class PartyManagerComponent implements OnInit {
 
   createMonsters() {
     const newMonsters = [];
+    const newIdsUsed = [];
     for (let i = 0; i < this.createMonsterData.numMonsters; i++) {
+      const tokenId = this.getNextTokenId(
+        this.createMonsterData.monsterId,
+        newIdsUsed
+      );
       const scenarioData: ScenarioMonsterData = {
         id: "", // Generated in the service
-        tokenId: this.getNextTokenId(this.createMonsterData.monsterId),
+        tokenId,
         monsterId: this.createMonsterData.monsterId,
         level: this.createMonsterData.level,
         type: this.createMonsterData.elite
@@ -56,6 +61,7 @@ export class PartyManagerComponent implements OnInit {
           : MonsterType.NORMAL,
         statuses: [],
       };
+      newIdsUsed.push(tokenId);
       newMonsters.push(scenarioData);
     }
     this.db.createPartyMonsters(newMonsters);
@@ -86,13 +92,23 @@ export class PartyManagerComponent implements OnInit {
 
   /**
    * Returns the next unused token for the given monster type.
+   * @param monsterId ID of the class being created.
+   * @param otherUsedNumbers other numbers that are being used locally.
+   *
+   * For example: if monsters #1 and #3 are alive and two monsters are being added,
+   * the right IDs are 2 and 4. These are done in a batch write, so IDs that are being
+   * created locally have to be checked with IDs that are on the server.
    */
-  private getNextTokenId(monsterId: string): number {
+  private getNextTokenId(
+    monsterId: string,
+    otherUsedNumbers: number[]
+  ): number {
     const usedNumbers = new Set(
       this.partyMonsters
         .filter((monster) => monster.getMonsterId() === monsterId)
         .map((monster) => monster.getTokenId())
     );
+    otherUsedNumbers.forEach((num) => usedNumbers.add(num));
     // Return the next available number starting from 1 since tokens begin at 1.
     let maxUnusedNum = 1;
     while (usedNumbers.has(maxUnusedNum)) {

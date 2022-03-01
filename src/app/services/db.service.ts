@@ -25,6 +25,7 @@ import {
   doc,
   docSnapshots,
   Firestore,
+  getDocs,
   setDoc,
   updateDoc,
   writeBatch,
@@ -117,20 +118,18 @@ export class DbService {
     );
   }
 
-  deletePartyMonsters() {
-    // FIXME
-    // const partyMonstersCollection = this.af
-    //   .collection(PARTY_COLLECTION)
-    //   .doc(DEFAULT_PARTY)
-    //   .collection<ScenarioMonsterData>(PARTY_MONSTERS_COLLECTION);
-    // return partyMonstersCollection
-    //   .snapshotChanges()
-    //   .pipe(first())
-    //   .subscribe((monsterDocs) => {
-    //     monsterDocs.forEach((monsterDoc) => {
-    //       partyMonstersCollection.doc(monsterDoc.payload.doc.id).delete();
-    //     });
-    //   });
+  async deletePartyMonsters() {
+    const monsterCol = await getDocs(
+      collection(
+        this.firestore,
+        `${PARTY_COLLECTION}/${DEFAULT_PARTY}/${PARTY_MONSTERS_COLLECTION}`
+      )
+    );
+    const batch = writeBatch(this.firestore);
+    for (const monsterDoc of monsterCol.docs) {
+      batch.delete(monsterDoc.ref);
+    }
+    await batch.commit();
   }
 
   /**
@@ -170,8 +169,12 @@ export class DbService {
   }
 
   getAllBosses(): Observable<BossData[]> {
-    return of([]); // FIXME
-    // return this.af.collection<BossData>(BOSSES_COLLECTION).valueChanges();
+    return collectionSnapshots(
+      collection(
+        this.firestore,
+        BOSSES_COLLECTION
+      ) as CollectionReference<BossData>
+    ).pipe(map((bossCol) => bossCol.map((bossDoc) => bossDoc.data())));
   }
 
   getParty(): Observable<Party> {
