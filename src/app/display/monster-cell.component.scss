@@ -8,15 +8,15 @@
 
 .monster-number {
   align-items: center;
-  // background-image: url("/assets/thorns_badge.png");
-  // background-position: center center;
-  // background-repeat: no-repeat;
+  background-image: url("/assets/thorns_badge.png");
+  background-position: center center;
+  background-repeat: no-repeat;
   // TODO(mdierker): Figure out why background-size and height are different.
-  // background-size: 64px;
-  border: 2px red solid;
+  background-size: 64px;
+  // border: 2px red solid;
   color: white;
   display: flex;
-  font-size: 55pt;
+  font-size: 53pt;
   font-weight: bold;
   height: 70px;
   justify-content: center;
@@ -24,10 +24,6 @@
   margin-right: 5px;
   text-align: center;
   width: 70px;
-
-  span {
-    margin-top: -5px;
-  }
 }
 
 .monster-name {

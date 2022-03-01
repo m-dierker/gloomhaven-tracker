@@ -27,7 +27,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/test",
+            "outputPath": "dist/gloomhaven-tracker",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -74,10 +74,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "test:build:production"
+              "browserTarget": "gloomhaven-tracker:build:production"
             },
             "development": {
-              "browserTarget": "test:build:development"
+              "browserTarget": "gloomhaven-tracker:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -85,7 +85,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "test:build"
+            "browserTarget": "gloomhaven-tracker:build"
           }
         },
         "test": {
@@ -106,7 +106,7 @@
           "options": {
             "prerender": false,
             "ssr": false,
-            "browserTarget": "test:build:production",
+            "browserTarget": "gloomhaven-tracker:build:production",
             "firebaseProject": "glo2mhaven-tracker",
             "firebaseHostingSite": "glo2mhaven-tracker"
           }
