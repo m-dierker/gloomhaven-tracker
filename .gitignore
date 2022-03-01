@@ -7,9 +7,6 @@
 # Only exists if Bazel was run
 /bazel-out
 
-# Environments
-/src/environments
-
 # Keys
 /keys
 
