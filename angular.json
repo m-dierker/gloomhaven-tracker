@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "test": {
+    "gloomhaven-tracker": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -100,9 +100,19 @@
             "styles": ["src/styles.scss"],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "test:build:production",
+            "firebaseProject": "glo2mhaven-tracker",
+            "firebaseHostingSite": "glo2mhaven-tracker"
+          }
         }
       }
     }
   },
-  "defaultProject": "test"
+  "defaultProject": "gloomhaven-tracker"
 }
