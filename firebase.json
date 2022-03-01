@@ -1,16 +1,6 @@
 {
   "hosting": [
     {
-      "public": "dist/gloomhaven-tracker",
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ]
-    },
-    {
       "target": "gloomhaven-tracker",
       "public": "dist/gloomhaven-tracker",
       "ignore": ["**/.*"],
