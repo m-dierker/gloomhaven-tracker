@@ -1,145 +1,199 @@
-import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable, ReplaySubject, of, forkJoin } from 'rxjs';
-import { map, first, flatMap } from 'rxjs/operators';
-import { MonsterData, BossData, MonsterType, MonsterStats } from '../../types/monsters';
-import { MONSTERS_COLLECTION, BOSS_COLLECTION as BOSSES_COLLECTION, PARTY_COLLECTION as PARTIES_COLLECTION, DEFAULT_PARTY, PARTY_MONSTERS_COLLECTION, PARTY_COLLECTION } from '../config/db';
-import { Party, ScenarioMonsterData } from '../../types/party';
-import { Monster } from '../db/monsters';
+import { Injectable } from "@angular/core";
+import { Observable, ReplaySubject, of, forkJoin } from "rxjs";
+import { map, first, flatMap, switchMap } from "rxjs/operators";
+import {
+  MonsterData,
+  BossData,
+  MonsterType,
+  MonsterStats,
+} from "../../types/monsters";
+import {
+  MONSTERS_COLLECTION,
+  BOSS_COLLECTION as BOSSES_COLLECTION,
+  PARTY_COLLECTION as PARTIES_COLLECTION,
+  DEFAULT_PARTY,
+  PARTY_MONSTERS_COLLECTION,
+  PARTY_COLLECTION,
+} from "../config/db";
+import { Party, ScenarioMonsterData } from "../../types/party";
+import { Monster } from "../db/monsters";
+import {
+  addDoc,
+  collection,
+  CollectionReference,
+  collectionSnapshots,
+  doc,
+  docSnapshots,
+  Firestore,
+  setDoc,
+  updateDoc,
+  writeBatch,
+} from "@angular/fire/firestore";
+import { deleteDoc } from "firebase/firestore";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class DbService {
-  private monsterDataMap: ReplaySubject<Map<String, MonsterData>> = new ReplaySubject(1);
+  private monsterDataMap: ReplaySubject<Map<String, MonsterData>> =
+    new ReplaySubject(1);
   private monsterIdMap: Map<string, Monster> = new Map();
 
-  constructor(private af: AngularFirestore) {
+  constructor(private firestore: Firestore) {
     this.initMonsterMap();
   }
 
   getAllMonsters(): Observable<MonsterData[]> {
-    return this.monsterDataMap.pipe(map(monsterMap => Array.from(monsterMap.values())));
+    return this.monsterDataMap.pipe(
+      map((monsterMap) => {
+        const monsters = Array.from(monsterMap.values());
+        console.log("mm", monsters);
+        return monsters;
+      })
+    );
   }
 
   /**
    * Returns *snapshot* of generic monster stats.
-   * 
+   *
    * This is a snapshot because it doesn't make sense to handle synchronizing base stats that don't change.
    * If base stats change somehow in the future, this will need to refresh.
-   * 
+   *
    * @param data from the current scenario
    */
   getMonsterDataById(monsterId: string): Observable<MonsterData> {
-    return this.monsterDataMap.pipe(first(), map(monsterMap => {
-      if (!monsterMap.has(monsterId)) {
-        console.error('Invalid monster specified: ', monsterId);
-        return null;
-      }
-      return monsterMap.get(monsterId);
-    }));
+    return this.monsterDataMap.pipe(
+      first(),
+      map((monsterMap) => {
+        if (!monsterMap.has(monsterId)) {
+          console.error("Invalid monster specified: ", monsterId);
+          return null;
+        }
+        return monsterMap.get(monsterId);
+      })
+    );
   }
 
   createPartyMonsters(newMonsters: ScenarioMonsterData[]) {
-    const batch = this.af.firestore.batch();
+    const batch = writeBatch(this.firestore);
     for (const newMonster of newMonsters) {
-      newMonster.id = this.af.createId();
-      batch.set(
-        this.af.collection(PARTIES_COLLECTION).doc(DEFAULT_PARTY)
-          .collection(PARTY_MONSTERS_COLLECTION).doc(newMonster.id).ref,
-        newMonster);
+      const newMonsterDoc = doc(
+        collection(
+          this.firestore,
+          `${PARTIES_COLLECTION}/${DEFAULT_PARTY}/${PARTY_MONSTERS_COLLECTION}`
+        )
+      );
+      batch.set(newMonsterDoc, newMonster);
     }
     batch.commit();
   }
 
   /**
-   * Returns wrapper objects for Monsters in a given party, including 
+   * Returns wrapper objects for Monsters in a given party, including
    * both scenario-specific data and generic MonsterData.
    */
   getPartyMonsters(): Observable<Monster[]> {
-    return this.af.collection(PARTY_COLLECTION)
-      .doc(DEFAULT_PARTY)
-      .collection<ScenarioMonsterData>(PARTY_MONSTERS_COLLECTION)
-      .valueChanges()
-      .pipe(flatMap(scenarioMonsters => {
+    return collectionSnapshots(
+      collection(
+        this.firestore,
+        `${PARTY_COLLECTION}/${DEFAULT_PARTY}/${PARTY_MONSTERS_COLLECTION}`
+      ) as CollectionReference<ScenarioMonsterData>
+    ).pipe(
+      switchMap((scenarioMonsterDocs) => {
         // Preemptively return an empty list as forkJoin([]) never fires.
-        if (scenarioMonsters.length === 0) {
+        if (scenarioMonsterDocs.length === 0) {
           return of([]);
         }
         const monsterObservables: Observable<Monster>[] = [];
-        for (const scenarioData of scenarioMonsters) {
-          monsterObservables.push(this.getMonsterForScenarioData(scenarioData));
+        for (const scenarioMonsterDoc of scenarioMonsterDocs) {
+          const scenarioMonsterData = scenarioMonsterDoc.data();
+          scenarioMonsterData.id = scenarioMonsterDoc.id;
+          monsterObservables.push(
+            this.getMonsterForScenarioData(scenarioMonsterData)
+          );
         }
         return forkJoin(monsterObservables);
-      }));
+      })
+    );
   }
 
   deletePartyMonsters() {
-    const partyMonstersCollection = this.af.collection(PARTY_COLLECTION)
-      .doc(DEFAULT_PARTY)
-      .collection<ScenarioMonsterData>(PARTY_MONSTERS_COLLECTION);
-    return partyMonstersCollection
-      .snapshotChanges()
-      .pipe(first())
-      .subscribe(monsterDocs => {
-        monsterDocs.forEach(monsterDoc => {
-          partyMonstersCollection.doc(monsterDoc.payload.doc.id).delete();
-        });
-      });
+    // FIXME
+    // const partyMonstersCollection = this.af
+    //   .collection(PARTY_COLLECTION)
+    //   .doc(DEFAULT_PARTY)
+    //   .collection<ScenarioMonsterData>(PARTY_MONSTERS_COLLECTION);
+    // return partyMonstersCollection
+    //   .snapshotChanges()
+    //   .pipe(first())
+    //   .subscribe((monsterDocs) => {
+    //     monsterDocs.forEach((monsterDoc) => {
+    //       partyMonstersCollection.doc(monsterDoc.payload.doc.id).delete();
+    //     });
+    //   });
   }
 
   /**
    * Returns a Monster wrapper for the given ScenarioMonsterData.
    */
-  private getMonsterForScenarioData(scenarioData: ScenarioMonsterData): Observable<Monster> {
+  private getMonsterForScenarioData(
+    scenarioData: ScenarioMonsterData
+  ): Observable<Monster> {
     // Monster objects that already exist should simply receive new ScenarioData.
     if (this.monsterIdMap.has(scenarioData.id)) {
       this.monsterIdMap.get(scenarioData.id).onNewScenarioData(scenarioData);
       return of(this.monsterIdMap.get(scenarioData.id));
     } else {
-      return this.getMonsterDataById(scenarioData.monsterId).pipe(map(monsterData => {
-        const monster = new Monster(scenarioData, monsterData);
-        this.monsterIdMap.set(scenarioData.id, monster);
-        return monster;
-      }));
+      return this.getMonsterDataById(scenarioData.monsterId).pipe(
+        map((monsterData) => {
+          const monster = new Monster(scenarioData, monsterData);
+          this.monsterIdMap.set(scenarioData.id, monster);
+          return monster;
+        })
+      );
     }
   }
 
   saveMonster(monster: Monster) {
     const saveData = monster.getSaveData();
-    const monsterDoc = this.af.collection(PARTIES_COLLECTION)
-      .doc(DEFAULT_PARTY)
-      .collection(PARTY_MONSTERS_COLLECTION)
-      .doc(saveData.id);
+    console.log("savedata", saveData);
+    const monsterDoc = doc(
+      this.firestore,
+      `${PARTIES_COLLECTION}/${DEFAULT_PARTY}/${PARTY_MONSTERS_COLLECTION}/${saveData.id}`
+    );
     // Remove dead monsters
     if (monster.isDead()) {
-      monsterDoc.delete();
+      deleteDoc(monsterDoc);
     } else {
-      monsterDoc.set(saveData);
+      updateDoc(monsterDoc, saveData as unknown);
     }
   }
 
   getAllBosses(): Observable<BossData[]> {
-    return this.af.collection<BossData>(BOSSES_COLLECTION).valueChanges();
+    return of([]); // FIXME
+    // return this.af.collection<BossData>(BOSSES_COLLECTION).valueChanges();
   }
 
   getParty(): Observable<Party> {
-    return this.af.collection(PARTIES_COLLECTION).doc<Party>(DEFAULT_PARTY).valueChanges();
+    return docSnapshots(
+      doc(this.firestore, `${PARTIES_COLLECTION}/${DEFAULT_PARTY}`)
+    ).pipe(map((snap) => snap.data() as Party));
   }
 
   /**
    * Initializes local storage for all monster stats.
    */
   private initMonsterMap() {
-    this.af.collection<MonsterData>(MONSTERS_COLLECTION).get()
-      .subscribe(monsterDocs => {
-        const monsterMap = new Map<string, MonsterData>(
-          monsterDocs.docs.map(monsterDoc => {
-            const monsterData = monsterDoc.data() as MonsterData;
-            return [monsterData.id, monsterData];
-          })
-        );
-        this.monsterDataMap.next(monsterMap);
-      });
+    collectionSnapshots(
+      collection(this.firestore, MONSTERS_COLLECTION)
+    ).subscribe((monsterDocs) => {
+      const monsterMap = new Map<string, MonsterData>(
+        monsterDocs.map((monsterDoc) => {
+          const monsterData = monsterDoc.data() as MonsterData;
+          return [monsterData.id, monsterData];
+        })
+      );
+      this.monsterDataMap.next(monsterMap);
+    });
   }
 }

@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "glo2mhaven-tracker"
+  },
+  "targets": {
+    "glo2mhaven-tracker": {
+      "hosting": {
+        "gloomhaven-tracker": [
+          "glo2mhaven-tracker"
+        ]
+      }
+    }
   }
 }

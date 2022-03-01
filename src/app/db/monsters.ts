@@ -1,105 +1,112 @@
-import { ScenarioMonsterData } from '../../types/party';
-import { MonsterStats, MonsterData, MonsterType } from '../../types/monsters';
-import { StatusEffect } from '../../types/status';
+import { ScenarioMonsterData } from "../../types/party";
+import { MonsterStats, MonsterData, MonsterType } from "../../types/monsters";
+import { StatusEffect } from "../../types/status";
 
+/** Wrapper to serve both generic data about a monster (ex: Attack value) combined with specific data about an instance of the monster (ex: current HP). */
 export class Monster {
-    /** Serializable data specific to this instance of the monster. */
-    private scenarioData: ScenarioMonsterData;
+  /** Serializable data specific to this instance of the monster. */
+  private scenarioData: ScenarioMonsterData;
 
-    /** Stats specific to this level of monster. */
-    private monsterStats: MonsterStats;
+  /** Stats specific to this level of monster. */
+  private monsterStats: MonsterStats;
 
-    constructor(scenarioData: ScenarioMonsterData, private monsterData: MonsterData) {
-        this.onNewScenarioData(scenarioData);
+  constructor(
+    scenarioData: ScenarioMonsterData,
+    private monsterData: MonsterData
+  ) {
+    this.onNewScenarioData(scenarioData);
+  }
+
+  getMonsterId() {
+    return this.scenarioData.monsterId;
+  }
+
+  getTokenId() {
+    return this.scenarioData.tokenId;
+  }
+
+  getScenarioId() {
+    return this.scenarioData.id;
+  }
+
+  getHealth() {
+    if (this.scenarioData.health !== undefined) {
+      return this.scenarioData.health;
     }
+    return this.monsterStats.health;
+  }
 
-    getMonsterId() {
-        return this.scenarioData.monsterId;
+  getMaxHealth() {
+    // Returning the max in case a single monster gets some sort of buff that bumps it above max health.
+    if (this.scenarioData.health !== undefined) {
+      return Math.max(this.monsterStats.health, this.scenarioData.health);
     }
+    return this.monsterStats.health;
+  }
 
-    getTokenId() {
-        return this.scenarioData.tokenId;
+  getType(): MonsterType {
+    return this.scenarioData.type;
+  }
+
+  getDisplayName() {
+    return this.monsterData.displayName;
+  }
+
+  getStatuses(): StatusEffect[] {
+    return this.scenarioData.statuses.map((statusId) =>
+      StatusEffect.getEffectById(statusId)
+    );
+  }
+
+  hasStatus(status: StatusEffect): boolean {
+    return this.scenarioData.statuses.includes(status.id);
+  }
+
+  setStatus(status: StatusEffect, active: boolean) {
+    if (active && !this.scenarioData.statuses.includes(status.id)) {
+      this.scenarioData.statuses.push(status.id);
+    } else if (!active && this.scenarioData.statuses.includes(status.id)) {
+      this.scenarioData.statuses.splice(
+        this.scenarioData.statuses.indexOf(status.id),
+        1
+      );
     }
+  }
 
-    getScenarioId() {
-        return this.scenarioData.id;
+  /**
+   * Returns the generic data about this type of monster.
+   */
+  getGenericMonsterData() {
+    return this.monsterData;
+  }
+
+  isDead(): boolean {
+    return this.getHealth() <= 0;
+  }
+
+  compareTo(other: Monster) {
+    if (this.isDead() !== other.isDead()) {
+      return this.isDead() ? 1 : -1;
     }
-
-    getHealth() {
-        if (this.scenarioData.health !== undefined) {
-            return this.scenarioData.health;
-        }
-        return this.monsterStats.health;
+    if (this.scenarioData.type !== other.scenarioData.type) {
+      return this.scenarioData.type.localeCompare(other.scenarioData.type);
     }
+    return this.scenarioData.tokenId - other.scenarioData.tokenId;
+  }
 
-    getMaxHealth() {
-        // Returning the max in case a single monster gets some sort of buff that bumps it above max health.
-        if (this.scenarioData.health !== undefined) {
-            return Math.max(this.monsterStats.health, this.scenarioData.health);
-        }
-        return this.monsterStats.health;
-    }
+  setHealth(health: number) {
+    this.scenarioData.health = health;
+  }
 
-    getType(): MonsterType {
-        return this.scenarioData.type;
-    }
+  /**
+   * Returns the data that should be persisted to Firebase for this monster.
+   */
+  getSaveData(): ScenarioMonsterData {
+    return this.scenarioData;
+  }
 
-    getDisplayName() {
-        return this.monsterData.displayName;
-    }
-
-    getStatuses(): StatusEffect[] {
-        return this.scenarioData.statuses
-            .map(statusId => StatusEffect.getEffectById(statusId));
-    }
-
-    hasStatus(status: StatusEffect): boolean {
-        return this.scenarioData.statuses.includes(status.id);
-    }
-
-    setStatus(status: StatusEffect, active: boolean) {
-        if (active && !this.scenarioData.statuses.includes(status.id)) {
-            this.scenarioData.statuses.push(status.id);
-        } else if (!active && this.scenarioData.statuses.includes(status.id)) {
-            this.scenarioData.statuses.splice(this.scenarioData.statuses.indexOf(status.id), 1);
-        }
-    }
-
-    /**
-     * Returns the generic data about this type of monster.
-     */
-    getGenericMonsterData() {
-        return this.monsterData;
-    }
-
-    isDead(): boolean {
-        return this.getHealth() <= 0;
-    }
-
-    compareTo(other: Monster) {
-        if (this.isDead() !== other.isDead()) {
-            return this.isDead() ? 1 : -1;
-        }
-        if (this.scenarioData.type !== other.scenarioData.type) {
-            return this.scenarioData.type.localeCompare(other.scenarioData.type);
-        }
-        return this.scenarioData.tokenId - other.scenarioData.tokenId;
-
-    }
-
-    setHealth(health: number) {
-        this.scenarioData.health = health;
-    }
-
-    /**
-     * Returns the data that should be persisted to Firebase for this monster.
-     */
-    getSaveData(): ScenarioMonsterData {
-        return this.scenarioData;
-    }
-
-    async onNewScenarioData(data: ScenarioMonsterData) {
-        this.scenarioData = data;
-        this.monsterStats = this.monsterData.levelStats[data.level][data.type];
-    }
+  async onNewScenarioData(data: ScenarioMonsterData) {
+    this.scenarioData = data;
+    this.monsterStats = this.monsterData.levelStats[data.level][data.type];
+  }
 }
