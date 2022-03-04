@@ -24,6 +24,8 @@ import {
   collectionSnapshots,
   doc,
   docSnapshots,
+  enableIndexedDbPersistence,
+  enableMultiTabIndexedDbPersistence,
   Firestore,
   getDocs,
   setDoc,

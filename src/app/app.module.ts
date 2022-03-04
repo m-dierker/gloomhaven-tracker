@@ -16,7 +16,13 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { PartyMonsterCellComponent } from "./party/party-monster-cell.component";
 import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
-import { getFirestore, provideFirestore } from "@angular/fire/firestore";
+import {
+  enableMultiTabIndexedDbPersistence,
+  getFirestore,
+  provideFirestore,
+} from "@angular/fire/firestore";
+import { ElementTrackerComponent } from './display/element-tracker/element-tracker.component';
+import { ElementTrackerCellComponent } from './display/element-tracker-cell/element-tracker-cell.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +32,8 @@ import { getFirestore, provideFirestore } from "@angular/fire/firestore";
     MonsterNameComponent,
     PartyManagerComponent,
     PartyMonsterCellComponent,
+    ElementTrackerComponent,
+    ElementTrackerCellComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -43,7 +51,13 @@ import { getFirestore, provideFirestore } from "@angular/fire/firestore";
 
     // AngularFire
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore()),
+    provideFirestore(() => {
+      const firestore = getFirestore();
+      enableMultiTabIndexedDbPersistence(firestore).then(() =>
+        console.log("offline persistence enabled")
+      );
+      return firestore;
+    }),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [],

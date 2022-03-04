@@ -1,0 +1,8 @@
+<div
+  class="element-img"
+  [class.active]="elementState == ElementState.ACTIVE"
+  [class.waning]="elementState == ElementState.WANING"
+  [class.inactive]="elementState == ElementState.INACTIVE"
+>
+  <img src="/assets/elements/{{ element }}.png" />
+</div>

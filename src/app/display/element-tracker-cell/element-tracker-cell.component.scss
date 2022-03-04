@@ -1,0 +1,23 @@
+.element-img {
+  background-color: black;
+  border-radius: 50%;
+  height: 100%;
+  width: 100%;
+
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.active img {
+  opacity: 1;
+}
+
+.waning img {
+  opacity: 0.6;
+}
+
+.inactive img {
+  opacity: 0.2;
+}
