@@ -21,8 +21,8 @@ import {
   getFirestore,
   provideFirestore,
 } from "@angular/fire/firestore";
-import { ElementTrackerComponent } from './display/element-tracker/element-tracker.component';
-import { ElementTrackerCellComponent } from './display/element-tracker-cell/element-tracker-cell.component';
+import { ElementTrackerComponent } from "./display/elements/element-tracker.component";
+import { ElementTrackerCellComponent } from "./display/elements/element-tracker-cell.component";
 
 @NgModule({
   declarations: [

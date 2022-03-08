@@ -31,8 +31,10 @@ main {
 }
 
 .element-tracker-wrapper {
+  height: 100%;
+  padding: 70px 0;
   position: absolute;
   right: 0px;
-  top: 50px;
+  top: 0px;
   width: 250px;
 }

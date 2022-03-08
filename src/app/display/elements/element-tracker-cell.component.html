@@ -4,5 +4,9 @@
   [class.waning]="elementState == ElementState.WANING"
   [class.inactive]="elementState == ElementState.INACTIVE"
 >
-  <img src="/assets/elements/{{ element }}.png" />
+  <img
+    src="/assets/elements/{{
+      elementState == ElementState.ACTIVE ? 'animated/' : ''
+    }}{{ element }}.{{ elementState == ElementState.ACTIVE ? 'gif' : 'png' }}"
+  />
 </div>
