@@ -43,6 +43,12 @@ export enum ElementState {
   ACTIVE = 2,
 }
 
+export const ORDERED_ELEMENT_STATES = [
+  ElementState.ACTIVE,
+  ElementState.WANING,
+  ElementState.INACTIVE,
+];
+
 /** Firebase serialized data for elements. */
 export interface ElementData {
   state: ElementState;

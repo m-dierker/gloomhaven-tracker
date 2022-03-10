@@ -12,10 +12,11 @@
 
 .active img {
   opacity: 1;
+  // TODO: Differentiate from Waning somehow.
 }
 
 .waning img {
-  opacity: 0.6;
+  opacity: 1;
 }
 
 .inactive img {

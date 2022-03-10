@@ -1,7 +1,8 @@
-$element-margin: 10px;
+// This must stay in sync with JS too.
 $element-size: 70px;
 
 .element-tracker-wrapper {
+  height: 100%;
   position: relative;
 }
 
@@ -9,37 +10,6 @@ app-element-tracker-cell {
   display: inline-block;
   height: $element-size;
   position: absolute;
+  transition: top 0.3s ease-out;
   width: $element-size;
 }
-
-// Element layout:
-// Earth, Water, Wind
-// Fire, Light, Dark
-// .earth {
-//   right: $element-margin * 3 + $element-size * 2;
-// }
-
-// .water {
-//   right: $element-margin * 2 + $element-size * 1;
-// }
-
-// .wind {
-//   right: $element-margin;
-// }
-
-// $element-top-offset: $element-size + $element-margin;
-
-// .fire {
-//   right: $element-margin * 3 + $element-size * 2;
-//   top: $element-top-offset;
-// }
-
-// .light {
-//   right: $element-margin * 2 + $element-size * 1;
-//   top: $element-top-offset;
-// }
-
-// .dark {
-//   right: $element-margin;
-//   top: $element-top-offset;
-// }

@@ -1,6 +1,14 @@
 <div class="party-element-tracker" [class.open]="panelOpen">
-  <div class="element-tracker-control" (click)="togglePanelOpen()">
-    <img src="/assets/elements/wildcard.png" />
+  <div class="element-tracker-topbar">
+    <div class="element-tracker-control" (click)="togglePanelOpen()">
+      <img src="/assets/elements/wildcard.png" />
+    </div>
+    <div class="flex-div"></div>
+    <div class="game-controls">
+      <button (click)="nextTurn()" [disabled]="disableNextTurn">
+        Next Turn
+      </button>
+    </div>
   </div>
   <!-- TODO: ngIf panelOpen -->
   <div class="element-controls">

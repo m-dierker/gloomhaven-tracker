@@ -1,12 +1,12 @@
 <div
   class="element-img"
-  [class.active]="elementState == ElementState.ACTIVE"
-  [class.waning]="elementState == ElementState.WANING"
-  [class.inactive]="elementState == ElementState.INACTIVE"
+  [class.active]="elementData.state == ElementState.ACTIVE"
+  [class.waning]="elementData.state == ElementState.WANING"
+  [class.inactive]="elementData.state == ElementState.INACTIVE"
 >
   <img
-    src="/assets/elements/{{
-      elementState == ElementState.ACTIVE ? 'animated/' : ''
-    }}{{ element }}.{{ elementState == ElementState.ACTIVE ? 'gif' : 'png' }}"
+    src="/assets/elements/{{ animated ? 'animated/' : '' }}{{
+      getElementCode(element)
+    }}.{{ animated ? 'gif' : 'png' }}"
   />
 </div>

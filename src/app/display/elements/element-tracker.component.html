@@ -1,29 +1,10 @@
-<div class="element-tracker-wrapper">
+<div class="element-tracker-wrapper" #elementWrapper *ngIf="elementDataMap">
   <app-element-tracker-cell
-    element="earth"
-    class="earth"
-    [elementState]="0"
+    *ngFor="let element of ALL_ELEMENT_TYPES"
+    [element]="element"
+    [elementData]="elementDataMap.get(element)"
+    lang="{{ element }}"
+    class="{{ getElementCode(element) }}"
   ></app-element-tracker-cell>
-  <app-element-tracker-cell
-    element="water"
-    class="water"
-    [elementState]="1"
-  ></app-element-tracker-cell>
-  <app-element-tracker-cell
-    element="wind"
-    class="wind"
-    [elementState]="2"
-  ></app-element-tracker-cell>
-  <app-element-tracker-cell
-    element="fire"
-    class="fire"
-  ></app-element-tracker-cell>
-  <app-element-tracker-cell
-    element="light"
-    class="light"
-  ></app-element-tracker-cell>
-  <app-element-tracker-cell
-    element="dark"
-    class="dark"
-  ></app-element-tracker-cell>
+  <!-- TODO... fix lang hack. -->
 </div>

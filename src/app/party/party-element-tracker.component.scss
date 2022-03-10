@@ -7,13 +7,31 @@
   }
 }
 
-.element-tracker-control {
+.element-tracker-topbar {
+  display: flex;
   height: 50px;
   margin-bottom: 10px;
+}
+
+.element-tracker-control {
   width: 50px;
 
   img {
     height: 100%;
     width: 100%;
+  }
+}
+
+.flex-div {
+  flex-grow: 1;
+}
+
+.game-controls {
+  height: 100%;
+  padding: 5px 0;
+
+  button {
+    height: 100%;
+    width: 120px;
   }
 }

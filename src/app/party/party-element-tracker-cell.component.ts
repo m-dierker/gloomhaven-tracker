@@ -31,7 +31,6 @@ export class PartyElementTrackerCellComponent implements OnChanges {
   constructor(private db: DbService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log("changes", changes);
     if (changes["element"]) {
       this.onElementChange();
     }

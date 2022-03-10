@@ -34,6 +34,7 @@ import {
 } from "@angular/fire/firestore";
 import { deleteDoc, QueryDocumentSnapshot } from "firebase/firestore";
 import { ElementData, ElementState, ElementType } from "../db/elements";
+import { DbRefService } from "./db-ref.service";
 
 @Injectable({
   providedIn: "root",
@@ -43,7 +44,7 @@ export class DbService {
     new ReplaySubject(1);
   private monsterIdMap: Map<string, Monster> = new Map();
 
-  constructor(private firestore: Firestore) {
+  constructor(private firestore: Firestore, private dbRef: DbRefService) {
     this.initMonsterMap();
   }
 
@@ -196,20 +197,14 @@ export class DbService {
   }
 
   getElementUpdate(element: ElementType): Observable<ElementData> {
-    const elementDoc = doc(
-      this.firestore,
-      `${PARTIES_COLLECTION}/${DEFAULT_PARTY}/elements/${element}`
-    );
+    const elementDoc = this.dbRef.elementDoc(element);
     return docSnapshots(elementDoc).pipe(
       map((snap) => snap.data() as ElementData)
     );
   }
 
   setElementState(element: ElementType, state: ElementState): Promise<void> {
-    const elementDoc = doc(
-      this.firestore,
-      `${PARTIES_COLLECTION}/${DEFAULT_PARTY}/elements/${element}`
-    );
+    const elementDoc = this.dbRef.elementDoc(element);
     const data: ElementData = {
       state,
     };
