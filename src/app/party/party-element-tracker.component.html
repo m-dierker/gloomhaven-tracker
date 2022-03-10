@@ -1,4 +1,8 @@
-<div class="party-element-tracker" [class.open]="panelOpen">
+<div
+  class="party-element-tracker"
+  [class.open]="panelOpen"
+  [class.closed]="!panelOpen"
+>
   <div class="element-tracker-topbar">
     <div class="element-tracker-control" (click)="togglePanelOpen()">
       <img src="/assets/elements/wildcard.png" />

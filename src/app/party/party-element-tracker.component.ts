@@ -33,7 +33,8 @@ export class PartyElementTrackerComponent implements OnInit {
   }
 
   async onSetElementState(element: ElementType, state: ElementState) {
-    await this.db.setElementState(element, state);
+    this.db.setElementState(element, state);
+    this.togglePanelOpen();
   }
 }
 
