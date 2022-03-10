@@ -11,7 +11,7 @@ import { PanelModule } from "./panel/panel.module";
 import { DisplayComponent } from "./display/display.component";
 import { MonsterCellComponent } from "./display/monster-cell.component";
 import { MonsterNameComponent } from "./display/monster-name.component";
-import { PartyManagerComponent } from "./party-manager.component";
+import { PartyManagerComponent } from "./party/party-manager.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { PartyMonsterCellComponent } from "./party/party-monster-cell.component";
@@ -23,6 +23,8 @@ import {
 } from "@angular/fire/firestore";
 import { ElementTrackerComponent } from "./display/elements/element-tracker.component";
 import { ElementTrackerCellComponent } from "./display/elements/element-tracker-cell.component";
+import { PartyElementTrackerComponent } from './party/party-element-tracker.component';
+import { PartyElementTrackerCellComponent } from './party/party-element-tracker-cell.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,8 @@ import { ElementTrackerCellComponent } from "./display/elements/element-tracker-
     PartyMonsterCellComponent,
     ElementTrackerComponent,
     ElementTrackerCellComponent,
+    PartyElementTrackerComponent,
+    PartyElementTrackerCellComponent,
   ],
   imports: [
     BrowserAnimationsModule,

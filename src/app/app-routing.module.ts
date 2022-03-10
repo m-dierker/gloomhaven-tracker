@@ -1,22 +1,21 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { DisplayComponent } from './display/display.component';
-import { PartyManagerComponent } from './party-manager.component';
-
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
+import { DisplayComponent } from "./display/display.component";
+import { PartyManagerComponent } from "./party/party-manager.component";
 
 const routes: Routes = [
   {
-    path: 'display',
+    path: "display",
     component: DisplayComponent,
   },
   {
-    path: '',
+    path: "",
     component: PartyManagerComponent,
   },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

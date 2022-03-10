@@ -1,0 +1,19 @@
+.party-element-tracker {
+  padding: 10px;
+  width: 100%;
+
+  &.open {
+    background-color: lightgray;
+  }
+}
+
+.element-tracker-control {
+  height: 50px;
+  margin-bottom: 10px;
+  width: 50px;
+
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}

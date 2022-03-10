@@ -1,0 +1,58 @@
+.party-element-cell {
+  display: flex;
+  height: 80px;
+  padding: 10px;
+
+  &.water {
+    // Take element color from icon, open in HSV picker (ex: Pixelmator), full brightness and low saturation.
+    background-color: #bcebff;
+  }
+
+  &.earth {
+    background-color: #dbe6bd;
+  }
+
+  &.fire {
+    background-color: #ffd8cb;
+  }
+
+  &.wind {
+    background-color: #c7e3ee;
+  }
+
+  &.light {
+    background-color: #eedab1;
+  }
+
+  &.dark {
+    background-color: #7eadcd;
+  }
+}
+
+.party-element-img {
+  margin-right: 10px;
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.party-element-controls {
+  align-self: center;
+  display: flex;
+  flex-grow: 1;
+  height: 100%;
+  padding: 3px 0;
+
+  button {
+    flex-grow: 1;
+    height: 100%;
+    width: 100%;
+
+    // TODO: Possibly replace this with a Bootstrap class and/or color by element type.
+    &.selected {
+      background-color: darkslategray;
+      color: white;
+    }
+  }
+}

@@ -1,0 +1,25 @@
+<div class="party-element-cell {{ getElementCode(element) }}">
+  <div class="party-element-img">
+    <img src="/assets/elements/{{ getElementCode(element) }}.png" />
+  </div>
+  <div class="party-element-controls">
+    <button
+      (click)="setState(ElementState.INACTIVE)"
+      [class.selected]="state == ElementState.INACTIVE"
+    >
+      Inactive
+    </button>
+    <button
+      (click)="setState(ElementState.WANING)"
+      [class.selected]="state == ElementState.WANING"
+    >
+      Waning
+    </button>
+    <button
+      (click)="setState(ElementState.ACTIVE)"
+      [class.selected]="state == ElementState.ACTIVE"
+    >
+      Active
+    </button>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+<div class="party-element-tracker" [class.open]="panelOpen">
+  <div class="element-tracker-control" (click)="togglePanelOpen()">
+    <img src="/assets/elements/wildcard.png" />
+  </div>
+  <!-- TODO: ngIf panelOpen -->
+  <div class="element-controls">
+    <app-party-element-tracker-cell
+      [element]="element"
+      *ngFor="let element of ALL_ELEMENT_TYPES"
+      (changeState)="onSetElementState(element, $event)"
+    ></app-party-element-tracker-cell>
+  </div>
+</div>

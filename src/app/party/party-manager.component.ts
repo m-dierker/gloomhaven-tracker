@@ -1,12 +1,10 @@
 import { Component, OnInit } from "@angular/core";
-import { DbService } from "./services/db.service";
+import { TypeaheadMatch } from "ngx-bootstrap/typeahead";
 import { Observable } from "rxjs";
-import { Monster } from "./db/monsters";
-import { MonsterData, MonsterType } from "../types/monsters";
-import { max } from "rxjs/operators";
-import { ScenarioMonsterData, Party } from "../types/party";
-import { TypeaheadMatch } from "ngx-bootstrap/typeahead/public_api";
-import { StatusEffect } from "../types/status";
+import { MonsterData, MonsterType } from "src/types/monsters";
+import { Party, ScenarioMonsterData } from "src/types/party";
+import { Monster } from "../db/monsters";
+import { DbService } from "../services/db.service";
 
 @Component({
   selector: "party-manager",

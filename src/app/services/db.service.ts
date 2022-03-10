@@ -32,7 +32,8 @@ import {
   updateDoc,
   writeBatch,
 } from "@angular/fire/firestore";
-import { deleteDoc } from "firebase/firestore";
+import { deleteDoc, QueryDocumentSnapshot } from "firebase/firestore";
+import { ElementData, ElementState, ElementType } from "../db/elements";
 
 @Injectable({
   providedIn: "root",
@@ -50,7 +51,6 @@ export class DbService {
     return this.monsterDataMap.pipe(
       map((monsterMap) => {
         const monsters = Array.from(monsterMap.values());
-        console.log("mm", monsters);
         return monsters;
       })
     );
@@ -183,6 +183,38 @@ export class DbService {
     return docSnapshots(
       doc(this.firestore, `${PARTIES_COLLECTION}/${DEFAULT_PARTY}`)
     ).pipe(map((snap) => snap.data() as Party));
+  }
+
+  /** Returns a streaming list of element updates. This is done so a tracker can handle bulk updates at once. */
+  getElementUpdates(): Observable<QueryDocumentSnapshot<ElementData>[]> {
+    return collectionSnapshots(
+      collection(
+        this.firestore,
+        `${PARTIES_COLLECTION}/${DEFAULT_PARTY}/elements`
+      ) as CollectionReference<ElementData>
+    );
+  }
+
+  getElementUpdate(element: ElementType): Observable<ElementData> {
+    const elementDoc = doc(
+      this.firestore,
+      `${PARTIES_COLLECTION}/${DEFAULT_PARTY}/elements/${element}`
+    );
+    return docSnapshots(elementDoc).pipe(
+      map((snap) => snap.data() as ElementData)
+    );
+  }
+
+  setElementState(element: ElementType, state: ElementState): Promise<void> {
+    const elementDoc = doc(
+      this.firestore,
+      `${PARTIES_COLLECTION}/${DEFAULT_PARTY}/elements/${element}`
+    );
+    const data: ElementData = {
+      state,
+    };
+    // Element docs are simple, no reason an update is needed.
+    return setDoc(elementDoc, data);
   }
 
   /**
