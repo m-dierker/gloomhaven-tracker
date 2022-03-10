@@ -4,8 +4,11 @@
   [class.closed]="!panelOpen"
 >
   <div class="element-tracker-topbar">
-    <div class="element-tracker-control" (click)="togglePanelOpen()">
-      <img src="/assets/elements/wildcard.png" />
+    <div class="controls" (click)="togglePanelOpen()">
+      <div class="controls-img">
+        <img src="/assets/elements/wildcard.png" />
+      </div>
+      <span class="elements-text">Elements</span>
     </div>
     <div class="flex-div"></div>
     <div class="game-controls">

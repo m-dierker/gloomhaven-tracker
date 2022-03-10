@@ -9,12 +9,29 @@
   margin-bottom: 10px;
 }
 
-.element-tracker-control {
-  width: 50px;
+.controls {
+  align-items: center;
+  background-color: rgb(88, 0, 0);
+  border: darkgoldenrod 4px solid;
+  border-radius: 4px;
+  color: white;
+  display: flex;
+  padding: 8px;
+
+  .controls-img {
+    margin-right: 10px;
+    height: 100%;
+    width: 100%;
+  }
 
   img {
     height: 100%;
     width: 100%;
+  }
+
+  .elements-text {
+    font-family: "Pirata One";
+    font-size: 18pt;
   }
 }
 
