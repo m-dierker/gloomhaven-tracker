@@ -1,7 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { TypeaheadMatch } from "ngx-bootstrap/typeahead";
 import { Observable } from "rxjs";
-import { MonsterData, MonsterType } from "src/types/monsters";
+import {
+  MonsterData,
+  MonsterDataDisplayNameComparator,
+  MonsterType,
+} from "src/types/monsters";
 import { Party, ScenarioMonsterData } from "src/types/party";
 import { Monster } from "../db/monsters";
 import { DbService } from "../services/db.service";
@@ -15,6 +19,7 @@ export class PartyManagerComponent implements OnInit {
   private partyMonsters$: Observable<Monster[]>;
   private partyMonsters: Monster[] = [];
 
+  public sortedMonsterClasses: MonsterData[];
   public monstersByClass: Map<MonsterData, Monster[]> = new Map();
 
   public allMonsterData: MonsterData[];
@@ -134,6 +139,9 @@ export class PartyManagerComponent implements OnInit {
       monstersByClass.set(monsters[0].getGenericMonsterData(), sortedMonsters);
     }
     this.monstersByClass = monstersByClass;
+    this.sortedMonsterClasses = Array.from(monstersByClass.keys()).sort(
+      MonsterDataDisplayNameComparator
+    );
   }
 
   private initializeChromecast() {

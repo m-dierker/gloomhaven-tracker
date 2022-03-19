@@ -2,60 +2,67 @@
  * Top level interface for Monster stats.
  */
 export interface MonsterData {
-    /** lowercase_underscore format name of the monster. */
-    id: string;
+  /** lowercase_underscore format name of the monster. */
+  id: string;
 
-    /** Display name of the monster. */
-    displayName: string;
+  /** Display name of the monster. */
+  displayName: string;
 
-    /** Level --> stats for a monster. */
-    levelStats: {[level: number]: MonsterLevelStats};
+  /** Level --> stats for a monster. */
+  levelStats: { [level: number]: MonsterLevelStats };
+}
+
+export function MonsterDataDisplayNameComparator(
+  m1: MonsterData,
+  m2: MonsterData
+) {
+  return m1.displayName.localeCompare(m2.displayName);
 }
 
 /**
  * Stats for monsters at a specific level.
  */
 export interface MonsterLevelStats {
-    normal: MonsterStats,
-    elite: MonsterStats,
+  normal: MonsterStats;
+  elite: MonsterStats;
 }
 
 export interface MonsterStats {
-    health: number;
-    move: number;
-    attack: number;
-    range: number;
-    attributes: string[];
+  health: number;
+  move: number;
+  attack: number;
+  range: number;
+  attributes: string[];
 }
 
 /**
  * Enum tracking the valid options for MonsterLevelStats.
  */
 export enum MonsterType {
-    NORMAL = "normal",
-    ELITE = "elite",
+  NORMAL = "normal",
+  ELITE = "elite",
 }
 
 export interface BossData {
-    /** lowercase_underscore format name of the boss. */
-    id: string;
+  /** lowercase_underscore format name of the boss. */
+  id: string;
 
-    /** Display name of the boss. */
-    displayName: string;
+  /** Display name of the boss. */
+  displayName: string;
 
-    /** Level --> stats r a boss. */
-    levelStats: {number: BossStats};
+  /** Level --> stats r a boss. */
+  levelStats: { number: BossStats };
 }
 
 export interface BossStats {
-    /** Health is in the form "##xC", where C is average character level. */
-    health: string;
-    move: number;
-    // Note... this can be different for some bosses.
-    attack: number;
-    range: number;
-    special1: string[];
-    special2: string[];
-    immunities: string[];
-    notes: '';
+  /** Health is in the form "##xC", where C is average character level. */
+  health: string;
+  move: number;
+  // Note... this can be different for some bosses.
+  attack: number;
+  range: number;
+  special1: string[];
+  special2: string[];
+  immunities: string[];
+  notes: "";
 }

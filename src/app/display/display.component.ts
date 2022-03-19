@@ -1,6 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { DbService } from "../services/db.service";
-import { MonsterData, BossData } from "../../types/monsters";
+import {
+  MonsterData,
+  BossData,
+  MonsterDataDisplayNameComparator,
+} from "../../types/monsters";
 import { Party } from "../../types/party";
 import { Observable } from "rxjs";
 import { Monster } from "../db/monsters";
@@ -53,6 +57,8 @@ export class DisplayComponent implements OnInit {
       monstersByClass.set(monsters[0].getGenericMonsterData(), sortedMonsters);
     }
     this.monstersByClass = monstersByClass;
-    this.monsterClassList = Array.from(this.monstersByClass.keys()).sort();
+    this.monsterClassList = Array.from(this.monstersByClass.keys()).sort(
+      MonsterDataDisplayNameComparator
+    );
   }
 }
