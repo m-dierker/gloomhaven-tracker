@@ -70,6 +70,7 @@ export class PartyAddMonsterComponent implements OnInit {
     this.createMonsterData = {
       level: this.party.scenarioLevel,
     } as CreateMonsterData;
+    this.setVisible(false);
   }
 
   onCreateMonsterSelected(evt: TypeaheadMatch) {
