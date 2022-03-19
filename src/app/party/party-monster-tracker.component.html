@@ -1,8 +1,8 @@
-<div class="monster-class" *ngFor="let entry of monstersByClass | keyvalue">
+<div class="monster-class" *ngFor="let class of sortedMonsterClasses">
   <div class="monster-name">
-    <div class="monster-name-text">{{ entry.key.displayName }}</div>
+    <div class="monster-name-text">{{ class.displayName }}</div>
   </div>
-  <ng-container *ngFor="let monster of entry.value">
+  <ng-container *ngFor="let monster of monstersByClass.get(class)">
     <party-monster-cell
       [monster]="monster"
       *ngIf="!monster.isDead()"
