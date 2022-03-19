@@ -4,14 +4,21 @@
       <img src="/assets/monsters/Vert-{{ monster.getDisplayName() }}.png" />
       <div class="monster-token">{{ monster.getTokenId() }}</div>
     </div>
-    <div>
-      <a [routerLink]="" (click)="changeHealth(-1)">MINUS</a> #{{
-        monster.getTokenId()
-      }}
-      <!-- <span (click)="toggleStatusesVisible()"
-      >: Health {{ monster.getHealth() }} / {{ monster.getMaxHealth() }}</span
-    >&nbsp; -->
-      <a [routerLink]="" (click)="changeHealth(1)">PLUS</a>
+    <div class="health-controls-wrapper">
+      <div class="health-controls">
+        <img src="/assets/icons/minus_1.png" (click)="changeHealth(-1)" />
+        <div class="health-display flex-space">
+          {{ monster.getHealth() }} / {{ monster.getMaxHealth() }}
+        </div>
+        <img src="/assets/icons/plus_1.png" (click)="changeHealth(1)" />
+      </div>
+      <progressbar
+        [animate]="true"
+        [value]="monster.getHealth()"
+        [max]="monster.getMaxHealth()"
+        type="danger"
+      >
+      </progressbar>
     </div>
   </div>
   <div class="monster-statuses" *ngIf="statusesVisible">

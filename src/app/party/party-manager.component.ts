@@ -18,7 +18,6 @@ import { DbService } from "../services/db.service";
   styleUrls: ["./party-manager.component.scss"],
 })
 export class PartyManagerComponent implements OnInit, OnDestroy {
-  public createMonsterData = {} as CreateMonsterData;
   public party: Party;
 
   public user: User;
@@ -33,9 +32,6 @@ export class PartyManagerComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.db.getParty().subscribe((party) => {
       this.party = party;
-      if (!this.createMonsterData.level) {
-        this.createMonsterData.level = this.party.scenarioLevel;
-      }
     });
     this.user$ = authState(this.auth).subscribe((user) => {
       if (!user) {
@@ -45,42 +41,11 @@ export class PartyManagerComponent implements OnInit, OnDestroy {
       this.user = user;
     });
 
-    this.initializeChromecast();
+    // this.initializeChromecast();
   }
 
   ngOnDestroy(): void {
     this.user$.unsubscribe();
-  }
-
-  createMonsters() {
-    const newMonsters = [];
-    const newIdsUsed = [];
-    for (let i = 0; i < this.createMonsterData.numMonsters; i++) {
-      const tokenId = this.getNextTokenId(
-        this.createMonsterData.monsterId,
-        newIdsUsed
-      );
-      const scenarioData: ScenarioMonsterData = {
-        id: "", // Generated in the service
-        tokenId,
-        monsterId: this.createMonsterData.monsterId,
-        level: this.createMonsterData.level,
-        type: this.createMonsterData.elite
-          ? MonsterType.ELITE
-          : MonsterType.NORMAL,
-        statuses: [],
-      };
-      newIdsUsed.push(tokenId);
-      newMonsters.push(scenarioData);
-    }
-    this.db.createPartyMonsters(newMonsters);
-    this.createMonsterData = {
-      level: this.party.scenarioLevel,
-    } as CreateMonsterData;
-  }
-
-  onCreateMonsterSelected(evt: TypeaheadMatch) {
-    this.createMonsterData.monsterId = evt.item.id;
   }
 
   resetGameState() {
@@ -105,53 +70,16 @@ export class PartyManagerComponent implements OnInit, OnDestroy {
     setTimeout(() => this.router.navigateByUrl("/login"));
   }
 
-  /**
-   * Returns the next unused token for the given monster type.
-   * @param monsterId ID of the class being created.
-   * @param otherUsedNumbers other numbers that are being used locally.
-   *
-   * For example: if monsters #1 and #3 are alive and two monsters are being added,
-   * the right IDs are 2 and 4. These are done in a batch write, so IDs that are being
-   * created locally have to be checked with IDs that are on the server.
-   */
-  private getNextTokenId(
-    monsterId: string,
-    otherUsedNumbers: number[]
-  ): number {
-    // const usedNumbers = new Set(
-    //   this.partyMonsters
-    //     .filter((monster) => monster.getMonsterId() === monsterId)
-    //     .map((monster) => monster.getTokenId())
-    // );
-    // FIXME
-    const usedNumbers = new Set();
-    otherUsedNumbers.forEach((num) => usedNumbers.add(num));
-    // Return the next available number starting from 1 since tokens begin at 1.
-    let maxUnusedNum = 1;
-    while (usedNumbers.has(maxUnusedNum)) {
-      maxUnusedNum++;
-    }
-    return maxUnusedNum;
-  }
-
-  private initializeChromecast() {
-    window["__onGCastApiAvailable"] = function (isAvailable) {
-      if (isAvailable) {
-        // @ts-ignore
-        cast.framework.CastContext.getInstance().setOptions({
-          receiverApplicationId: "948CAC63",
-          // @ts-ignore
-          autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED,
-        });
-      }
-    };
-  }
-}
-
-interface CreateMonsterData {
-  monsterId: string;
-  monsterName: string;
-  numMonsters: number;
-  level: number;
-  elite: boolean;
+  // private initializeChromecast() {
+  //   window["__onGCastApiAvailable"] = function (isAvailable) {
+  //     if (isAvailable) {
+  //       // @ts-ignore
+  //       cast.framework.CastContext.getInstance().setOptions({
+  //         receiverApplicationId: "948CAC63",
+  //         // @ts-ignore
+  //         autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED,
+  //       });
+  //     }
+  //   };
+  // }
 }

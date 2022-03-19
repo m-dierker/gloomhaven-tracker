@@ -1,5 +1,6 @@
-add monster works!
-<!-- <div class="create-monsters">
+<app-button (click)="togglePanel()">Add Monsters</app-button>
+
+<div class="create-monsters" *ngIf="panelVisible" #monsterPanel>
   <p><strong>Add new monsters</strong></p>
   <form #createForm="ngForm" (ngSubmit)="createMonsters()" autocomplete="off">
     <input
@@ -45,4 +46,4 @@ add monster works!
       Create Monsters
     </button>
   </form>
-</div> -->
+</div>

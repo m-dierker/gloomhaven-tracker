@@ -1,7 +1,13 @@
+.party-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 .container {
   background: url("/assets/backgrounds/wood_texture.webp");
-
   color: white;
+  flex-grow: 1;
   height: 100%;
 }
 

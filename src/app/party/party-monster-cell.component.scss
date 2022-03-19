@@ -1,10 +1,10 @@
 .monster-cell-wrapper {
-  font-size: 18pt;
   margin: 30px 0;
 }
 
 .monster-cell {
   display: flex;
+  justify-content: space-around;
 }
 
 .monster-id {
@@ -22,6 +22,43 @@
     font-size: 30pt;
     font-weight: bold;
   }
+}
+
+.flex-space {
+  flex-grow: 1;
+}
+
+.health-controls-wrapper {
+  align-self: flex-start;
+  font-family: "Nyala";
+  font-size: 20pt;
+  width: 200px;
+}
+
+.health-controls {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  text-align: center;
+
+  img {
+    height: 50px;
+  }
+}
+
+progressbar {
+  height: 5px;
+  margin-top: 4px;
+}
+
+.health-confirm {
+  background: url("/assets/backgrounds/scroll_bg.jpg");
+  background-size: cover;
+  color: black;
+  font-size: 14pt;
+  margin-top: 10px;
+  padding: 4px;
+  text-align: center;
 }
 
 .monster-active-statuses {
