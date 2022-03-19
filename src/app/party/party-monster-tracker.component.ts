@@ -4,7 +4,7 @@ import {
   MonsterData,
   MonsterDataDisplayNameComparator,
 } from "src/types/monsters";
-import { Monster } from "../db/monsters";
+import { Monster } from "../db/monster";
 import { DbService } from "../services/db.service";
 
 @Component({
@@ -39,9 +39,7 @@ export class PartyMonsterTrackerComponent implements OnInit {
 
     const monstersByClass: Map<MonsterData, Monster[]> = new Map();
     for (const [monsterId, monsters] of monstersByClassId.entries()) {
-      const sortedMonsters = monsters.sort(
-        (m1, m2) => m1.getTokenId() - m2.getTokenId()
-      );
+      const sortedMonsters = monsters.sort((m1, m2) => m1.compareTo(m2));
       monstersByClass.set(monsters[0].getGenericMonsterData(), sortedMonsters);
     }
     this.monstersByClass = monstersByClass;

@@ -16,7 +16,7 @@ import {
   PARTY_COLLECTION,
 } from "../db/db-constants";
 import { Party, ScenarioMonsterData } from "../../types/party";
-import { Monster } from "../db/monsters";
+import { Monster } from "../db/monster";
 import {
   addDoc,
   collection,

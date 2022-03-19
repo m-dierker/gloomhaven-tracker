@@ -1,12 +1,18 @@
-<div class="monster-cell">
-  <div>
-    <a [routerLink]="" (click)="changeHealth(-1)">MINUS</a> #{{
-      monster.getTokenId()
-    }}
-    <span (click)="toggleStatusesVisible()"
+<div class="monster-cell-wrapper" [class.elite]="monster.isElite()">
+  <div class="monster-cell">
+    <div class="monster-id" (click)="toggleStatusesVisible()">
+      <img src="/assets/monsters/Vert-{{ monster.getDisplayName() }}.png" />
+      <div class="monster-token">{{ monster.getTokenId() }}</div>
+    </div>
+    <div>
+      <a [routerLink]="" (click)="changeHealth(-1)">MINUS</a> #{{
+        monster.getTokenId()
+      }}
+      <!-- <span (click)="toggleStatusesVisible()"
       >: Health {{ monster.getHealth() }} / {{ monster.getMaxHealth() }}</span
-    >&nbsp;
-    <a [routerLink]="" (click)="changeHealth(1)">PLUS</a>
+    >&nbsp; -->
+      <a [routerLink]="" (click)="changeHealth(1)">PLUS</a>
+    </div>
   </div>
   <div class="monster-statuses" *ngIf="statusesVisible">
     <div

@@ -84,6 +84,10 @@ export class Monster {
     return this.getHealth() <= 0;
   }
 
+  isElite(): boolean {
+    return this.getType() == MonsterType.ELITE;
+  }
+
   compareTo(other: Monster) {
     if (this.isDead() !== other.isDead()) {
       return this.isDead() ? 1 : -1;

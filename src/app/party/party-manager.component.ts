@@ -9,7 +9,7 @@ import {
   MonsterType,
 } from "src/types/monsters";
 import { Party, ScenarioMonsterData } from "src/types/party";
-import { Monster } from "../db/monsters";
+import { Monster } from "../db/monster";
 import { DbService } from "../services/db.service";
 
 @Component({

@@ -7,7 +7,7 @@ import {
 } from "../../types/monsters";
 import { Party } from "../../types/party";
 import { Observable } from "rxjs";
-import { Monster } from "../db/monsters";
+import { Monster } from "../db/monster";
 
 @Component({
   selector: "app-display",

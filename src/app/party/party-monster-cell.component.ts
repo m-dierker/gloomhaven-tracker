@@ -1,22 +1,21 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Monster } from '../db/monsters';
-import { DbService } from '../services/db.service';
-import { StatusEffect } from '../../types/status';
+import { Component, OnInit, Input } from "@angular/core";
+import { Monster } from "../db/monster";
+import { DbService } from "../services/db.service";
+import { StatusEffect } from "../../types/status";
 
 @Component({
-  selector: 'party-monster-cell',
-  templateUrl: './party-monster-cell.component.html',
-  styleUrls: ['./party-monster-cell.component.scss']
+  selector: "party-monster-cell",
+  templateUrl: "./party-monster-cell.component.html",
+  styleUrls: ["./party-monster-cell.component.scss"],
 })
 export class PartyMonsterCellComponent implements OnInit {
-
   @Input()
   public monster: Monster;
 
   public allStatuses: StatusEffect[];
   public statusesVisible = false;
 
-  constructor(private db: DbService) { }
+  constructor(private db: DbService) {}
 
   ngOnInit() {
     this.allStatuses = StatusEffect.getAllStatuses();
@@ -40,5 +39,4 @@ export class PartyMonsterCellComponent implements OnInit {
     this.db.saveMonster(this.monster);
     this.statusesVisible = false;
   }
-
 }

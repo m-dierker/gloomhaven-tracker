@@ -1,6 +1,27 @@
-.monster-cell {
+.monster-cell-wrapper {
   font-size: 18pt;
-  padding: 20px 0;
+  margin: 30px 0;
+}
+
+.monster-cell {
+  display: flex;
+}
+
+.monster-id {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+
+  img {
+    height: 60px;
+    margin-right: 4px;
+    width: 60px;
+  }
+
+  .monster-token {
+    font-size: 30pt;
+    font-weight: bold;
+  }
 }
 
 .monster-active-statuses {
@@ -24,4 +45,8 @@
 .monster-status-icon {
   height: 32px;
   width: 32px;
+}
+
+.elite .monster-id {
+  color: gold;
 }
