@@ -7,7 +7,6 @@ import { environment } from "../environments/environment";
 import { TypeaheadModule } from "ngx-bootstrap/typeahead";
 import { ProgressbarModule } from "ngx-bootstrap/progressbar";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { PanelModule } from "./panel/panel.module";
 import { DisplayComponent } from "./display/display.component";
 import { MonsterCellComponent } from "./display/monster-cell.component";
 import { MonsterNameComponent } from "./display/monster-name.component";
@@ -23,8 +22,8 @@ import {
 } from "@angular/fire/firestore";
 import { ElementTrackerComponent } from "./display/elements/element-tracker.component";
 import { ElementTrackerCellComponent } from "./display/elements/element-tracker-cell.component";
-import { PartyElementTrackerComponent } from './party/party-element-tracker.component';
-import { PartyElementTrackerCellComponent } from './party/party-element-tracker-cell.component';
+import { PartyElementTrackerComponent } from "./party/party-element-tracker.component";
+import { PartyElementTrackerCellComponent } from "./party/party-element-tracker-cell.component";
 
 @NgModule({
   declarations: [
@@ -45,9 +44,6 @@ import { PartyElementTrackerCellComponent } from './party/party-element-tracker-
     ReactiveFormsModule,
     BrowserModule,
     AppRoutingModule,
-
-    // Custom modules
-    // PanelModule,
 
     // UI Modules
     ProgressbarModule.forRoot(),

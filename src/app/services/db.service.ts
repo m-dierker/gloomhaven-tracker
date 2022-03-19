@@ -121,18 +121,31 @@ export class DbService {
     );
   }
 
-  async deletePartyMonsters() {
-    const monsterCol = await getDocs(
-      collection(
-        this.firestore,
-        `${PARTY_COLLECTION}/${DEFAULT_PARTY}/${PARTY_MONSTERS_COLLECTION}`
-      )
-    );
+  /** Resets everything to have a fresh game. */
+  async fullyResetGameState() {
+    await this.deleteAllMonsters();
+    await this.resetAllElements();
+  }
+
+  private async deleteAllMonsters() {
+    const monsterCol = await getDocs(this.dbRef.partyMonstersCollection());
     const batch = writeBatch(this.firestore);
     for (const monsterDoc of monsterCol.docs) {
       batch.delete(monsterDoc.ref);
     }
-    await batch.commit();
+    return batch.commit();
+  }
+
+  /** Resets all elements to the inactive state. */
+  private async resetAllElements() {
+    const elementsCol = await getDocs(this.dbRef.elementsCollection());
+    const batch = writeBatch(this.firestore);
+    for (const elementDoc of elementsCol.docs) {
+      if (elementDoc.data().state !== ElementState.INACTIVE) {
+        batch.set(elementDoc.ref, { state: ElementState.INACTIVE });
+      }
+    }
+    return batch.commit();
   }
 
   /**
@@ -186,14 +199,9 @@ export class DbService {
     ).pipe(map((snap) => snap.data() as Party));
   }
 
-  /** Returns a streaming list of element updates. This is done so a tracker can handle bulk updates at once. */
+  /** Returns a streaming list of element updates. This is done so a tracker can handle bulk updates at once. Each update includes all elements. */
   getElementUpdates(): Observable<QueryDocumentSnapshot<ElementData>[]> {
-    return collectionSnapshots(
-      collection(
-        this.firestore,
-        `${PARTIES_COLLECTION}/${DEFAULT_PARTY}/elements`
-      ) as CollectionReference<ElementData>
-    );
+    return collectionSnapshots(this.dbRef.elementsCollection());
   }
 
   getElementUpdate(element: ElementType): Observable<ElementData> {

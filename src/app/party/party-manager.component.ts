@@ -77,10 +77,10 @@ export class PartyManagerComponent implements OnInit {
     this.createMonsterData.monsterId = evt.item.id;
   }
 
-  deleteAllMonsters() {
+  resetGameState() {
     if (
       confirm(
-        "Are you sure you wish to delete all monsters? THIS WILL CLEAR ALL HEALTH TRACKING."
+        "Are you sure you wish to reset the game? THIS WILL CLEAR ALL HEALTH TRACKING."
       )
     ) {
       if (
@@ -88,7 +88,7 @@ export class PartyManagerComponent implements OnInit {
           "Are you *absolutely sure* you want to irrevocably delete everything?"
         )
       ) {
-        this.db.deletePartyMonsters();
+        this.db.fullyResetGameState();
       }
     }
   }

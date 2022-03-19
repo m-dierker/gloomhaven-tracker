@@ -12,6 +12,7 @@ export interface MonsterData {
   levelStats: { [level: number]: MonsterLevelStats };
 }
 
+/** Compare function for sorting monster classes by display name. */
 export function MonsterDataDisplayNameComparator(
   m1: MonsterData,
   m2: MonsterData
