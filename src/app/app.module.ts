@@ -28,7 +28,9 @@ import { LoginComponent } from "./ui/login.component";
 import { ButtonComponent } from "./ui/button.component";
 import { provideAuth } from "@angular/fire/auth";
 import { getAuth } from "firebase/auth";
-import { PartyRoleHeaderComponent } from './party/party-role-header.component';
+import { PartyRoleHeaderComponent } from "./party/party-role-header.component";
+import { PartyMonsterTrackerComponent } from "./party/party-monster-tracker.component";
+import { PartyAddMonsterComponent } from "./party/party-add-monster.component";
 
 @NgModule({
   declarations: [
@@ -45,6 +47,8 @@ import { PartyRoleHeaderComponent } from './party/party-role-header.component';
     LoginComponent,
     ButtonComponent,
     PartyRoleHeaderComponent,
+    PartyMonsterTrackerComponent,
+    PartyAddMonsterComponent,
   ],
   imports: [
     BrowserAnimationsModule,

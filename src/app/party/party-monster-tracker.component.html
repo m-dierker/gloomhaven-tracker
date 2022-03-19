@@ -1,0 +1,11 @@
+<div class="monster-class" *ngFor="let entry of monstersByClass | keyvalue">
+  <div class="monster-name">
+    <div class="monster-name-text">{{ entry.key.displayName }}</div>
+  </div>
+  <ng-container *ngFor="let monster of entry.value">
+    <party-monster-cell
+      [monster]="monster"
+      *ngIf="!monster.isDead()"
+    ></party-monster-cell>
+  </ng-container>
+</div>

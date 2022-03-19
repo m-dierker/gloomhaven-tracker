@@ -18,13 +18,6 @@ import { DbService } from "../services/db.service";
   styleUrls: ["./party-manager.component.scss"],
 })
 export class PartyManagerComponent implements OnInit, OnDestroy {
-  private partyMonsters$: Observable<Monster[]>;
-  private partyMonsters: Monster[] = [];
-
-  public sortedMonsterClasses: MonsterData[];
-  public monstersByClass: Map<MonsterData, Monster[]> = new Map();
-
-  public allMonsterData: MonsterData[];
   public createMonsterData = {} as CreateMonsterData;
   public party: Party;
 
@@ -38,13 +31,6 @@ export class PartyManagerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.partyMonsters$ = this.db.getPartyMonsters();
-    this.partyMonsters$.subscribe((partyMonsters) =>
-      this.onPartyMonstersUpdate(partyMonsters)
-    );
-    this.db
-      .getAllMonsters()
-      .subscribe((monsters) => (this.allMonsterData = monsters));
     this.db.getParty().subscribe((party) => {
       this.party = party;
       if (!this.createMonsterData.level) {
@@ -132,11 +118,13 @@ export class PartyManagerComponent implements OnInit, OnDestroy {
     monsterId: string,
     otherUsedNumbers: number[]
   ): number {
-    const usedNumbers = new Set(
-      this.partyMonsters
-        .filter((monster) => monster.getMonsterId() === monsterId)
-        .map((monster) => monster.getTokenId())
-    );
+    // const usedNumbers = new Set(
+    //   this.partyMonsters
+    //     .filter((monster) => monster.getMonsterId() === monsterId)
+    //     .map((monster) => monster.getTokenId())
+    // );
+    // FIXME
+    const usedNumbers = new Set();
     otherUsedNumbers.forEach((num) => usedNumbers.add(num));
     // Return the next available number starting from 1 since tokens begin at 1.
     let maxUnusedNum = 1;
@@ -144,30 +132,6 @@ export class PartyManagerComponent implements OnInit, OnDestroy {
       maxUnusedNum++;
     }
     return maxUnusedNum;
-  }
-
-  private onPartyMonstersUpdate(partyMonsters: Monster[]) {
-    this.partyMonsters = partyMonsters;
-    const monstersByClassId: Map<string, Monster[]> = new Map();
-    for (const monster of partyMonsters) {
-      if (monstersByClassId.has(monster.getMonsterId())) {
-        monstersByClassId.get(monster.getMonsterId()).push(monster);
-      } else {
-        monstersByClassId.set(monster.getMonsterId(), [monster]);
-      }
-    }
-
-    const monstersByClass: Map<MonsterData, Monster[]> = new Map();
-    for (const [monsterId, monsters] of monstersByClassId.entries()) {
-      const sortedMonsters = monsters.sort(
-        (m1, m2) => m1.getTokenId() - m2.getTokenId()
-      );
-      monstersByClass.set(monsters[0].getGenericMonsterData(), sortedMonsters);
-    }
-    this.monstersByClass = monstersByClass;
-    this.sortedMonsterClasses = Array.from(monstersByClass.keys()).sort(
-      MonsterDataDisplayNameComparator
-    );
   }
 
   private initializeChromecast() {

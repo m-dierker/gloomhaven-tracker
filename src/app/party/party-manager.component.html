@@ -1,63 +1,9 @@
 <app-party-role-header></app-party-role-header>
 <main role="main" class="container">
   <app-party-element-tracker></app-party-element-tracker>
-  <div class="monster-class" *ngFor="let entry of monstersByClass | keyvalue">
-    <div class="monster-name">{{ entry.key.displayName }}</div>
-    <ng-container *ngFor="let monster of entry.value">
-      <party-monster-cell
-        [monster]="monster"
-        *ngIf="!monster.isDead()"
-      ></party-monster-cell>
-    </ng-container>
-  </div>
+  <app-party-monster-tracker></app-party-monster-tracker>
   <hr />
-  <div class="create-monsters">
-    <p><strong>Add new monsters</strong></p>
-    <form #createForm="ngForm" (ngSubmit)="createMonsters()" autocomplete="off">
-      <input
-        [(ngModel)]="createMonsterData.monsterName"
-        (typeaheadOnSelect)="onCreateMonsterSelected($event)"
-        [typeahead]="allMonsterData"
-        typeaheadOptionField="displayName"
-        placeholder="Select a monster"
-        name="monsterId"
-        class="form-control"
-        required
-      />
-      <input
-        [(ngModel)]="createMonsterData.numMonsters"
-        type="number"
-        name="numMonsters"
-        placeholder="How many monsters"
-        class="form-control"
-        required
-      />
-      <input
-        [(ngModel)]="createMonsterData.level"
-        type="number"
-        name="level"
-        placeholder="Level"
-        class="form-control"
-        required
-        [(ngModel)]="createMonsterData.level"
-        disabled
-      />
-      <div class="form-check">
-        <input
-          type="checkbox"
-          [(ngModel)]="createMonsterData.elite"
-          name="elite"
-          class="form-check-input"
-          id="createMonsterElite"
-        />
-        <label class="form-check-label" for="createMonsterElite">Elite</label>
-      </div>
-
-      <button type="submit" [disabled]="!createForm.form.valid">
-        Create Monsters
-      </button>
-    </form>
-  </div>
+  <app-party-add-monster></app-party-add-monster>
   <div class="game-controls">
     <a href="#" (click)="resetGameState()">Fully reset game</a><br />
     <a href="#" (click)="logout()" *ngIf="user"
