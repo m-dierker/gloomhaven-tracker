@@ -1,33 +1,27 @@
 .monster-cell {
-    font-size: 18pt;
-    padding: 20px 0;
-}
-
-.monster-statuses {
-    display: flex;
-    flex-wrap: wrap;
+  font-size: 18pt;
+  padding: 20px 0;
 }
 
 .monster-active-statuses {
-    display: flex;
-    margin-top: 3px;
+  display: flex;
+  margin-top: 3px;
 }
 
 .monster-status-text {
-    align-self:center;
-    font-size: 14pt;
-    margin-left: 5px;
+  align-self: center;
+  font-size: 14pt;
+  margin-left: 5px;
 }
 
-
 .monster-status {
-    margin: 8px;
-    &:not(.active) .monster-status-icon {
-        opacity: 0.5;
-    }
+  margin: 8px;
+  &:not(.active) .monster-status-icon {
+    opacity: 0.5;
+  }
 }
 
 .monster-status-icon {
-    height: 32px;
-    width: 32px;
+  height: 32px;
+  width: 32px;
 }
