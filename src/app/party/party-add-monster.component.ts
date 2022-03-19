@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { TypeaheadMatch } from "ngx-bootstrap/typeahead";
 import { MonsterData, MonsterType } from "src/types/monsters";
 import { Party, ScenarioMonsterData } from "src/types/party";
+import { Monster } from "../db/monster";
 import { DbService } from "../services/db.service";
 
 @Component({
@@ -12,6 +13,7 @@ import { DbService } from "../services/db.service";
 export class PartyAddMonsterComponent implements OnInit {
   public allMonsterData: MonsterData[];
   public createMonsterData = {} as CreateMonsterData;
+  private partyMonsters: Monster[];
 
   panelVisible = false;
   private party: Party;
@@ -29,6 +31,9 @@ export class PartyAddMonsterComponent implements OnInit {
       this.party = party;
       this.createMonsterData.level = party.scenarioLevel;
     });
+    this.db
+      .getPartyMonsters()
+      .subscribe((monsters) => (this.partyMonsters = monsters));
   }
 
   togglePanel() {
@@ -90,13 +95,11 @@ export class PartyAddMonsterComponent implements OnInit {
     monsterId: string,
     otherUsedNumbers: number[]
   ): number {
-    // const usedNumbers = new Set(
-    //   this.partyMonsters
-    //     .filter((monster) => monster.getMonsterId() === monsterId)
-    //     .map((monster) => monster.getTokenId())
-    // );
-    // FIXME
-    const usedNumbers = new Set();
+    const usedNumbers = new Set(
+      this.partyMonsters
+        .filter((monster) => monster.getMonsterId() === monsterId)
+        .map((monster) => monster.getTokenId())
+    );
     otherUsedNumbers.forEach((num) => usedNumbers.add(num));
     // Return the next available number starting from 1 since tokens begin at 1.
     let maxUnusedNum = 1;
