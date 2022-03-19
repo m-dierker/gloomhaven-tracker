@@ -1,6 +1,7 @@
 main {
   max-width: 100%;
   padding: 0;
+  min-height: 100vh;
   height: 100%;
 }
 
@@ -12,6 +13,7 @@ main {
   background: url(/assets/bg_map_trimmed.jpg) no-repeat top center fixed;
   background-size: cover;
   height: 100%;
+  min-height: 100vh;
   // TODO(mdierker): This only works on my Mac since background scales. Needs to be smarter.
   padding: 0px 200px 0 10px;
 }
