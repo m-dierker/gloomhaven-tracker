@@ -1,0 +1,17 @@
+button {
+  background: url("/assets/backgrounds/scroll_bg.jpg");
+  background-size: cover;
+  box-shadow: 6px 6px 8px 0px rgba(0, 0, 0, 0.75);
+  color: #300e01;
+  border: #886922 4px double;
+  border-radius: 4px;
+
+  padding: 8px;
+
+  font-family: "Nyala";
+  font-size: 18pt;
+
+  &:active {
+    border-style: inset;
+  }
+}

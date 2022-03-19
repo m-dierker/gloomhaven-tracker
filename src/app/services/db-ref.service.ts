@@ -12,7 +12,7 @@ import {
   DEFAULT_PARTY,
   PARTY_COLLECTION,
   PARTY_MONSTERS_COLLECTION,
-} from "../config/db";
+} from "../db/db-constants";
 
 @Injectable({
   providedIn: "root",

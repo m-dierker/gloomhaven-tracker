@@ -14,7 +14,7 @@ import {
   DEFAULT_PARTY,
   PARTY_MONSTERS_COLLECTION,
   PARTY_COLLECTION,
-} from "../config/db";
+} from "../db/db-constants";
 import { Party, ScenarioMonsterData } from "../../types/party";
 import { Monster } from "../db/monsters";
 import {

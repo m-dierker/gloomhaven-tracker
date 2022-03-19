@@ -24,6 +24,10 @@ import { ElementTrackerComponent } from "./display/elements/element-tracker.comp
 import { ElementTrackerCellComponent } from "./display/elements/element-tracker-cell.component";
 import { PartyElementTrackerComponent } from "./party/party-element-tracker.component";
 import { PartyElementTrackerCellComponent } from "./party/party-element-tracker-cell.component";
+import { LoginComponent } from "./ui/login.component";
+import { ButtonComponent } from "./ui/button.component";
+import { provideAuth } from "@angular/fire/auth";
+import { getAuth } from "firebase/auth";
 
 @NgModule({
   declarations: [
@@ -37,6 +41,8 @@ import { PartyElementTrackerCellComponent } from "./party/party-element-tracker-
     ElementTrackerCellComponent,
     PartyElementTrackerComponent,
     PartyElementTrackerCellComponent,
+    LoginComponent,
+    ButtonComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -53,10 +59,18 @@ import { PartyElementTrackerCellComponent } from "./party/party-element-tracker-
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => {
       const firestore = getFirestore();
-      enableMultiTabIndexedDbPersistence(firestore).then(() =>
-        console.log("offline persistence enabled")
-      );
+      // enableMultiTabIndexedDbPersistence(firestore).then(() =>
+      //   console.log("offline persistence enabled")
+      // );
       return firestore;
+    }),
+    provideAuth(() => {
+      const auth = getAuth();
+      // TODO: Do this for offline sometime.
+      // if (environment.useEmulators) {
+      //   connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
+      // }
+      return auth;
     }),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

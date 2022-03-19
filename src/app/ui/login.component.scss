@@ -1,0 +1,20 @@
+.login-page {
+  background: url("/assets/backgrounds/wood_texture.webp");
+  height: 100%;
+  width: 100%;
+}
+
+.login-logo {
+  padding: 100px 0;
+  text-align: center;
+  width: 100%;
+
+  img {
+    max-width: 500px;
+    width: 90%;
+  }
+}
+
+.login-btn {
+  text-align: center;
+}

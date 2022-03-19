@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { DisplayComponent } from "./display/display.component";
 import { PartyManagerComponent } from "./party/party-manager.component";
+import { LoginComponent } from "./ui/login.component";
 
 const routes: Routes = [
   {
@@ -11,6 +12,10 @@ const routes: Routes = [
   {
     path: "",
     component: PartyManagerComponent,
+  },
+  {
+    path: "login",
+    component: LoginComponent,
   },
 ];
 

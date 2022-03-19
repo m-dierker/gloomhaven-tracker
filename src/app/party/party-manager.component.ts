@@ -1,6 +1,8 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Auth, authState, signOut, User } from "@angular/fire/auth";
+import { Router } from "@angular/router";
 import { TypeaheadMatch } from "ngx-bootstrap/typeahead";
-import { Observable } from "rxjs";
+import { Observable, Subscriber, Subscription } from "rxjs";
 import {
   MonsterData,
   MonsterDataDisplayNameComparator,
@@ -15,7 +17,7 @@ import { DbService } from "../services/db.service";
   templateUrl: "./party-manager.component.html",
   styleUrls: ["./party-manager.component.scss"],
 })
-export class PartyManagerComponent implements OnInit {
+export class PartyManagerComponent implements OnInit, OnDestroy {
   private partyMonsters$: Observable<Monster[]>;
   private partyMonsters: Monster[] = [];
 
@@ -26,7 +28,14 @@ export class PartyManagerComponent implements OnInit {
   public createMonsterData = {} as CreateMonsterData;
   public party: Party;
 
-  constructor(private db: DbService) {}
+  public user: User;
+  private user$: Subscription;
+
+  constructor(
+    private db: DbService,
+    private auth: Auth,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.partyMonsters$ = this.db.getPartyMonsters();
@@ -42,8 +51,19 @@ export class PartyManagerComponent implements OnInit {
         this.createMonsterData.level = this.party.scenarioLevel;
       }
     });
+    this.user$ = authState(this.auth).subscribe((user) => {
+      if (!user) {
+        this.router.navigateByUrl("/login");
+        return;
+      }
+      this.user = user;
+    });
 
     this.initializeChromecast();
+  }
+
+  ngOnDestroy(): void {
+    this.user$.unsubscribe();
   }
 
   createMonsters() {
@@ -91,6 +111,12 @@ export class PartyManagerComponent implements OnInit {
         this.db.fullyResetGameState();
       }
     }
+  }
+
+  async logout() {
+    await signOut(this.auth);
+    // Let login get cleared.
+    setTimeout(() => this.router.navigateByUrl("/login"));
   }
 
   /**

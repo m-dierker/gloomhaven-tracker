@@ -58,7 +58,10 @@
     </form>
   </div>
   <div class="game-controls">
-    <a href="#" (click)="resetGameState()">Fully reset game</a>
+    <a href="#" (click)="resetGameState()">Fully reset game</a><br />
+    <a href="#" (click)="logout()" *ngIf="user"
+      >Log out {{ user.displayName }}</a
+    >
   </div>
   <div class="cast-wrapper">
     <google-cast-launcher></google-cast-launcher>
