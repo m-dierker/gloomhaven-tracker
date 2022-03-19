@@ -35,6 +35,9 @@ import {
 import { deleteDoc, QueryDocumentSnapshot } from "firebase/firestore";
 import { ElementData, ElementState, ElementType } from "../db/elements";
 import { DbRefService } from "./db-ref.service";
+import { authState } from "rxfire/auth";
+import { Auth } from "@angular/fire/auth";
+import { UserData } from "../db/user";
 
 @Injectable({
   providedIn: "root",
@@ -44,7 +47,11 @@ export class DbService {
     new ReplaySubject(1);
   private monsterIdMap: Map<string, Monster> = new Map();
 
-  constructor(private firestore: Firestore, private dbRef: DbRefService) {
+  constructor(
+    private firestore: Firestore,
+    private dbRef: DbRefService,
+    private auth: Auth
+  ) {
     this.initMonsterMap();
   }
 
@@ -117,6 +124,16 @@ export class DbService {
           );
         }
         return forkJoin(monsterObservables);
+      })
+    );
+  }
+
+  getUserInfo(): Observable<UserData> {
+    return authState(this.auth).pipe(
+      switchMap((user) => {
+        return docSnapshots(this.dbRef.userDoc(user.uid)).pipe(
+          map((doc) => doc.data())
+        );
       })
     );
   }

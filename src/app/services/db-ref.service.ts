@@ -13,6 +13,7 @@ import {
   PARTY_COLLECTION,
   PARTY_MONSTERS_COLLECTION,
 } from "../db/db-constants";
+import { UserData } from "../db/user";
 
 @Injectable({
   providedIn: "root",
@@ -42,5 +43,12 @@ export class DbRefService {
       this.firestore,
       `${PARTY_COLLECTION}/${DEFAULT_PARTY}/${PARTY_MONSTERS_COLLECTION}`
     );
+  }
+
+  userDoc(uid: string): DocumentReference<UserData> {
+    return doc(
+      this.firestore,
+      `${PARTIES_COLLECTION}/${DEFAULT_PARTY}/members/${uid}`
+    ) as DocumentReference<UserData>;
   }
 }
