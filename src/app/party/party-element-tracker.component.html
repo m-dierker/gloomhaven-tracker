@@ -4,17 +4,15 @@
   [class.closed]="!panelOpen"
 >
   <div class="element-tracker-topbar">
-    <div class="controls" (click)="togglePanelOpen()">
-      <div class="controls-img">
-        <img src="/assets/elements/wildcard.png" />
-      </div>
-      <span class="elements-text">Elements</span>
-    </div>
+    <app-button class="controls" (click)="togglePanelOpen()">
+      <img src="/assets/elements/wildcard.png" />
+      Elements
+    </app-button>
     <div class="flex-div"></div>
     <div class="game-controls">
-      <button (click)="nextTurn()" [disabled]="disableNextTurn">
+      <app-button (click)="nextTurn()" [disabled]="disableNextTurn">
         Next Turn
-      </button>
+      </app-button>
     </div>
   </div>
   <!-- TODO: ngIf panelOpen -->

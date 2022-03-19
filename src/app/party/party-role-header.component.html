@@ -1,8 +1,4 @@
-<div
-  class="role-header"
-  *ngIf="user | async"
-  class="role-{{ (user | async).class }}"
->
+<div class="role-header" class="role-{{ (user | async)?.class }}">
   <div class="role-inner-header">
     <div class="role-icon"></div>
     <span class="role-name"></span>

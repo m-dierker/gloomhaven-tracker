@@ -5,13 +5,28 @@ button {
   color: #300e01;
   border: #886922 4px double;
   border-radius: 4px;
+  display: flex;
 
-  padding: 8px;
+  padding: 2px 8px;
 
   font-family: "Nyala";
   font-size: 18pt;
 
+  ::ng-deep img {
+    margin-right: 10px;
+    height: 36px;
+    width: 36px;
+  }
+
   &:active {
     border-style: inset;
+  }
+
+  &:disabled {
+    background-color: gray;
+    background-blend-mode: screen;
+    box-shadow: none;
+    border-color: gray;
+    color: gray;
   }
 }
