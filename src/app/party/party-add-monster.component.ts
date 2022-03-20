@@ -51,6 +51,10 @@ export class PartyAddMonsterComponent implements OnInit {
   }
 
   createMonsters() {
+    if (this.createMonsterData.numMonsters > 100) {
+      alert("Too many monsters.");
+      return;
+    }
     const newMonsters = [];
     const newIdsUsed = [];
     for (let i = 0; i < this.createMonsterData.numMonsters; i++) {
