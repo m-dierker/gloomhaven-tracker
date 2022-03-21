@@ -1,5 +1,7 @@
 /** Top level interface for any enemy (Monsters or Boss). */
 export interface EnemyStats {
+  displayName: string;
+
   health: number;
   move: number;
   attack: number;

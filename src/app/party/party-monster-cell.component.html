@@ -1,8 +1,8 @@
 <div class="monster-cell-wrapper" [class.elite]="monster.isElite()">
   <div class="monster-cell">
     <div class="monster-id" (click)="toggleStatusesVisible()">
-      <img src="/assets/monsters/Vert-{{ monster.getDisplayName() }}.png" />
-      <div class="monster-token">{{ monster.getTokenId() }}</div>
+      <img src="/assets/monsters/Vert-{{ monster.displayName }}.png" />
+      <div class="monster-token">{{ monster.tokenNum }}</div>
     </div>
     <div class="health-controls-wrapper">
       <div class="health-controls">

@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { TypeaheadMatch } from "ngx-bootstrap/typeahead";
 import { MonsterData, MonsterType } from "src/types/monsters";
-import { Party, ScenarioMonsterData } from "src/types/party";
+import { Party, ScenarioEnemyData } from "src/types/party";
 import { Monster } from "../db/monster";
 import { DbService } from "../services/db.service";
 
@@ -62,7 +62,7 @@ export class PartyAddMonsterComponent implements OnInit {
         this.createMonsterData.monsterId,
         newIdsUsed
       );
-      const scenarioData: ScenarioMonsterData = {
+      const scenarioData: ScenarioEnemyData = {
         id: "", // Generated in the service
         tokenId,
         monsterId: this.createMonsterData.monsterId,

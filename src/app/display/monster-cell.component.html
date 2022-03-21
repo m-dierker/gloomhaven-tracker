@@ -1,21 +1,27 @@
-<div class="monster-cell-wrapper" [class.elite]="monster.getType() == 'elite'" [class.dead]="monster.isDead()">
-    <div class="monster-name">
-        <div class="monster-number">
-            <span>{{monster.getTokenId()}}</span>
-        </div>
+<div
+  class="monster-cell-wrapper"
+  [class.elite]="monster.getMonster() == 'elite'"
+  [class.dead]="monster.isDead()"
+>
+  <div class="monster-name">
+    <div class="monster-number">
+      <span>{{ monster.tokenNum }}</span>
     </div>
-    <div class="monster-info" *ngIf="!monster.isDead()">
-        <div class="monster-health">
-            <progressbar [value]="monster.getHealth()" [max]="monster.getMaxHealth()" type="danger">
-                {{monster.getHealth()}} / {{monster.getMaxHealth()}}
-            </progressbar>
-        </div>
-        <div class="monster-status" *ngFor="let status of monster.getStatuses()">
-            <img src="{{status.getImgPath()}}" class="monster-status-icon">
-            <span class="monster-status-text">{{status.displayName}}</span>
-        </div>
+  </div>
+  <div class="monster-info" *ngIf="!monster.isDead()">
+    <div class="monster-health">
+      <progressbar
+        [value]="monster.getHealth()"
+        [max]="monster.getMaxHealth()"
+        type="danger"
+      >
+        {{ monster.getHealth() }} / {{ monster.getMaxHealth() }}
+      </progressbar>
     </div>
-    <div class="monster-info" *ngIf="monster.isDead()">
-        Defeated!
+    <div class="monster-status" *ngFor="let status of monster.getStatuses()">
+      <img src="{{ status.getImgPath() }}" class="monster-status-icon" />
+      <span class="monster-status-text">{{ status.displayName }}</span>
     </div>
+  </div>
+  <div class="monster-info" *ngIf="monster.isDead()">Defeated!</div>
 </div>

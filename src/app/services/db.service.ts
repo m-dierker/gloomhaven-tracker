@@ -1,12 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable, ReplaySubject, of, forkJoin } from "rxjs";
-import { map, first, flatMap, switchMap } from "rxjs/operators";
-import {
-  MonsterData,
-  BossData,
-  MonsterType,
-  MonsterStats,
-} from "../../types/monsters";
+import { map, first, switchMap, flatMap, mergeMap } from "rxjs/operators";
+import { MonsterData, BossData } from "../../types/monsters";
 import {
   MONSTERS_COLLECTION,
   BOSS_COLLECTION as BOSSES_COLLECTION,
@@ -15,37 +10,46 @@ import {
   PARTY_MONSTERS_COLLECTION,
   PARTY_COLLECTION,
 } from "../db/db-constants";
-import { Party, ScenarioMonsterData } from "../../types/party";
+import { Party } from "../../types/party";
 import { Monster } from "../db/monster";
 import {
-  addDoc,
   collection,
   CollectionReference,
   collectionSnapshots,
   doc,
   docSnapshots,
-  enableIndexedDbPersistence,
-  enableMultiTabIndexedDbPersistence,
   Firestore,
   getDocs,
   setDoc,
   updateDoc,
   writeBatch,
 } from "@angular/fire/firestore";
-import { deleteDoc, QueryDocumentSnapshot } from "firebase/firestore";
+import {
+  arrayRemove,
+  deleteDoc,
+  QueryDocumentSnapshot,
+} from "firebase/firestore";
 import { ElementData, ElementState, ElementType } from "../db/elements";
 import { DbRefService } from "./db-ref.service";
 import { authState } from "rxfire/auth";
 import { Auth } from "@angular/fire/auth";
 import { UserData } from "../db/user";
+import { ScenarioEnemyData } from "src/types/scenario";
+import { Enemy } from "../db/enemy";
+import { EnemyClassId, EnemyType } from "src/types/enemy";
+import { Boss } from "../db/boss";
 
 @Injectable({
   providedIn: "root",
 })
 export class DbService {
-  private monsterDataMap: ReplaySubject<Map<String, MonsterData>> =
+  private monsterDataMapSubj: ReplaySubject<Map<string, MonsterData>> =
     new ReplaySubject(1);
-  private monsterIdMap: Map<string, Monster> = new Map();
+  private bossDataMapSubj: ReplaySubject<Map<string, BossData>> =
+    new ReplaySubject(1);
+  private partySubj: ReplaySubject<Party>;
+  private partyEnemySubj: ReplaySubject<Map<EnemyClassId, Enemy[]>>;
+  private enemyIdMap: Map<string, Enemy> = new Map();
 
   constructor(
     private firestore: Firestore,
@@ -53,10 +57,11 @@ export class DbService {
     private auth: Auth
   ) {
     this.initMonsterMap();
+    this.initBossMap();
   }
 
   getAllMonsters(): Observable<MonsterData[]> {
-    return this.monsterDataMap.pipe(
+    return this.monsterDataMapSubj.pipe(
       map((monsterMap) => {
         const monsters = Array.from(monsterMap.values());
         return monsters;
@@ -64,28 +69,8 @@ export class DbService {
     );
   }
 
-  /**
-   * Returns *snapshot* of generic monster stats.
-   *
-   * This is a snapshot because it doesn't make sense to handle synchronizing base stats that don't change.
-   * If base stats change somehow in the future, this will need to refresh.
-   *
-   * @param data from the current scenario
-   */
-  getMonsterDataById(monsterId: string): Observable<MonsterData> {
-    return this.monsterDataMap.pipe(
-      first(),
-      map((monsterMap) => {
-        if (!monsterMap.has(monsterId)) {
-          console.error("Invalid monster specified: ", monsterId);
-          return null;
-        }
-        return monsterMap.get(monsterId);
-      })
-    );
-  }
-
-  createPartyMonsters(newMonsters: ScenarioMonsterData[]) {
+  createPartyMonsters(newMonsters: ScenarioEnemyData[]) {
+    // FIXME
     const batch = writeBatch(this.firestore);
     for (const newMonster of newMonsters) {
       const newMonsterDoc = doc(
@@ -100,32 +85,46 @@ export class DbService {
   }
 
   /**
-   * Returns wrapper objects for Monsters in a given party, including
-   * both scenario-specific data and generic MonsterData.
+   * Returns wrapper objects for Enemies in a given party, including
+   * both scenario-specific data and generic EnemyData.
+   *
+   * Results are grouped by class since every current usage requires this.
    */
-  getPartyMonsters(): Observable<Monster[]> {
-    return collectionSnapshots(
-      collection(
-        this.firestore,
-        `${PARTY_COLLECTION}/${DEFAULT_PARTY}/${PARTY_MONSTERS_COLLECTION}`
-      ) as CollectionReference<ScenarioMonsterData>
-    ).pipe(
-      switchMap((scenarioMonsterDocs) => {
-        // Preemptively return an empty list as forkJoin([]) never fires.
-        if (scenarioMonsterDocs.length === 0) {
-          return of([]);
+  getPartyEnemies(): Observable<Map<EnemyClassId, Enemy[]>> {
+    if (!this.partyEnemySubj) {
+      this.partyEnemySubj = new ReplaySubject(1);
+      collectionSnapshots(this.dbRef.partyMonstersCollection()).subscribe(
+        (scenarioEnemyDocs) => {
+          // Preemptively return an empty list as forkJoin([]) never fires.
+          if (scenarioEnemyDocs.length === 0) {
+            this.partyEnemySubj.next(new Map());
+            return;
+          }
+          const enemyObservables: Observable<Enemy>[] = [];
+          for (const scenarioEnemyDoc of scenarioEnemyDocs) {
+            const scenarioEnemyData = scenarioEnemyDoc.data();
+            scenarioEnemyData.id = scenarioEnemyDoc.id;
+            enemyObservables.push(
+              this.getEnemyFromScenarioData(scenarioEnemyData)
+            );
+          }
+          forkJoin(enemyObservables).subscribe((enemies) => {
+            const map = new Map();
+            for (const enemy of enemies) {
+              if (map.has(enemy.classId)) {
+                map.get(enemy.classId).push(enemy);
+              } else {
+                map.set(enemy.classId, [enemy]);
+              }
+            }
+            // Sort each class list by tokenNum.
+            Array.from(map.values()).forEach((arr) => arr.sort());
+            this.partyEnemySubj.next(map);
+          });
         }
-        const monsterObservables: Observable<Monster>[] = [];
-        for (const scenarioMonsterDoc of scenarioMonsterDocs) {
-          const scenarioMonsterData = scenarioMonsterDoc.data();
-          scenarioMonsterData.id = scenarioMonsterDoc.id;
-          monsterObservables.push(
-            this.getMonsterForScenarioData(scenarioMonsterData)
-          );
-        }
-        return forkJoin(monsterObservables);
-      })
-    );
+      );
+    }
+    return this.partyEnemySubj.asObservable();
   }
 
   getUserInfo(): Observable<UserData> {
@@ -166,24 +165,42 @@ export class DbService {
   }
 
   /**
-   * Returns a Monster wrapper for the given ScenarioMonsterData.
+   * Returns an Enemy wrapper for the given ScenarioEnemyData.
+   * Uses cached Enemy if possible.
    */
-  private getMonsterForScenarioData(
-    scenarioData: ScenarioMonsterData
-  ): Observable<Monster> {
-    // Monster objects that already exist should simply receive new ScenarioData.
-    if (this.monsterIdMap.has(scenarioData.id)) {
-      this.monsterIdMap.get(scenarioData.id).onNewScenarioData(scenarioData);
-      return of(this.monsterIdMap.get(scenarioData.id));
-    } else {
-      return this.getMonsterDataById(scenarioData.monsterId).pipe(
-        map((monsterData) => {
-          const monster = new Monster(scenarioData, monsterData);
-          this.monsterIdMap.set(scenarioData.id, monster);
-          return monster;
-        })
-      );
-    }
+  private getEnemyFromScenarioData(
+    scenarioData: ScenarioEnemyData
+  ): Observable<Enemy> {
+    return this.getParty().pipe(
+      mergeMap((party) => {
+        // Enemy objects that already exist should simply receive new ScenarioData.
+        if (this.enemyIdMap.has(scenarioData.id)) {
+          this.enemyIdMap
+            .get(scenarioData.id)
+            .onNewScenarioData(scenarioData, { party });
+          return of(this.enemyIdMap.get(scenarioData.id));
+        } else {
+          // Construct a new Enemy only if needed.
+          if (scenarioData.enemyType == EnemyType.MONSTER) {
+            return this.getMonsterClassData(scenarioData.classId).pipe(
+              map((monsterData) => {
+                const monster = new Monster(scenarioData, monsterData);
+                this.enemyIdMap.set(scenarioData.id, monster);
+                return monster;
+              })
+            );
+          } else if (scenarioData.enemyType == EnemyType.BOSS) {
+            return this.getBossClassData(scenarioData.classId).pipe(
+              map((bossData) => {
+                const boss = new Boss(scenarioData, bossData);
+                this.enemyIdMap.set(scenarioData.id, boss);
+                return boss;
+              })
+            );
+          }
+        }
+      })
+    );
   }
 
   saveMonster(monster: Monster) {
@@ -211,9 +228,12 @@ export class DbService {
   }
 
   getParty(): Observable<Party> {
-    return docSnapshots(
-      doc(this.firestore, `${PARTIES_COLLECTION}/${DEFAULT_PARTY}`)
-    ).pipe(map((snap) => snap.data() as Party));
+    if (!this.partySubj) {
+      docSnapshots(
+        doc(this.firestore, `${PARTIES_COLLECTION}/${DEFAULT_PARTY}`)
+      ).subscribe((snap) => this.partySubj.next(snap.data() as Party));
+    }
+    return this.partySubj.asObservable();
   }
 
   /** Returns a streaming list of element updates. This is done so a tracker can handle bulk updates at once. Each update includes all elements. */
@@ -238,19 +258,69 @@ export class DbService {
   }
 
   /**
+   * Returns *snapshot* of generic monster stats.
+   *
+   * This is a snapshot because it doesn't make sense to handle synchronizing base stats that don't change.
+   * If base stats change somehow in the future, this will need to refresh.
+   *
+   * @param data from the current scenario
+   */
+  private getMonsterClassData(monsterId: string): Observable<MonsterData> {
+    return this.getEnemyDataById(
+      this.monsterDataMapSubj.asObservable(),
+      monsterId
+    );
+  }
+
+  private getBossClassData(bossId: string): Observable<BossData> {
+    return this.getEnemyDataById(this.bossDataMapSubj.asObservable(), bossId);
+  }
+
+  private getEnemyDataById<T>(
+    dataMap: Observable<Map<string, T>>,
+    enemyId: string
+  ) {
+    return dataMap.pipe(
+      first(),
+      map((enemyMap) => {
+        if (!enemyMap.has(enemyId)) {
+          console.error("Invalid enemy specified: ", enemyId);
+          return null;
+        }
+        return enemyMap.get(enemyId);
+      })
+    );
+  }
+
+  /**
    * Initializes local storage for all monster stats.
    */
   private initMonsterMap() {
-    collectionSnapshots(
-      collection(this.firestore, MONSTERS_COLLECTION)
-    ).subscribe((monsterDocs) => {
-      const monsterMap = new Map<string, MonsterData>(
-        monsterDocs.map((monsterDoc) => {
-          const monsterData = monsterDoc.data() as MonsterData;
-          return [monsterData.id, monsterData];
-        })
-      );
-      this.monsterDataMap.next(monsterMap);
-    });
+    getCollectionMapById(
+      collection(
+        this.firestore,
+        MONSTERS_COLLECTION
+      ) as CollectionReference<MonsterData>
+    ).subscribe((map) => this.monsterDataMapSubj.next(map));
   }
+
+  private initBossMap() {
+    getCollectionMapById(
+      collection(
+        this.firestore,
+        BOSSES_COLLECTION
+      ) as CollectionReference<BossData>
+    ).subscribe((map) => this.bossDataMapSubj.next(map));
+  }
+}
+
+/** Returns a map of all docs in a collection by {id, all data}. Fires on update. */
+function getCollectionMapById<T>(
+  ref: CollectionReference<T>
+): Observable<Map<string, T>> {
+  return collectionSnapshots(ref).pipe(
+    map((docs) => {
+      return new Map<string, T>(docs.map((doc) => [doc.id, doc.data() as T]));
+    })
+  );
 }

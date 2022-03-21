@@ -14,6 +14,7 @@ import {
   PARTY_MONSTERS_COLLECTION,
 } from "../db/db-constants";
 import { UserData } from "../db/user";
+import { ScenarioEnemyData } from "src/types/scenario";
 
 @Injectable({
   providedIn: "root",
@@ -38,11 +39,11 @@ export class DbRefService {
   }
 
   /** Collection of all monsters active on the board for a party. */
-  partyMonstersCollection(): CollectionReference {
+  partyMonstersCollection(): CollectionReference<ScenarioEnemyData> {
     return collection(
       this.firestore,
       `${PARTY_COLLECTION}/${DEFAULT_PARTY}/${PARTY_MONSTERS_COLLECTION}`
-    );
+    ) as CollectionReference<ScenarioEnemyData>;
   }
 
   userDoc(uid: string): DocumentReference<UserData> {

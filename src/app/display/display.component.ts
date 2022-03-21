@@ -8,6 +8,8 @@ import {
 import { Party } from "../../types/party";
 import { Observable } from "rxjs";
 import { Monster } from "../db/monster";
+import { EnemyClassId, EnemyType } from "src/types/enemy";
+import { Enemy } from "../db/enemy";
 
 @Component({
   selector: "app-display",
@@ -17,48 +19,43 @@ import { Monster } from "../db/monster";
 export class DisplayComponent implements OnInit {
   public party: Party;
 
-  // TODO(mdierker): see if there's a better way to do this.
-  public monsterClassList: MonsterData[];
-  public monstersByClass: Map<MonsterData, Monster[]> = new Map();
+  public monsterClassList: EnemyClassId[];
+  public bossClassList: EnemyClassId[];
+  public enemiesByClass: Map<EnemyClassId, Enemy[]> = new Map();
 
-  private monsterIdMap: Map<number, Monster> = new Map();
   private party_: Observable<Party>;
-  private partyMonsters_: Observable<Monster[]>;
 
   constructor(private db: DbService) {}
 
   ngOnInit() {
     this.party_ = this.db.getParty();
     this.party_.subscribe((party) => (this.party = party));
-    this.partyMonsters_ = this.db.getPartyMonsters();
-    this.partyMonsters_.subscribe((partyMonsters) =>
-      this.onPartyMonstersUpdate(partyMonsters)
-    );
+    this.db.getPartyEnemies().subscribe((enemyMap) => {
+      this.enemiesByClass = enemyMap;
+      this.onPartyEnemiesUpdate();
+    });
   }
 
   onPartyUpdate(party: Party) {
     this.party = party;
   }
 
-  private onPartyMonstersUpdate(partyMonsters: Monster[]) {
-    const monstersByClassId: Map<string, Monster[]> = new Map();
+  private onPartyEnemiesUpdate() {
+    this.bossClassList = [];
+    this.monsterClassList = [];
 
-    for (const monster of partyMonsters) {
-      if (monstersByClassId.has(monster.getMonsterId())) {
-        monstersByClassId.get(monster.getMonsterId()).push(monster);
-      } else {
-        monstersByClassId.set(monster.getMonsterId(), [monster]);
+    for (const [classId, enemyList] of this.enemiesByClass.entries()) {
+      switch (enemyList[0].enemyType) {
+        case EnemyType.BOSS:
+          this.bossClassList.push(classId);
+          break;
+        case EnemyType.MONSTER:
+          this.monsterClassList.push(classId);
+          break;
       }
     }
 
-    const monstersByClass: Map<MonsterData, Monster[]> = new Map();
-    for (const [monsterId, monsters] of monstersByClassId.entries()) {
-      const sortedMonsters = monsters.sort((m1, m2) => m1.compareTo(m2));
-      monstersByClass.set(monsters[0].getGenericMonsterData(), sortedMonsters);
-    }
-    this.monstersByClass = monstersByClass;
-    this.monsterClassList = Array.from(this.monstersByClass.keys()).sort(
-      MonsterDataDisplayNameComparator
-    );
+    this.bossClassList.sort();
+    this.monsterClassList.sort();
   }
 }

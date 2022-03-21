@@ -31,6 +31,7 @@ import { getAuth } from "firebase/auth";
 import { PartyRoleHeaderComponent } from "./party/party-role-header.component";
 import { PartyMonsterTrackerComponent } from "./party/party-monster-tracker.component";
 import { PartyAddMonsterComponent } from "./party/party-add-monster.component";
+import { BossCellComponent } from './display/boss-cell.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { PartyAddMonsterComponent } from "./party/party-add-monster.component";
     PartyRoleHeaderComponent,
     PartyMonsterTrackerComponent,
     PartyAddMonsterComponent,
+    BossCellComponent,
   ],
   imports: [
     BrowserAnimationsModule,
