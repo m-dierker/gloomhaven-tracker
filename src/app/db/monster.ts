@@ -1,19 +1,27 @@
 import { ScenarioMonsterData } from "../../types/party";
-import { MonsterStats, MonsterData, MonsterType } from "../../types/monsters";
+import {
+  MonsterStats,
+  MonsterData,
+  MonsterType,
+  EnemyStats,
+} from "../../types/monsters";
 import { StatusEffect } from "../../types/status";
 
 /** Wrapper to serve both generic data about a monster (ex: Attack value) combined with specific data about an instance of the monster (ex: current HP). */
 export class Monster {
   /** Serializable data specific to this instance of the monster. */
-  private scenarioData: ScenarioMonsterData;
+  private scenarioData_: ScenarioMonsterData;
 
+  // TODO: More thought needed here to properly separate Monster vs. Boss.
   /** Stats specific to this level of monster. */
-  private monsterStats: MonsterStats;
+  private monsterStats_: EnemyStats;
 
   constructor(
     scenarioData: ScenarioMonsterData,
     private monsterData: MonsterData
   ) {
+    // This constructor is called by Boss, and MonsterData could be BossData.
+    // It's not clear if that method of doing things is better vs. keeping it separate (but not calling super).
     this.onNewScenarioData(scenarioData);
   }
 
@@ -109,7 +117,25 @@ export class Monster {
     return this.scenarioData;
   }
 
-  async onNewScenarioData(data: ScenarioMonsterData) {
+  get monsterStats() {
+    return this.monsterStats_;
+  }
+
+  /** Exposes setting monsterStats to child classes. */
+  protected set monsterStats(stats: MonsterStats) {
+    this.monsterStats = stats;
+  }
+
+  get scenarioData() {
+    return this.scenarioData_;
+  }
+
+  /** Exposes setting scenarioData to child classes. */
+  protected set scenarioData(data: ScenarioMonsterData) {
+    this.scenarioData_ = data;
+  }
+
+  onNewScenarioData(data: ScenarioMonsterData) {
     this.scenarioData = data;
     this.monsterStats = this.monsterData.levelStats[data.level][data.type];
   }

@@ -1,3 +1,11 @@
+/** Top level interface for any enemy (Monsters or Boss). */
+export interface EnemyStats {
+  health: number;
+  move: number;
+  attack: number;
+  range: number;
+}
+
 /**
  * Top level interface for Monster stats.
  */
@@ -28,11 +36,7 @@ export interface MonsterLevelStats {
   elite: MonsterStats;
 }
 
-export interface MonsterStats {
-  health: number;
-  move: number;
-  attack: number;
-  range: number;
+export interface MonsterStats extends EnemyStats {
   attributes: string[];
 }
 
