@@ -4,11 +4,11 @@
   <p><strong>Add new monsters</strong></p>
   <form #createForm="ngForm" (ngSubmit)="createMonsters()" autocomplete="off">
     <input
-      [(ngModel)]="createMonsterData.monsterName"
+      [(ngModel)]="createMonsterData.enemyDisplayName"
       (typeaheadOnSelect)="onCreateMonsterSelected($event)"
-      [typeahead]="allMonsterData"
-      typeaheadOptionField="displayName"
-      placeholder="Select a monster"
+      [typeahead]="allAutocompleteData"
+      typeaheadOptionField="title"
+      placeholder="Select an enemy"
       name="monsterId"
       class="form-control"
       required
@@ -17,7 +17,7 @@
       [(ngModel)]="createMonsterData.numMonsters"
       type="number"
       name="numMonsters"
-      placeholder="How many monsters"
+      placeholder="How many"
       class="form-control"
       required
     />
@@ -32,9 +32,11 @@
       disabled
     />
     <div class="form-check">
+      <!-- TODO: Do this disabling properly. -->
       <input
         type="checkbox"
         [(ngModel)]="createMonsterData.elite"
+        [disabled]="createMonsterData?.autocompleteEntry?.enemyType !== 1"
         name="elite"
         class="form-check-input"
         id="createMonsterElite"

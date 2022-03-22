@@ -16,7 +16,8 @@ export class Boss extends Enemy {
     context: GameContext,
     private bossData: BossData
   ) {
-    super(scenarioData, context);
+    super();
+    this.onNewScenarioData(scenarioData, context);
   }
 
   onNewScenarioData(data: ScenarioEnemyData, context: GameContext): void {
@@ -30,6 +31,7 @@ export class Boss extends Enemy {
       enemyStats.health as unknown as string,
       context.party
     );
+    enemyStats.displayName = this.bossData.displayName;
     this.enemyStats = enemyStats;
   }
 }

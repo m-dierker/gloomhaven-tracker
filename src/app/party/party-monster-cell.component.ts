@@ -1,17 +1,27 @@
-import { Component, OnInit, Input } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from "@angular/core";
 import { Monster } from "../db/monster";
 import { DbService } from "../services/db.service";
 import { StatusEffect } from "../../types/status";
 import { Enemy } from "../db/enemy";
+import { EnemyType } from "src/types/enemy";
 
 @Component({
   selector: "party-monster-cell",
   templateUrl: "./party-monster-cell.component.html",
   styleUrls: ["./party-monster-cell.component.scss"],
 })
-export class PartyMonsterCellComponent implements OnInit {
+export class PartyMonsterCellComponent implements OnInit, OnChanges {
   @Input()
   public enemy: Enemy;
+
+  /** Only applies if enemy.enemyType is MONSTER, else undefined. */
+  public monster?: Monster;
 
   public allStatuses: StatusEffect[];
   public statusesVisible = false;
@@ -22,9 +32,19 @@ export class PartyMonsterCellComponent implements OnInit {
     this.allStatuses = StatusEffect.getAllStatuses();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.enemy) {
+      if (this.enemy.enemyType == EnemyType.MONSTER) {
+        this.monster = this.enemy as Monster;
+      } else {
+        this.monster = undefined;
+      }
+    }
+  }
+
   changeHealth(amount: number) {
     this.enemy.setHealth(this.enemy.getHealth() + amount);
-    this.db.saveMonster(this.enemy);
+    this.db.saveEnemy(this.enemy);
   }
 
   toggleStatusesVisible() {
@@ -37,7 +57,7 @@ export class PartyMonsterCellComponent implements OnInit {
     } else {
       this.enemy.setStatus(status, true);
     }
-    this.db.saveMonster(this.enemy);
+    this.db.saveEnemy(this.enemy);
     this.statusesVisible = false;
   }
 }

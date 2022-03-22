@@ -1,7 +1,11 @@
+import { ThisReceiver } from "@angular/compiler";
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { TypeaheadMatch } from "ngx-bootstrap/typeahead";
-import { MonsterData, MonsterType } from "src/types/monsters";
-import { Party, ScenarioEnemyData } from "src/types/party";
+import { EnemyClassId, EnemyType } from "src/types/enemy";
+import { BossData, MonsterData, MonsterType } from "src/types/monsters";
+import { Party } from "src/types/party";
+import { ScenarioEnemyData } from "src/types/scenario";
+import { Enemy } from "../db/enemy";
 import { Monster } from "../db/monster";
 import { DbService } from "../services/db.service";
 
@@ -11,12 +15,15 @@ import { DbService } from "../services/db.service";
   styleUrls: ["./party-add-monster.component.scss"],
 })
 export class PartyAddMonsterComponent implements OnInit {
-  public allMonsterData: MonsterData[];
+  public allAutocompleteData: AutocompleteEntry[];
+
   public createMonsterData = {} as CreateMonsterData;
-  private partyMonsters: Monster[];
+  private partyEnemiesByClass: Map<EnemyClassId, Enemy[]> = new Map();
 
   panelVisible = false;
   private party: Party;
+  private allMonsterData: MonsterData[];
+  private allBossData: BossData[];
 
   @ViewChild("monsterPanel")
   monsterPanel: ElementRef;
@@ -24,16 +31,21 @@ export class PartyAddMonsterComponent implements OnInit {
   constructor(private db: DbService) {}
 
   ngOnInit(): void {
-    this.db
-      .getAllMonsters()
-      .subscribe((monsters) => (this.allMonsterData = monsters));
+    this.db.getAllMonsters().subscribe((monsters) => {
+      this.allMonsterData = monsters;
+      this.regenAutocompleteData();
+    });
+    this.db.getAllBosses().subscribe((bosses) => {
+      this.allBossData = bosses;
+      this.regenAutocompleteData();
+    });
     this.db.getParty().subscribe((party) => {
       this.party = party;
       this.createMonsterData.level = party.scenarioLevel;
     });
     this.db
-      .getPartyMonsters()
-      .subscribe((monsters) => (this.partyMonsters = monsters));
+      .getPartyEnemies()
+      .subscribe((enemies) => (this.partyEnemiesByClass = enemies));
   }
 
   togglePanel() {
@@ -58,21 +70,24 @@ export class PartyAddMonsterComponent implements OnInit {
     const newMonsters = [];
     const newIdsUsed = [];
     for (let i = 0; i < this.createMonsterData.numMonsters; i++) {
-      const tokenId = this.getNextTokenId(
-        this.createMonsterData.monsterId,
-        newIdsUsed
-      );
+      const tokenNum = this.getNextTokenNum(this.createMonsterData, newIdsUsed);
+      const enemyType = this.createMonsterData.autocompleteEntry.enemyType;
       const scenarioData: ScenarioEnemyData = {
         id: "", // Generated in the service
-        tokenId,
-        monsterId: this.createMonsterData.monsterId,
+        tokenNum,
+        enemyType,
+        classId: this.createMonsterData.autocompleteEntry.classId,
         level: this.createMonsterData.level,
-        type: this.createMonsterData.elite
-          ? MonsterType.ELITE
-          : MonsterType.NORMAL,
         statuses: [],
       };
-      newIdsUsed.push(tokenId);
+      if (enemyType == EnemyType.MONSTER) {
+        scenarioData.monsterData = {
+          type: this.createMonsterData.elite
+            ? MonsterType.ELITE
+            : MonsterType.NORMAL,
+        };
+      }
+      newIdsUsed.push(tokenNum);
       newMonsters.push(scenarioData);
     }
     this.db.createPartyMonsters(newMonsters);
@@ -83,7 +98,7 @@ export class PartyAddMonsterComponent implements OnInit {
   }
 
   onCreateMonsterSelected(evt: TypeaheadMatch) {
-    this.createMonsterData.monsterId = evt.item.id;
+    this.createMonsterData.autocompleteEntry = evt.item;
   }
 
   /**
@@ -95,15 +110,16 @@ export class PartyAddMonsterComponent implements OnInit {
    * the right IDs are 2 and 4. These are done in a batch write, so IDs that are being
    * created locally have to be checked with IDs that are on the server.
    */
-  private getNextTokenId(
-    monsterId: string,
+  private getNextTokenNum(
+    data: CreateMonsterData,
     otherUsedNumbers: number[]
   ): number {
-    const usedNumbers = new Set(
-      this.partyMonsters
-        .filter((monster) => monster.getMonsterId() === monsterId)
-        .map((monster) => monster.getTokenId())
-    );
+    // TODO: Alex says you can't do this hack more than once.
+    const existingEnemies =
+      this.partyEnemiesByClass.get(
+        `${data.autocompleteEntry.enemyType}-${data.autocompleteEntry.classId}`
+      ) || [];
+    const usedNumbers = new Set(existingEnemies.map((enemy) => enemy.tokenNum));
     otherUsedNumbers.forEach((num) => usedNumbers.add(num));
     // Return the next available number starting from 1 since tokens begin at 1.
     let maxUnusedNum = 1;
@@ -112,12 +128,45 @@ export class PartyAddMonsterComponent implements OnInit {
     }
     return maxUnusedNum;
   }
+
+  private regenAutocompleteData() {
+    // This function will be called before at least one of these is ready.
+    if (!this.allMonsterData || !this.allBossData) {
+      return;
+    }
+    const monsterAutocomplete: AutocompleteEntry[] = this.allMonsterData.map(
+      (monsterData) => {
+        return {
+          classId: monsterData.id,
+          title: monsterData.displayName,
+          enemyType: EnemyType.MONSTER,
+        };
+      }
+    );
+    const bossAutocomplete: AutocompleteEntry[] = this.allBossData.map(
+      (bossData) => {
+        return {
+          classId: bossData.id,
+          title: bossData.displayName + " (Boss)",
+          enemyType: EnemyType.BOSS,
+        };
+      }
+    );
+    this.allAutocompleteData = monsterAutocomplete.concat(bossAutocomplete);
+  }
 }
 
 interface CreateMonsterData {
-  monsterId: string;
-  monsterName: string;
+  autocompleteEntry: AutocompleteEntry;
+  enemyDisplayName: string;
   numMonsters: number;
   level: number;
   elite: boolean;
+}
+
+interface AutocompleteEntry {
+  enemyType: EnemyType;
+  classId: EnemyClassId;
+
+  title: string;
 }

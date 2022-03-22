@@ -21,10 +21,6 @@ export abstract class Enemy {
   /** Stats specific to this level of enemy. */
   private enemyStats_: EnemyStats;
 
-  constructor(data: ScenarioEnemyData, context: GameContext) {
-    this.onNewScenarioData(data, context);
-  }
-
   /**
    * Returns a unique ID for this monster class (ex: "Bandit Archer" or "Jekserah").
    * This is guaranteed to be unique across all enemy types.
@@ -107,8 +103,8 @@ export abstract class Enemy {
     if (this.enemyType !== other.enemyType) {
       return this.enemyType - other.enemyType;
     }
-    if (this.enemyId !== other.enemyId) {
-      return this.enemyId.localeCompare(other.enemyId);
+    if (this.classId !== other.classId) {
+      return this.classId.localeCompare(other.classId);
     }
     return this.scenarioData.tokenNum - other.scenarioData.tokenNum;
   }
@@ -130,7 +126,7 @@ export abstract class Enemy {
 
   /** Exposes setting enemyStats to child classes. */
   protected set enemyStats(stats: EnemyStats) {
-    this.enemyStats = stats;
+    this.enemyStats_ = stats;
   }
 
   get scenarioData() {

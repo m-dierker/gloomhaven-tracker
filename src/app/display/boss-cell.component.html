@@ -1,1 +1,20 @@
-I AM A BOSS {{ boss.displayName }};
+<p class="boss-name">
+  <strong>{{ boss.displayName }} 🏹</strong>
+</p>
+
+<div class="boss-info">
+  <div class="monster-health">
+    <progressbar
+      [value]="boss.getHealth()"
+      [max]="boss.getMaxHealth()"
+      type="danger"
+    >
+      {{ boss.getHealth() }} / {{ boss.getMaxHealth() }}
+    </progressbar>
+  </div>
+  <div class="boss-status" *ngFor="let status of boss.getStatuses()">
+    <img src="{{ status.getImgPath() }}" class="boss-status-icon" />
+    <span class="boss-status-text">{{ status.displayName }}</span>
+  </div>
+  <img class="boss-img" src="/assets/bosses/jekserah.jpg" />
+</div>

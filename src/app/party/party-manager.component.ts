@@ -1,15 +1,8 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Auth, authState, signOut, User } from "@angular/fire/auth";
 import { Router } from "@angular/router";
-import { TypeaheadMatch } from "ngx-bootstrap/typeahead";
-import { Observable, Subscriber, Subscription } from "rxjs";
-import {
-  MonsterData,
-  MonsterDataDisplayNameComparator,
-  MonsterType,
-} from "src/types/monsters";
-import { Party, ScenarioEnemyData } from "src/types/party";
-import { Monster } from "../db/monster";
+import { Subscription } from "rxjs";
+import { Party } from "src/types/party";
 import { DbService } from "../services/db.service";
 
 @Component({

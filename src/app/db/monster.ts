@@ -10,7 +10,8 @@ export class Monster extends Enemy {
     context: GameContext,
     private monsterData: MonsterData
   ) {
-    super(scenarioData, context);
+    super();
+    this.onNewScenarioData(scenarioData, context);
   }
 
   onNewScenarioData(data: ScenarioEnemyData, context: GameContext): void {

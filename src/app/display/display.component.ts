@@ -31,6 +31,7 @@ export class DisplayComponent implements OnInit {
     this.party_ = this.db.getParty();
     this.party_.subscribe((party) => (this.party = party));
     this.db.getPartyEnemies().subscribe((enemyMap) => {
+      console.log("pe", enemyMap);
       this.enemiesByClass = enemyMap;
       this.onPartyEnemiesUpdate();
     });

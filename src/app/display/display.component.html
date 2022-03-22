@@ -7,7 +7,7 @@
       <div class="row">
         <div class="col" *ngFor="let monsterClassId of monsterClassList">
           <monster-name
-            [monsterData]="enemiesByClass.get(monsterClassId)[0]"
+            [monster]="enemiesByClass.get(monsterClassId)[0]"
           ></monster-name>
           <monster-cell
             *ngFor="let monster of enemiesByClass.get(monsterClassId)"

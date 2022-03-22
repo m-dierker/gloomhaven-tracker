@@ -61,11 +61,21 @@ export class DbService {
     this.initBossMap();
   }
 
+  // TODO: Comment this + getAllBosses properly.
   getAllMonsters(): Observable<MonsterData[]> {
     return this.monsterDataMapSubj.pipe(
       map((monsterMap) => {
         const monsters = Array.from(monsterMap.values());
         return monsters;
+      })
+    );
+  }
+
+  getAllBosses(): Observable<BossData[]> {
+    return this.bossDataMapSubj.pipe(
+      map((bossMap) => {
+        const bosses = Array.from(bossMap.values());
+        return bosses;
       })
     );
   }
@@ -106,10 +116,13 @@ export class DbService {
             const scenarioEnemyData = scenarioEnemyDoc.data();
             scenarioEnemyData.id = scenarioEnemyDoc.id;
             enemyObservables.push(
-              this.getEnemyFromScenarioData(scenarioEnemyData)
+              // TODO: Understand why first() is needed here.
+              this.getEnemyFromScenarioData(scenarioEnemyData).pipe(first())
             );
           }
+          console.log("starting forkjoin", enemyObservables);
           forkJoin(enemyObservables).subscribe((enemies) => {
+            console.log("forkjoin done");
             const map = new Map();
             for (const enemy of enemies) {
               if (map.has(enemy.classId)) {
@@ -119,7 +132,9 @@ export class DbService {
               }
             }
             // Sort each class list by tokenNum.
-            Array.from(map.values()).forEach((arr) => arr.sort());
+            Array.from(map.values()).forEach((arr) =>
+              arr.sort((m1, m2) => m1.compareTo(m2))
+            );
             this.partyEnemySubj.next(map);
           });
         }
@@ -189,6 +204,7 @@ export class DbService {
               map((monsterData) => {
                 const monster = new Monster(scenarioData, context, monsterData);
                 this.enemyIdMap.set(scenarioData.id, monster);
+                console.log("md resolved", monster);
                 return monster;
               })
             );
@@ -221,17 +237,9 @@ export class DbService {
     }
   }
 
-  getAllBosses(): Observable<BossData[]> {
-    return collectionSnapshots(
-      collection(
-        this.firestore,
-        BOSSES_COLLECTION
-      ) as CollectionReference<BossData>
-    ).pipe(map((bossCol) => bossCol.map((bossDoc) => bossDoc.data())));
-  }
-
   getParty(): Observable<Party> {
     if (!this.partySubj) {
+      this.partySubj = new ReplaySubject(1);
       docSnapshots(
         doc(this.firestore, `${PARTIES_COLLECTION}/${DEFAULT_PARTY}`)
       ).subscribe((snap) => this.partySubj.next(snap.data() as Party));

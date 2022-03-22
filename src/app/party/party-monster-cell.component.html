@@ -1,21 +1,30 @@
-<div class="monster-cell-wrapper" [class.elite]="monster.isElite()">
+<div class="monster-cell-wrapper" [class.elite]="monster && monster.isElite()">
   <div class="monster-cell">
     <div class="monster-id" (click)="toggleStatusesVisible()">
-      <img src="/assets/monsters/Vert-{{ monster.displayName }}.png" />
-      <div class="monster-token">{{ monster.tokenNum }}</div>
+      <img
+        src="/assets/monsters/Vert-{{ enemy.displayName }}.png"
+        *ngIf="monster"
+      />
+      <!-- FIXME -->
+      <img
+        src="/assets/bosses/jekserah.jpg"
+        *ngIf="!monster"
+        class="boss-img"
+      />
+      <div class="monster-token">{{ enemy.tokenNum }}</div>
     </div>
     <div class="health-controls-wrapper">
       <div class="health-controls">
         <img src="/assets/icons/minus_1.png" (click)="changeHealth(-1)" />
         <div class="health-display flex-space">
-          {{ monster.getHealth() }} / {{ monster.getMaxHealth() }}
+          {{ enemy.getHealth() }} / {{ enemy.getMaxHealth() }}
         </div>
         <img src="/assets/icons/plus_1.png" (click)="changeHealth(1)" />
       </div>
       <progressbar
         [animate]="true"
-        [value]="monster.getHealth()"
-        [max]="monster.getMaxHealth()"
+        [value]="enemy.getHealth()"
+        [max]="enemy.getMaxHealth()"
         type="danger"
       >
       </progressbar>
@@ -25,7 +34,7 @@
     <div
       class="monster-status"
       *ngFor="let status of allStatuses"
-      [class.active]="monster.hasStatus(status)"
+      [class.active]="enemy.hasStatus(status)"
       (click)="toggleStatus(status)"
     >
       <img class="monster-status-icon" src="{{ status.getImgPath() }}" />
@@ -34,7 +43,7 @@
   </div>
   <div
     class="monster-active-statuses"
-    *ngFor="let status of monster.getStatuses()"
+    *ngFor="let status of enemy.getStatuses()"
   >
     <img src="{{ status.getImgPath() }}" class="monster-status-icon" />
     <span class="monster-status-text">{{ status.displayName }}</span>

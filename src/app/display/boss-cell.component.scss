@@ -1,0 +1,38 @@
+.boss-name {
+  font-family: "Pirata One";
+  font-size: 36pt;
+  text-align: center;
+}
+
+.boss-info {
+  font-family: "Nyala";
+}
+
+.boss-img {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.monster-health {
+  progressbar {
+    font-size: 26pt;
+    font-weight: bold;
+    height: 40px;
+  }
+}
+
+.boss-status {
+  display: flex;
+  margin-top: 3px;
+}
+
+.boss-status-icon {
+  height: 32px;
+  width: 32px;
+}
+
+.boss-status-text {
+  align-self: center;
+  font-size: 16pt;
+  margin-left: 5px;
+}
