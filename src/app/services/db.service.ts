@@ -38,6 +38,7 @@ import { ScenarioEnemyData } from "src/types/scenario";
 import { Enemy } from "../db/enemy";
 import { EnemyClassId, EnemyType } from "src/types/enemy";
 import { Boss } from "../db/boss";
+import { GameContext } from "src/types/game";
 
 @Injectable({
   providedIn: "root",
@@ -171,20 +172,22 @@ export class DbService {
   private getEnemyFromScenarioData(
     scenarioData: ScenarioEnemyData
   ): Observable<Enemy> {
+    // TODO: Change to getContext() if other things enter GameContext.
     return this.getParty().pipe(
       mergeMap((party) => {
+        const context: GameContext = { party };
         // Enemy objects that already exist should simply receive new ScenarioData.
         if (this.enemyIdMap.has(scenarioData.id)) {
           this.enemyIdMap
             .get(scenarioData.id)
-            .onNewScenarioData(scenarioData, { party });
+            .onNewScenarioData(scenarioData, context);
           return of(this.enemyIdMap.get(scenarioData.id));
         } else {
           // Construct a new Enemy only if needed.
           if (scenarioData.enemyType == EnemyType.MONSTER) {
             return this.getMonsterClassData(scenarioData.classId).pipe(
               map((monsterData) => {
-                const monster = new Monster(scenarioData, monsterData);
+                const monster = new Monster(scenarioData, context, monsterData);
                 this.enemyIdMap.set(scenarioData.id, monster);
                 return monster;
               })
@@ -192,7 +195,7 @@ export class DbService {
           } else if (scenarioData.enemyType == EnemyType.BOSS) {
             return this.getBossClassData(scenarioData.classId).pipe(
               map((bossData) => {
-                const boss = new Boss(scenarioData, bossData);
+                const boss = new Boss(scenarioData, context, bossData);
                 this.enemyIdMap.set(scenarioData.id, boss);
                 return boss;
               })
@@ -203,18 +206,18 @@ export class DbService {
     );
   }
 
-  saveMonster(monster: Monster) {
-    const saveData = monster.getSaveData();
+  saveEnemy(enemy: Enemy) {
+    const saveData = enemy.getSaveData();
     console.log("savedata", saveData);
-    const monsterDoc = doc(
+    const enemyDoc = doc(
       this.firestore,
       `${PARTIES_COLLECTION}/${DEFAULT_PARTY}/${PARTY_MONSTERS_COLLECTION}/${saveData.id}`
     );
-    // Remove dead monsters
-    if (monster.isDead()) {
-      deleteDoc(monsterDoc);
+    // Remove dead enemies automatically.
+    if (enemy.isDead()) {
+      deleteDoc(enemyDoc);
     } else {
-      updateDoc(monsterDoc, saveData as unknown);
+      updateDoc(enemyDoc, saveData as unknown);
     }
   }
 

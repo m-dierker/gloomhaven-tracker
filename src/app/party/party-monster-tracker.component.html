@@ -1,10 +1,21 @@
-<div class="monster-class" *ngFor="let class of sortedMonsterClasses">
-  <div class="monster-name">
-    <div class="monster-name-text">{{ class.displayName }}</div>
-  </div>
-  <ng-container *ngFor="let monster of monstersByClass.get(class)">
+<div class="monster-class" *ngFor="let bossClassId of bossClassList">
+  <ng-container *ngFor="let boss of enemiesByClass.get(bossClassId)">
     <party-monster-cell
-      [monster]="monster"
+      [enemy]="boss"
+      *ngIf="!boss.isDead()"
+    ></party-monster-cell>
+  </ng-container>
+</div>
+
+<div class="monster-class" *ngFor="let monsterClassId of monsterClassList">
+  <div class="monster-name">
+    <div class="monster-name-text">
+      {{ enemiesByClass.get(monsterClassId)[0].displayName }}
+    </div>
+  </div>
+  <ng-container *ngFor="let monster of enemiesByClass.get(monsterClassId)">
+    <party-monster-cell
+      [enemy]="monster"
       *ngIf="!monster.isDead()"
     ></party-monster-cell>
   </ng-container>

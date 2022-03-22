@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from "@angular/core";
 import { Monster } from "../db/monster";
 import { DbService } from "../services/db.service";
 import { StatusEffect } from "../../types/status";
+import { Enemy } from "../db/enemy";
 
 @Component({
   selector: "party-monster-cell",
@@ -10,7 +11,7 @@ import { StatusEffect } from "../../types/status";
 })
 export class PartyMonsterCellComponent implements OnInit {
   @Input()
-  public monster: Monster;
+  public enemy: Enemy;
 
   public allStatuses: StatusEffect[];
   public statusesVisible = false;
@@ -22,8 +23,8 @@ export class PartyMonsterCellComponent implements OnInit {
   }
 
   changeHealth(amount: number) {
-    this.monster.setHealth(this.monster.getHealth() + amount);
-    this.db.saveMonster(this.monster);
+    this.enemy.setHealth(this.enemy.getHealth() + amount);
+    this.db.saveMonster(this.enemy);
   }
 
   toggleStatusesVisible() {
@@ -31,12 +32,12 @@ export class PartyMonsterCellComponent implements OnInit {
   }
 
   toggleStatus(status: StatusEffect) {
-    if (this.monster.hasStatus(status)) {
-      this.monster.setStatus(status, false);
+    if (this.enemy.hasStatus(status)) {
+      this.enemy.setStatus(status, false);
     } else {
-      this.monster.setStatus(status, true);
+      this.enemy.setStatus(status, true);
     }
-    this.db.saveMonster(this.monster);
+    this.db.saveMonster(this.enemy);
     this.statusesVisible = false;
   }
 }

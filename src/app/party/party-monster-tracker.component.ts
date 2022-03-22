@@ -1,9 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { Observable } from "rxjs";
+import { EnemyClassId, EnemyType } from "src/types/enemy";
 import {
   MonsterData,
   MonsterDataDisplayNameComparator,
 } from "src/types/monsters";
+import { Enemy } from "../db/enemy";
 import { Monster } from "../db/monster";
 import { DbService } from "../services/db.service";
 
@@ -13,38 +15,35 @@ import { DbService } from "../services/db.service";
   styleUrls: ["./party-monster-tracker.component.scss"],
 })
 export class PartyMonsterTrackerComponent implements OnInit {
-  private partyMonsters$: Observable<Monster[]>;
-
-  public sortedMonsterClasses: MonsterData[];
-  public monstersByClass: Map<MonsterData, Monster[]> = new Map();
+  public bossClassList: EnemyClassId[];
+  public monsterClassList: EnemyClassId[];
+  public enemiesByClass: Map<EnemyClassId, Enemy[]> = new Map();
 
   constructor(private db: DbService) {}
 
   ngOnInit(): void {
-    this.partyMonsters$ = this.db.getPartyMonsters();
-    this.partyMonsters$.subscribe((partyMonsters) =>
-      this.onPartyMonstersUpdate(partyMonsters)
-    );
+    this.db.getPartyEnemies().subscribe((enemyMap) => {
+      this.enemiesByClass = enemyMap;
+      this.onPartyMonstersUpdate();
+    });
   }
 
-  private onPartyMonstersUpdate(partyMonsters: Monster[]) {
-    const monstersByClassId: Map<string, Monster[]> = new Map();
-    for (const monster of partyMonsters) {
-      if (monstersByClassId.has(monster.getMonsterId())) {
-        monstersByClassId.get(monster.getMonsterId()).push(monster);
-      } else {
-        monstersByClassId.set(monster.getMonsterId(), [monster]);
+  private onPartyMonstersUpdate() {
+    this.bossClassList = [];
+    this.monsterClassList = [];
+
+    for (const [classId, enemyList] of this.enemiesByClass.entries()) {
+      switch (enemyList[0].enemyType) {
+        case EnemyType.BOSS:
+          this.bossClassList.push(classId);
+          break;
+        case EnemyType.MONSTER:
+          this.monsterClassList.push(classId);
+          break;
       }
     }
 
-    const monstersByClass: Map<MonsterData, Monster[]> = new Map();
-    for (const [monsterId, monsters] of monstersByClassId.entries()) {
-      const sortedMonsters = monsters.sort((m1, m2) => m1.compareTo(m2));
-      monstersByClass.set(monsters[0].getGenericMonsterData(), sortedMonsters);
-    }
-    this.monstersByClass = monstersByClass;
-    this.sortedMonsterClasses = Array.from(monstersByClass.keys()).sort(
-      MonsterDataDisplayNameComparator
-    );
+    this.bossClassList.sort();
+    this.monsterClassList.sort();
   }
 }
