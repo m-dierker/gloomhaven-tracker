@@ -7,6 +7,7 @@ import { Party } from "src/types/party";
 import { ScenarioEnemyData } from "src/types/scenario";
 import { Enemy } from "../db/enemy";
 import { Monster } from "../db/monster";
+import { ScenarioInfo } from "../db/scenario";
 import { DbService } from "../services/db.service";
 
 @Component({
@@ -18,9 +19,11 @@ export class PartyAddMonsterComponent implements OnInit {
   public allAutocompleteData: AutocompleteEntry[];
 
   public createMonsterData = {} as CreateMonsterData;
+  scenarioInfo: ScenarioInfo;
+  panelVisible = false;
+
   private partyEnemiesByClass: Map<EnemyClassId, Enemy[]> = new Map();
 
-  panelVisible = false;
   private party: Party;
   private allMonsterData: MonsterData[];
   private allBossData: BossData[];
@@ -42,6 +45,7 @@ export class PartyAddMonsterComponent implements OnInit {
     this.db.getParty().subscribe((party) => {
       this.party = party;
       this.createMonsterData.level = party.scenarioLevel;
+      this.refreshEligibleMonsters();
     });
     this.db
       .getPartyEnemies()
@@ -60,6 +64,12 @@ export class PartyAddMonsterComponent implements OnInit {
         this.monsterPanel.nativeElement.scrollIntoView({ behavior: "smooth" })
       );
     }
+  }
+
+  private async refreshEligibleMonsters() {
+    this.scenarioInfo = await this.db.getScenarioInfo(
+      this.party.activeScenario
+    );
   }
 
   createMonsters() {

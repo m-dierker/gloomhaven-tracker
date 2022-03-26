@@ -28,6 +28,7 @@ import {
 import {
   arrayRemove,
   deleteDoc,
+  getDocFromCache,
   getDocsFromCache,
   loadBundle,
   QueryDocumentSnapshot,
@@ -43,6 +44,7 @@ import { Enemy } from "../db/enemy";
 import { EnemyClassId, EnemyType } from "src/types/enemy";
 import { Boss } from "../db/boss";
 import { GameContext } from "src/types/game";
+import { ScenarioInfo } from "../db/scenario";
 
 @Injectable({
   providedIn: "root",
@@ -55,6 +57,11 @@ export class DbService {
   private partySubj: ReplaySubject<Party>;
   private partyEnemySubj: ReplaySubject<Map<EnemyClassId, Enemy[]>>;
   private enemyIdMap: Map<string, Enemy> = new Map();
+
+  private gameDataLoadedPromise = new Promise((resolve) => {
+    this.gameDataLoadedResolve = resolve;
+  });
+  private gameDataLoadedResolve: Function;
 
   constructor(
     private firestore: Firestore,
@@ -268,6 +275,14 @@ export class DbService {
     return setDoc(elementDoc, data);
   }
 
+  /** Static info about a scenario (ex: monsters/bosses that will appear). */
+  async getScenarioInfo(scenarioId: string): Promise<ScenarioInfo> {
+    // TODO: Is there a better way to do this?
+    await this.gameDataLoadedPromise;
+    const docSnap = await getDocFromCache(this.dbRef.scenarioDoc(scenarioId));
+    return docSnap.data();
+  }
+
   /**
    * Returns *snapshot* of generic monster stats.
    *
@@ -321,6 +336,7 @@ export class DbService {
       // TODO: Investigate error.
       const result = await loadBundle(this.firestore, arrBuffer);
       console.log("Game data loaded successfully", result);
+      this.gameDataLoadedResolve();
     } catch (e) {
       console.error("Unable to load Game Bundle", e);
     }

@@ -8,6 +8,8 @@ export const PARTY_MONSTERS_COLLECTION = "monsters";
 
 export const PARTY_BOSSES_COLLECTION = "bosses";
 
+export const SCENARIOS_COLLECTION = "scenarios";
+
 export const DEFAULT_PARTY = "amen";
 
 /** Storage */

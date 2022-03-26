@@ -2,6 +2,16 @@
 
 <div class="create-monsters" *ngIf="panelVisible" #monsterPanel>
   <p><strong>Add new monsters</strong></p>
+
+  <!-- <div class="select-monster" *ngIf="scenarioInfo">
+    <div
+      class="select-monster-choice"
+      *ngFor="let classId of scenarioInfo.monsterIds"
+    >
+      <img src="/assets/monsters/{{ classId }}.web"
+    </div>
+  </div> -->
+
   <form #createForm="ngForm" (ngSubmit)="createMonsters()" autocomplete="off">
     <input
       [(ngModel)]="createMonsterData.enemyDisplayName"

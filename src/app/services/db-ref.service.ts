@@ -12,9 +12,11 @@ import {
   DEFAULT_PARTY,
   PARTY_COLLECTION,
   PARTY_MONSTERS_COLLECTION,
+  SCENARIOS_COLLECTION,
 } from "../db/db-constants";
 import { UserData } from "../db/user";
 import { ScenarioEnemyData } from "src/types/scenario";
+import { ScenarioInfo } from "../db/scenario";
 
 @Injectable({
   providedIn: "root",
@@ -44,6 +46,13 @@ export class DbRefService {
       this.firestore,
       `${PARTY_COLLECTION}/${DEFAULT_PARTY}/${PARTY_MONSTERS_COLLECTION}`
     ) as CollectionReference<ScenarioEnemyData>;
+  }
+
+  scenarioDoc(scenarioId: string): DocumentReference<ScenarioInfo> {
+    return doc(
+      this.firestore,
+      `${SCENARIOS_COLLECTION}/${scenarioId}`
+    ) as DocumentReference<ScenarioInfo>;
   }
 
   userDoc(uid: string): DocumentReference<UserData> {
