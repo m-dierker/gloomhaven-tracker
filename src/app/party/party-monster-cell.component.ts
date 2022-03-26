@@ -23,6 +23,8 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   /** Only applies if enemy.enemyType is MONSTER, else undefined. */
   public monster?: Monster;
 
+  public isBoss: boolean;
+
   public allStatuses: StatusEffect[];
   public statusesVisible = false;
 
@@ -36,8 +38,12 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
     if (changes.enemy) {
       if (this.enemy.enemyType == EnemyType.MONSTER) {
         this.monster = this.enemy as Monster;
+        this.isBoss = false;
       } else {
         this.monster = undefined;
+      }
+      if (this.enemy.enemyType == EnemyType.BOSS) {
+        this.isBoss = true;
       }
     }
   }

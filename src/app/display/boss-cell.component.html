@@ -1,5 +1,5 @@
 <p class="boss-name">
-  <strong>{{ boss.displayName }} 🏹</strong>
+  <strong>{{ boss.displayName }}</strong>
 </p>
 
 <div class="boss-info">
@@ -16,5 +16,5 @@
     <img src="{{ status.getImgPath() }}" class="boss-status-icon" />
     <span class="boss-status-text">{{ status.displayName }}</span>
   </div>
-  <img class="boss-img" src="/assets/bosses/jekserah.jpg" />
+  <img class="boss-img" src="/assets/bosses/{{ boss.dbClassId }}.webp" />
 </div>

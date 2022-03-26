@@ -1,18 +1,20 @@
 <div class="party-page">
   <app-party-role-header></app-party-role-header>
-  <main role="main" class="container">
-    <app-party-element-tracker></app-party-element-tracker>
-    <app-party-monster-tracker></app-party-monster-tracker>
-    <hr />
-    <app-party-add-monster></app-party-add-monster>
-    <div class="game-controls">
-      <a href="#" (click)="resetGameState()">Fully reset game</a><br />
-      <a href="#" (click)="logout()" *ngIf="user"
-        >Log out {{ user.displayName }}</a
-      >
-    </div>
-    <!-- <div class="cast-wrapper">
+  <div class="party-main">
+    <main role="main" class="container">
+      <app-party-element-tracker></app-party-element-tracker>
+      <app-party-monster-tracker></app-party-monster-tracker>
+      <hr />
+      <app-party-add-monster></app-party-add-monster>
+      <div class="game-controls">
+        <a href="#" (click)="resetGameState()">Fully reset game</a><br />
+        <a href="#" (click)="logout()" *ngIf="user"
+          >Log out {{ user.displayName }}</a
+        >
+      </div>
+      <!-- <div class="cast-wrapper">
     <google-cast-launcher></google-cast-launcher>
   </div> -->
-  </main>
+    </main>
+  </div>
 </div>

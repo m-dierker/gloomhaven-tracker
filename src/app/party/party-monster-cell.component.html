@@ -3,12 +3,11 @@
     <div class="monster-id" (click)="toggleStatusesVisible()">
       <img
         src="/assets/monsters/Vert-{{ enemy.displayName }}.png"
-        *ngIf="monster"
+        *ngIf="!isBoss"
       />
-      <!-- FIXME -->
       <img
-        src="/assets/bosses/jekserah.jpg"
-        *ngIf="!monster"
+        src="/assets/bosses/{{ enemy.dbClassId }}.webp"
+        *ngIf="isBoss"
         class="boss-img"
       />
       <div class="monster-token">{{ enemy.tokenNum }}</div>
