@@ -4,11 +4,12 @@ import { map, first, switchMap, flatMap, mergeMap } from "rxjs/operators";
 import { MonsterData, BossData } from "../../types/monsters";
 import {
   MONSTERS_COLLECTION,
-  BOSS_COLLECTION as BOSSES_COLLECTION,
+  BOSSES_COLLECTION,
   PARTY_COLLECTION as PARTIES_COLLECTION,
   DEFAULT_PARTY,
   PARTY_MONSTERS_COLLECTION,
   PARTY_COLLECTION,
+  GAME_BUNDLE_NAME,
 } from "../db/db-constants";
 import { Party } from "../../types/party";
 import { Monster } from "../db/monster";
@@ -27,8 +28,11 @@ import {
 import {
   arrayRemove,
   deleteDoc,
+  getDocsFromCache,
+  loadBundle,
   QueryDocumentSnapshot,
 } from "firebase/firestore";
+import { getBlob, getStorage, ref } from "firebase/storage";
 import { ElementData, ElementState, ElementType } from "../db/elements";
 import { DbRefService } from "./db-ref.service";
 import { authState } from "rxfire/auth";
@@ -57,8 +61,7 @@ export class DbService {
     private dbRef: DbRefService,
     private auth: Auth
   ) {
-    this.initMonsterMap();
-    this.initBossMap();
+    this.initLocalStorage();
   }
 
   // TODO: Comment this + getAllBosses properly.
@@ -120,9 +123,7 @@ export class DbService {
               this.getEnemyFromScenarioData(scenarioEnemyData).pipe(first())
             );
           }
-          console.log("starting forkjoin", enemyObservables);
           forkJoin(enemyObservables).subscribe((enemies) => {
-            console.log("forkjoin done");
             const map = new Map();
             for (const enemy of enemies) {
               if (map.has(enemy.classId)) {
@@ -204,7 +205,6 @@ export class DbService {
               map((monsterData) => {
                 const monster = new Monster(scenarioData, context, monsterData);
                 this.enemyIdMap.set(scenarioData.id, monster);
-                console.log("md resolved", monster);
                 return monster;
               })
             );
@@ -303,35 +303,61 @@ export class DbService {
     );
   }
 
+  /** Reads bundle and initializes static storage. */
+  private async initLocalStorage() {
+    await this.loadGameBundle();
+    return Promise.all([this.initMonsterMap(), this.initBossMap()]);
+  }
+
+  /** Loads static data (monsters, bosses, scenarios) from Cloud Storage. */
+  private async loadGameBundle() {
+    const storage = getStorage();
+    const gameBundle = ref(storage, GAME_BUNDLE_NAME);
+    const gameBundleData = await getBlob(gameBundle);
+    const arrBuffer = await gameBundleData.arrayBuffer();
+    try {
+      // There's a random "unimplemented" error here from a Google SDK,
+      // but it seems to work...
+      // TODO: Investigate error.
+      const result = await loadBundle(this.firestore, arrBuffer);
+      console.log("Game data loaded successfully", result);
+    } catch (e) {
+      console.error("Unable to load Game Bundle", e);
+    }
+  }
+
   /**
    * Initializes local storage for all monster stats.
    */
-  private initMonsterMap() {
-    getCollectionMapById(
-      collection(
-        this.firestore,
-        MONSTERS_COLLECTION
-      ) as CollectionReference<MonsterData>
-    ).subscribe((map) => this.monsterDataMapSubj.next(map));
+  private async initMonsterMap() {
+    this.monsterDataMapSubj.next(
+      await getCollectionMapById(
+        collection(
+          this.firestore,
+          MONSTERS_COLLECTION
+        ) as CollectionReference<MonsterData>
+      )
+    );
   }
 
-  private initBossMap() {
-    getCollectionMapById(
-      collection(
-        this.firestore,
-        BOSSES_COLLECTION
-      ) as CollectionReference<BossData>
-    ).subscribe((map) => this.bossDataMapSubj.next(map));
+  private async initBossMap() {
+    this.bossDataMapSubj.next(
+      await getCollectionMapById(
+        collection(
+          this.firestore,
+          BOSSES_COLLECTION
+        ) as CollectionReference<BossData>
+      )
+    );
   }
 }
 
 /** Returns a map of all docs in a collection by {id, all data}. Fires on update. */
-function getCollectionMapById<T>(
+async function getCollectionMapById<T>(
   ref: CollectionReference<T>
-): Observable<Map<string, T>> {
-  return collectionSnapshots(ref).pipe(
-    map((docs) => {
-      return new Map<string, T>(docs.map((doc) => [doc.id, doc.data() as T]));
-    })
+): Promise<Map<string, T>> {
+  const querySnap = await getDocsFromCache(ref);
+  return new Map<string, T>(
+    querySnap.docs.map((doc) => [doc.id, doc.data() as T])
   );
 }

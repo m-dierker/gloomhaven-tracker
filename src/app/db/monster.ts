@@ -1,5 +1,9 @@
 import { GameContext } from "src/types/game";
-import { MonsterData, MonsterType } from "src/types/monsters";
+import {
+  getMonsterTypeDbString,
+  MonsterData,
+  MonsterType,
+} from "src/types/monsters";
 import { ScenarioEnemyData } from "src/types/scenario";
 import { Enemy } from "./enemy";
 
@@ -17,12 +21,38 @@ export class Monster extends Enemy {
   onNewScenarioData(data: ScenarioEnemyData, context: GameContext): void {
     super.onNewScenarioData(data, context);
     this.enemyStats = {
-      ...this.monsterData.levelStats[data.level][data.monsterData.type],
+      ...this.monsterData.levelStats[data.level][
+        getMonsterTypeDbString(data.monsterData.type)
+      ],
     };
     this.enemyStats.displayName = this.monsterData.displayName;
   }
 
   isElite(): boolean {
     return this.scenarioData.monsterData.type == MonsterType.ELITE;
+  }
+
+  /**
+   * @override to include Elite logic in compareTo. Annoying to replicate this but it needs to go in the middle.
+   */
+  compareTo(other: Enemy) {
+    if (this.isDead() !== other.isDead()) {
+      return this.isDead() ? 1 : -1;
+    }
+    if (this.enemyType !== other.enemyType) {
+      return this.enemyType - other.enemyType;
+    }
+    if (this.classId !== other.classId) {
+      return this.classId.localeCompare(other.classId);
+    }
+    // Elite takes priority.
+    if (
+      this.scenarioData.monsterData.type !== other.scenarioData.monsterData.type
+    ) {
+      return (
+        this.scenarioData.monsterData.type - other.scenarioData.monsterData.type
+      );
+    }
+    return this.scenarioData.tokenNum - other.scenarioData.tokenNum;
   }
 }

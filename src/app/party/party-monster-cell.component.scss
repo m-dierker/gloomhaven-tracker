@@ -78,8 +78,13 @@ progressbar {
 
 .monster-status {
   margin: 8px;
-  &:not(.active) .monster-status-icon {
-    opacity: 0.5;
+
+  &:not(.active) {
+    color: gray;
+
+    .monster-status-icon {
+      opacity: 0.5;
+    }
   }
 }
 

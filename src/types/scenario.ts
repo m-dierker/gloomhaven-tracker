@@ -22,7 +22,7 @@ export interface ScenarioEnemyData {
   level: number;
 
   /** Type of the monster, either "normal" or "elite". */
-  monsterData?: ScenairoMonsterDataRenameMe;
+  monsterData?: ScenarioMonsterData;
 
   /** Current health. If missing, uses monster default from the DB. */
   health?: number;
@@ -33,6 +33,6 @@ export interface ScenarioEnemyData {
 
 /** Monster-specific metadata about an enemy. */
 // TODO: Rename once other usages are verified to be gone.
-export interface ScenairoMonsterDataRenameMe {
+export interface ScenarioMonsterData {
   type: MonsterType;
 }

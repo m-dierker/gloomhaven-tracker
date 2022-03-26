@@ -46,8 +46,19 @@ export interface MonsterStats extends EnemyStats {
  * Enum tracking the valid options for MonsterLevelStats.
  */
 export enum MonsterType {
-  NORMAL = "normal",
-  ELITE = "elite",
+  ELITE = 1,
+  NORMAL = 2,
+}
+
+/** Converts a MonsterType into the DB string used for stats for that type ("normal" or "elite") */
+export function getMonsterTypeDbString(type: MonsterType) {
+  switch (type) {
+    case MonsterType.ELITE:
+      return "elite";
+    case MonsterType.NORMAL:
+      return "normal";
+  }
+  throw new Error("unknown MonsterType: " + type);
 }
 
 export interface BossData {

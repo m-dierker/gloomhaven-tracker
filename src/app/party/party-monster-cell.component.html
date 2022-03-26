@@ -40,11 +40,13 @@
       {{ status.displayName }}
     </div>
   </div>
-  <div
-    class="monster-active-statuses"
-    *ngFor="let status of enemy.getStatuses()"
-  >
-    <img src="{{ status.getImgPath() }}" class="monster-status-icon" />
-    <span class="monster-status-text">{{ status.displayName }}</span>
-  </div>
+  <ng-container *ngIf="!statusesVisible">
+    <div
+      class="monster-active-statuses"
+      *ngFor="let status of enemy.getStatuses()"
+    >
+      <img src="{{ status.getImgPath() }}" class="monster-status-icon" />
+      <span class="monster-status-text">{{ status.displayName }}</span>
+    </div>
+  </ng-container>
 </div>
