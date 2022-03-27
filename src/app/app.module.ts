@@ -32,7 +32,6 @@ import { PartyRoleHeaderComponent } from "./party/party-role-header.component";
 import { PartyMonsterTrackerComponent } from "./party/party-monster-tracker.component";
 import { PartyAddMonsterComponent } from "./party/party-add-monster.component";
 import { BossCellComponent } from "./display/boss-cell.component";
-import { PartyElementMiniDisplayComponent } from "./party/elements/party-element-mini-display.component";
 
 @NgModule({
   declarations: [
@@ -52,7 +51,6 @@ import { PartyElementMiniDisplayComponent } from "./party/elements/party-element
     PartyMonsterTrackerComponent,
     PartyAddMonsterComponent,
     BossCellComponent,
-    PartyElementMiniDisplayComponent,
   ],
   imports: [
     BrowserAnimationsModule,
