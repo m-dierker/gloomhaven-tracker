@@ -40,12 +40,14 @@ export class PartyAddMonsterComponent implements OnInit {
     });
     this.db.getAllBosses().subscribe((bosses) => {
       this.allBossData = bosses;
-      this.regenAutocompleteData();
     });
     this.db.getParty().subscribe((party) => {
       this.party = party;
       this.createMonsterData.level = party.scenarioLevel;
-      this.refreshEligibleMonsters();
+    });
+    this.db.getActiveScenarioInfo().subscribe((scenarioInfo) => {
+      console.log("scenario info", scenarioInfo);
+      this.scenarioInfo = scenarioInfo;
     });
     this.db
       .getPartyEnemies()
@@ -64,12 +66,6 @@ export class PartyAddMonsterComponent implements OnInit {
         this.monsterPanel.nativeElement.scrollIntoView({ behavior: "smooth" })
       );
     }
-  }
-
-  private async refreshEligibleMonsters() {
-    this.scenarioInfo = await this.db.getScenarioInfo(
-      this.party.activeScenario
-    );
   }
 
   createMonsters() {

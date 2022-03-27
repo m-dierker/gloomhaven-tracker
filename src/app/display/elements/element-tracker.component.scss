@@ -1,15 +1,35 @@
 // This must stay in sync with JS too.
-$element-size: 70px;
 
-.element-tracker-wrapper {
+@mixin sizeCss($element-size) {
+  app-element-tracker-cell {
+    height: $element-size;
+    width: $element-size;
+  }
+}
+
+.horz {
+  @include sizeCss(40px);
+  height: 40px;
+  width: 100%;
+}
+
+.vert {
+  @include sizeCss(70px);
   height: 100%;
+}
+.element-tracker-wrapper {
   position: relative;
+}
+.hideInactive {
+  app-element-tracker-cell.inactive {
+    display: none;
+  }
 }
 
 app-element-tracker-cell {
   display: inline-block;
-  height: $element-size;
   position: absolute;
-  transition: top 0.3s ease-out;
-  width: $element-size;
+  transition-property: left, top;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-out;
 }

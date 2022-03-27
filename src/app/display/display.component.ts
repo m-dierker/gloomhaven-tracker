@@ -10,6 +10,7 @@ import { Observable } from "rxjs";
 import { Monster } from "../db/monster";
 import { EnemyClassId, EnemyType } from "src/types/enemy";
 import { Enemy } from "../db/enemy";
+import { ScenarioInfo } from "../db/scenario";
 
 @Component({
   selector: "app-display",
@@ -18,6 +19,7 @@ import { Enemy } from "../db/enemy";
 })
 export class DisplayComponent implements OnInit {
   public party: Party;
+  public scenarioInfo: ScenarioInfo;
 
   public monsterClassList: EnemyClassId[];
   public bossClassList: EnemyClassId[];
@@ -34,6 +36,10 @@ export class DisplayComponent implements OnInit {
       this.enemiesByClass = enemyMap;
       this.onPartyEnemiesUpdate();
     });
+    this.db
+      .getActiveScenarioInfo()
+      .subscribe((scenarioInfo) => (this.scenarioInfo = scenarioInfo));
+    setTimeout(() => console.log("scn", this.scenarioInfo), 5000);
   }
 
   onPartyUpdate(party: Party) {

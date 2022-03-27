@@ -2,7 +2,7 @@
   <div class="monster-cell">
     <div class="monster-id" (click)="toggleStatusesVisible()">
       <img
-        src="/assets/monsters/Vert-{{ enemy.displayName }}.png"
+        src="/assets/monsters/Vert-{{ enemy.dbClassId }}.png"
         *ngIf="!isBoss"
       />
       <img

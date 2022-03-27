@@ -5,8 +5,7 @@
 >
   <div class="element-tracker-topbar">
     <app-button class="controls" (click)="togglePanelOpen()">
-      <img src="/assets/elements/wildcard.png" />
-      Elements
+      <img src="/assets/elements/wildcard.png" /> <span>Elements</span>
     </app-button>
     <div class="flex-div"></div>
     <div class="game-controls">
@@ -23,4 +22,10 @@
       (changeState)="onSetElementState(element, $event)"
     ></app-party-element-tracker-cell>
   </div>
+  <app-element-tracker
+    [elementSizePx]="40"
+    [elementGapPx]="10"
+    direction="horz"
+    stateConfig="activeStates"
+  ></app-element-tracker>
 </div>

@@ -1,0 +1,17 @@
+.element-display {
+  display: flex;
+  height: 50px;
+  justify-content: space-between;
+}
+
+.elements-active,
+.elements-waning {
+  display: flex;
+  gap: 5px;
+  height: 50px;
+
+  img {
+    height: 40px;
+    width: 40px;
+  }
+}

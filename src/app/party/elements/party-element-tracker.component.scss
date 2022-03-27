@@ -10,6 +10,7 @@
 }
 
 .controls {
+  margin-right: 10px;
   .elements-text {
     font-family: "Pirata One";
     font-size: 18pt;
@@ -30,6 +31,7 @@
 }
 
 .element-controls {
+  margin-bottom: 10px;
   overflow-y: hidden;
   transition: height 0.3s ease-out;
 }

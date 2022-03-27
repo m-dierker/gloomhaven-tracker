@@ -1,7 +1,11 @@
 import { Component, OnInit } from "@angular/core";
-import { ALL_ELEMENT_TYPES, ElementState, ElementType } from "../db/elements";
-import { DbService } from "../services/db.service";
-import { GloomhavenService } from "../services/gloomhaven.service";
+import {
+  ALL_ELEMENT_TYPES,
+  ElementType,
+  ElementState,
+} from "src/app/db/elements";
+import { DbService } from "src/app/services/db.service";
+import { GloomhavenService } from "src/app/services/gloomhaven.service";
 
 @Component({
   selector: "app-party-element-tracker",

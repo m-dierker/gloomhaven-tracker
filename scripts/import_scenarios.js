@@ -28,9 +28,9 @@ async function importScenarios() {
     const scenarioName = scenario.name;
     const scenarioDecks = scenario.decks;
 
-    const scenarioNameMatch = scenarioName.match(/^#(\d+)/);
+    const scenarioNameMatch = scenarioName.match(/^#(\d+)\s(.*)$/);
     // There are some scenarios with funky names that are skipped for now.
-    if (!scenarioNameMatch || scenarioNameMatch.length !== 2) {
+    if (!scenarioNameMatch || scenarioNameMatch.length !== 3) {
       console.log("Skipping ", scenarioName);
       continue;
     }
@@ -51,13 +51,18 @@ async function importScenarios() {
     }
 
     batch.set(db.collection(SCENARIOS_COLLECTION).doc(scenarioId), {
-      monsters: monsterIds,
-      bosses: bossIds,
+      monsterIds: monsterIds,
+      bossIds: bossIds,
+      // This is a string to eventually accommodate future weird names.
+      scenarioNum: scenarioNameMatch[1],
+      scenarioTitle: scenarioNameMatch[2],
     });
   }
   await batch.commit();
 
-  console.log("Scenario data committed");
+  console.log(
+    "Scenario data committed.\n\n-----> Remember to regenerate the bundle!\n\n"
+  );
 }
 importScenarios();
 

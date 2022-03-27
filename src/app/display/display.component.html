@@ -1,7 +1,7 @@
 <main role="main" class="container">
   <div class="display-wrapper">
-    <div class="name-content" *ngIf="party">
-      {{ party.partyName }}
+    <div class="name-content" *ngIf="scenarioInfo">
+      # {{ scenarioInfo.scenarioNum }} — {{ scenarioInfo.scenarioTitle }}
     </div>
     <div class="display-content">
       <div class="row">
@@ -23,5 +23,11 @@
       </div>
     </div>
   </div>
-  <app-element-tracker class="element-tracker-wrapper"></app-element-tracker>
+  <app-element-tracker
+    class="element-tracker-wrapper"
+    direction="vert"
+    [elementGapPx]="10"
+    [elementSizePx]="70"
+    stateConfig="allStates"
+  ></app-element-tracker>
 </main>

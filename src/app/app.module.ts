@@ -22,8 +22,8 @@ import {
 } from "@angular/fire/firestore";
 import { ElementTrackerComponent } from "./display/elements/element-tracker.component";
 import { ElementTrackerCellComponent } from "./display/elements/element-tracker-cell.component";
-import { PartyElementTrackerComponent } from "./party/party-element-tracker.component";
-import { PartyElementTrackerCellComponent } from "./party/party-element-tracker-cell.component";
+import { PartyElementTrackerComponent } from "./party/elements/party-element-tracker.component";
+import { PartyElementTrackerCellComponent } from "./party/elements/party-element-tracker-cell.component";
 import { LoginComponent } from "./ui/login.component";
 import { ButtonComponent } from "./ui/button.component";
 import { provideAuth } from "@angular/fire/auth";
@@ -31,7 +31,8 @@ import { getAuth } from "firebase/auth";
 import { PartyRoleHeaderComponent } from "./party/party-role-header.component";
 import { PartyMonsterTrackerComponent } from "./party/party-monster-tracker.component";
 import { PartyAddMonsterComponent } from "./party/party-add-monster.component";
-import { BossCellComponent } from './display/boss-cell.component';
+import { BossCellComponent } from "./display/boss-cell.component";
+import { PartyElementMiniDisplayComponent } from "./party/elements/party-element-mini-display.component";
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { BossCellComponent } from './display/boss-cell.component';
     PartyMonsterTrackerComponent,
     PartyAddMonsterComponent,
     BossCellComponent,
+    PartyElementMiniDisplayComponent,
   ],
   imports: [
     BrowserAnimationsModule,

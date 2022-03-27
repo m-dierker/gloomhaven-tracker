@@ -1,8 +1,9 @@
 <div
   class="element-img"
-  [class.active]="elementData.state == ElementState.ACTIVE"
-  [class.waning]="elementData.state == ElementState.WANING"
-  [class.inactive]="elementData.state == ElementState.INACTIVE"
+  *ngIf="data"
+  [class.active]="data.state == ElementState.ACTIVE"
+  [class.waning]="data.state == ElementState.WANING"
+  [class.inactive]="data.state == ElementState.INACTIVE"
 >
   <img
     src="/assets/elements/{{ animated ? 'animated/' : '' }}{{

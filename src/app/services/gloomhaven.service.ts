@@ -19,7 +19,7 @@ export class GloomhavenService {
     return new Promise((resolve) => {
       const batch = writeBatch(this.firestore);
       this.db
-        .getElementUpdates()
+        .getElementCollectionUpdates()
         .pipe(first())
         .subscribe(async (elementDocs) => {
           for (const elementDoc of elementDocs) {

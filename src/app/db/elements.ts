@@ -49,6 +49,11 @@ export const ORDERED_ELEMENT_STATES = [
   ElementState.INACTIVE,
 ];
 
+export const ORDERED_ACTIVE_ELEMENT_STATES = [
+  ElementState.ACTIVE,
+  ElementState.WANING,
+];
+
 /** Firebase serialized data for elements. */
 export interface ElementData {
   state: ElementState;

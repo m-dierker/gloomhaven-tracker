@@ -1,6 +1,20 @@
 import { Injectable } from "@angular/core";
-import { Observable, ReplaySubject, of, forkJoin } from "rxjs";
-import { map, first, switchMap, flatMap, mergeMap } from "rxjs/operators";
+import {
+  Observable,
+  ReplaySubject,
+  of,
+  forkJoin,
+  from,
+  combineLatest,
+} from "rxjs";
+import {
+  map,
+  first,
+  switchMap,
+  flatMap,
+  mergeMap,
+  combineLatestWith,
+} from "rxjs/operators";
 import { MonsterData, BossData } from "../../types/monsters";
 import {
   MONSTERS_COLLECTION,
@@ -91,7 +105,6 @@ export class DbService {
   }
 
   createPartyMonsters(newMonsters: ScenarioEnemyData[]) {
-    // FIXME
     const batch = writeBatch(this.firestore);
     for (const newMonster of newMonsters) {
       const newMonsterDoc = doc(
@@ -255,14 +268,42 @@ export class DbService {
   }
 
   /** Returns a streaming list of element updates. This is done so a tracker can handle bulk updates at once. Each update includes all elements. */
-  getElementUpdates(): Observable<QueryDocumentSnapshot<ElementData>[]> {
+  getElementCollectionUpdates(): Observable<
+    QueryDocumentSnapshot<ElementData>[]
+  > {
     return collectionSnapshots(this.dbRef.elementsCollection());
   }
 
-  getElementUpdate(element: ElementType): Observable<ElementData> {
+  getElementUpdates(element: ElementType): Observable<ElementData> {
+    // TODO: Change this to use getElementCollectionUpdates, it's a dual read right now. :(
     const elementDoc = this.dbRef.elementDoc(element);
     return docSnapshots(elementDoc).pipe(
       map((snap) => snap.data() as ElementData)
+    );
+  }
+
+  /**
+   * Convenience wrapper around getElementUpdates grouped by state and sorted.
+   * All elements in the DB are guaranteed to be present.
+   */
+  getSortedElementsByState(): Observable<Map<ElementState, ElementType[]>> {
+    return this.getElementCollectionUpdates().pipe(
+      map((elementSnap) => {
+        const map = new Map<ElementState, ElementType[]>();
+        for (const elementDoc of elementSnap) {
+          const elementType = Number(elementDoc.id) as ElementType;
+          const elementState = elementDoc.data().state;
+          if (map.has(elementState)) {
+            map.get(elementState).push(elementType);
+          } else {
+            map.set(elementState, [elementType]);
+          }
+        }
+        for (const elements of map.values()) {
+          elements.sort();
+        }
+        return map;
+      })
     );
   }
 
@@ -275,12 +316,17 @@ export class DbService {
     return setDoc(elementDoc, data);
   }
 
-  /** Static info about a scenario (ex: monsters/bosses that will appear). */
-  async getScenarioInfo(scenarioId: string): Promise<ScenarioInfo> {
-    // TODO: Is there a better way to do this?
-    await this.gameDataLoadedPromise;
-    const docSnap = await getDocFromCache(this.dbRef.scenarioDoc(scenarioId));
-    return docSnap.data();
+  getActiveScenarioInfo(): Observable<ScenarioInfo> {
+    // TODO: Is there a better way to indicate the game data is loaded?
+    // Could use a ReplaySubject or something but not clear that's better than this weird promise.
+    return from(this.gameDataLoadedPromise).pipe(
+      combineLatestWith(this.getParty()),
+      mergeMap(([_, party]) => {
+        return from(
+          getDocFromCache(this.dbRef.scenarioDoc(party.activeScenario))
+        ).pipe(map((docSnap) => docSnap.data()));
+      })
+    );
   }
 
   /**
@@ -335,7 +381,7 @@ export class DbService {
       // but it seems to work...
       // TODO: Investigate error.
       const result = await loadBundle(this.firestore, arrBuffer);
-      console.log("Game data loaded successfully", result);
+      console.log("Game bundle loaded from Cloud Store successfully", result);
       this.gameDataLoadedResolve();
     } catch (e) {
       console.error("Unable to load Game Bundle", e);

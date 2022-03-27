@@ -5,12 +5,14 @@ import {
   OnInit,
   SimpleChanges,
 } from "@angular/core";
+import { Subscription } from "rxjs";
 import {
   ElementData,
   ElementState,
   ElementType,
   getElementCode,
 } from "src/app/db/elements";
+import { DbService } from "src/app/services/db.service";
 
 @Component({
   selector: "app-element-tracker-cell",
@@ -21,19 +23,30 @@ export class ElementTrackerCellComponent implements OnChanges {
   @Input()
   element: ElementType;
 
-  @Input()
-  elementData: ElementData;
+  data: ElementData;
   animated: boolean;
 
   ElementState = ElementState;
   getElementCode = getElementCode;
 
-  constructor() {}
+  private elementData$: Subscription;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes["elementData"]) {
-      this.animated = ANIMATED_STATES.has(this.elementData.state);
+  constructor(private db: DbService) {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes["element"]) {
+      if (this.elementData$) {
+        this.elementData$.unsubscribe();
+      }
+      this.elementData$ = this.db
+        .getElementUpdates(this.element)
+        .subscribe((data) => this.onNewData(data));
     }
+  }
+
+  onNewData(data: ElementData) {
+    this.data = data;
+    this.animated = ANIMATED_STATES.has(data.state);
   }
 }
 

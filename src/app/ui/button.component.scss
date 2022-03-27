@@ -13,7 +13,11 @@ button {
   font-size: 18pt;
 
   ::ng-deep img {
-    margin-right: 10px;
+    // Add a margin to an icon if there is one.
+    // This requires text to be wrapped. Seems like there's not a perfect workaround for that.
+    &:not(:last-child) {
+      margin-right: 10px;
+    }
     height: 36px;
     width: 36px;
   }

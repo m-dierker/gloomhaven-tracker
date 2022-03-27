@@ -7,8 +7,8 @@ import {
   SimpleChanges,
 } from "@angular/core";
 import { Subscription } from "rxjs";
-import { ElementState, ElementType, getElementCode } from "../db/elements";
-import { DbService } from "../services/db.service";
+import { ElementType, ElementState, getElementCode } from "src/app/db/elements";
+import { DbService } from "src/app/services/db.service";
 
 @Component({
   selector: "app-party-element-tracker-cell",
@@ -41,7 +41,7 @@ export class PartyElementTrackerCellComponent implements OnChanges {
       this.elementData$.unsubscribe();
     }
     this.elementData$ = this.db
-      .getElementUpdate(this.element)
+      .getElementUpdates(this.element)
       .subscribe((data) => {
         this.state = data.state;
       });
