@@ -1,18 +1,32 @@
 <app-button (click)="togglePanel()">Add Monsters</app-button>
 
 <div class="create-monsters" *ngIf="panelVisible" #monsterPanel>
-  <p><strong>Add new monsters</strong></p>
-
-  <div class="select-monster" *ngIf="scenarioInfo">
+  <div class="select-enemy" *ngIf="scenarioInfo">
     <div
-      class="select-monster-choice"
+      class="select-enemy-choice"
       *ngFor="let classId of scenarioInfo.monsterIds"
+      (click)="selectEnemy(EnemyType.MONSTER, classId)"
     >
-      <img src="/assets/monsters/Vert-{{ classId }}.web" />
+      <img src="/assets/monsters/Vert-{{ classId }}.png" />
+    </div>
+    <div
+      class="select-enemy-choice boss"
+      *ngFor="let classId of scenarioInfo.bossIds"
+      (click)="selectEnemy(EnemyType.BOSS, classId)"
+    >
+      <img src="/assets/bosses/{{ classId }}.webp" />
+    </div>
+    <div class="select-enemy-choice" (click)="showFullForm()">
+      <img src="/assets/statuses/muddle.png" />
     </div>
   </div>
 
-  <form #createForm="ngForm" (ngSubmit)="createMonsters()" autocomplete="off">
+  <form
+    #createForm="ngForm"
+    (ngSubmit)="createMonsters()"
+    *ngIf="createMonsterData.autocompleteEntry !== undefined"
+    autocomplete="off"
+  >
     <input
       [(ngModel)]="createMonsterData.enemyDisplayName"
       (typeaheadOnSelect)="onCreateMonsterSelected($event)"
@@ -29,6 +43,7 @@
       name="numMonsters"
       placeholder="How many"
       class="form-control"
+      #numMonsters
       required
     />
     <input

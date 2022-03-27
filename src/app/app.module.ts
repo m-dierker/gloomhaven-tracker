@@ -12,7 +12,6 @@ import { MonsterCellComponent } from "./display/monster-cell.component";
 import { MonsterNameComponent } from "./display/monster-name.component";
 import { PartyManagerComponent } from "./party/party-manager.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { CommonModule } from "@angular/common";
 import { PartyMonsterCellComponent } from "./party/party-monster-cell.component";
 import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
 import {

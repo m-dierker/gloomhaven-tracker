@@ -22,6 +22,8 @@ export class PartyAddMonsterComponent implements OnInit {
   scenarioInfo: ScenarioInfo;
   panelVisible = false;
 
+  EnemyType = EnemyType;
+
   private partyEnemiesByClass: Map<EnemyClassId, Enemy[]> = new Map();
 
   private party: Party;
@@ -30,6 +32,9 @@ export class PartyAddMonsterComponent implements OnInit {
 
   @ViewChild("monsterPanel")
   monsterPanel: ElementRef;
+
+  @ViewChild("numMonsters")
+  numMonsters: ElementRef;
 
   constructor(private db: DbService) {}
 
@@ -40,13 +45,13 @@ export class PartyAddMonsterComponent implements OnInit {
     });
     this.db.getAllBosses().subscribe((bosses) => {
       this.allBossData = bosses;
+      this.regenAutocompleteData();
     });
     this.db.getParty().subscribe((party) => {
       this.party = party;
       this.createMonsterData.level = party.scenarioLevel;
     });
     this.db.getActiveScenarioInfo().subscribe((scenarioInfo) => {
-      console.log("scenario info", scenarioInfo);
       this.scenarioInfo = scenarioInfo;
     });
     this.db
@@ -71,6 +76,10 @@ export class PartyAddMonsterComponent implements OnInit {
   createMonsters() {
     if (this.createMonsterData.numMonsters > 100) {
       alert("Too many monsters.");
+      return;
+    }
+    // There's probably a better way to do this.
+    if (!this.createMonsterData.autocompleteEntry) {
       return;
     }
     const newMonsters = [];
@@ -105,6 +114,21 @@ export class PartyAddMonsterComponent implements OnInit {
 
   onCreateMonsterSelected(evt: TypeaheadMatch) {
     this.createMonsterData.autocompleteEntry = evt.item;
+  }
+
+  selectEnemy(enemyType: EnemyType, classId: string) {
+    this.createMonsterData.autocompleteEntry = {
+      enemyType,
+      classId,
+      title: classId,
+    };
+    this.createMonsterData.enemyDisplayName = classId;
+    setTimeout(() => this.numMonsters.nativeElement.focus());
+  }
+
+  /** Override to allow showing the full form and using typeahead. */
+  showFullForm() {
+    this.createMonsterData.autocompleteEntry = null;
   }
 
   /**
@@ -159,6 +183,7 @@ export class PartyAddMonsterComponent implements OnInit {
       }
     );
     this.allAutocompleteData = monsterAutocomplete.concat(bossAutocomplete);
+    console.log(this.allAutocompleteData);
   }
 }
 
