@@ -4,8 +4,7 @@
     [element]="element"
     lang="{{ element }}"
     [class.inactive]="
-      elementStateMap &&
-      elementStateMap.get(ElementState.INACTIVE).includes(element)
+      elementStateMap?.get(ElementState.INACTIVE)?.includes(element)
     "
   ></app-element-tracker-cell>
   <!-- TODO... fix lang hack. -->
