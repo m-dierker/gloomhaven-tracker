@@ -5,6 +5,9 @@ import { Subscription } from "rxjs";
 import { Party } from "src/types/party";
 import { DbService } from "../services/db.service";
 
+const MAX_SCENARIO = 95;
+const MIN_SCENARIO = 1;
+
 @Component({
   selector: "party-manager",
   templateUrl: "./party-manager.component.html",
@@ -55,6 +58,23 @@ export class PartyManagerComponent implements OnInit, OnDestroy {
         this.db.fullyResetGameState();
       }
     }
+  }
+
+  async changeScenario() {
+    const newScenario = prompt("Enter a scenario number:");
+    const scenarioNum = parseInt(newScenario.trim());
+    if (
+      scenarioNum < MIN_SCENARIO ||
+      scenarioNum > MAX_SCENARIO ||
+      scenarioNum == NaN
+    ) {
+      alert(
+        `Invalid scenario. Enter just a number ${MIN_SCENARIO}-${MAX_SCENARIO}.`
+      );
+      return;
+    }
+    await this.db.updateScenarioLevel(scenarioNum);
+    alert("Scenario updated!");
   }
 
   async logout() {

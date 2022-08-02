@@ -267,6 +267,15 @@ export class DbService {
     return this.partySubj.asObservable();
   }
 
+  updateScenarioLevel(newLevel: number): Promise<void> {
+    return updateDoc(
+      doc(this.firestore, `${PARTIES_COLLECTION}/${DEFAULT_PARTY}`),
+      {
+        activeScenario: `gh-${newLevel}`,
+      }
+    );
+  }
+
   /** Returns a streaming list of element updates. This is done so a tracker can handle bulk updates at once. Each update includes all elements. */
   getElementCollectionUpdates(): Observable<
     QueryDocumentSnapshot<ElementData>[]
