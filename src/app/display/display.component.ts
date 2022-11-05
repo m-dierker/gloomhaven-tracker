@@ -1,13 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { DbService } from "../services/db.service";
-import {
-  MonsterData,
-  BossData,
-  MonsterDataDisplayNameComparator,
-} from "../../types/monsters";
 import { Party } from "../../types/party";
 import { Observable } from "rxjs";
-import { Monster } from "../db/monster";
 import { EnemyClassId, EnemyType } from "src/types/enemy";
 import { Enemy } from "../db/enemy";
 import { ScenarioInfo } from "../db/scenario";
@@ -39,7 +33,6 @@ export class DisplayComponent implements OnInit {
     this.db
       .getActiveScenarioInfo()
       .subscribe((scenarioInfo) => (this.scenarioInfo = scenarioInfo));
-    setTimeout(() => console.log("scn", this.scenarioInfo), 5000);
   }
 
   onPartyUpdate(party: Party) {
