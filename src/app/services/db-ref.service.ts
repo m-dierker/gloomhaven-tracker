@@ -17,12 +17,20 @@ import {
 import { UserData } from "../db/user";
 import { ScenarioEnemyData } from "src/types/scenario";
 import { ScenarioInfo } from "../db/scenario";
+import { Party } from "src/types/party";
 
 @Injectable({
   providedIn: "root",
 })
 export class DbRefService {
   constructor(private firestore: Firestore) {}
+
+  defaultPartyDoc(): DocumentReference<Party> {
+    return doc(
+      this.firestore,
+      `${PARTIES_COLLECTION}/${DEFAULT_PARTY}`
+    ) as DocumentReference<Party>;
+  }
 
   /** Doc tracking a single element. */
   elementDoc(element: ElementType): DocumentReference<ElementData> {

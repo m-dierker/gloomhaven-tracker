@@ -1,0 +1,8 @@
+<div class="card-container" [class.empty]="val === undefined">
+  <img
+    *ngIf="!flipped || val !== undefined"
+    src="/assets/cards/attack-modifiers/monsters/{{
+      flipped ? val : 'back'
+    }}.png"
+  />
+</div>

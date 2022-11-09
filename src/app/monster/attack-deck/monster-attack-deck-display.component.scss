@@ -1,0 +1,106 @@
+$margin-between-cards: 30px;
+$animation-offset: 35px;
+
+.display-wrapper {
+  background: url("/assets/backgrounds/scroll_bg.jpg");
+  background-size: cover;
+  min-width: 100%;
+  min-height: 100vh;
+}
+
+main {
+  padding-top: 10px;
+  perspective: 1000px;
+  min-height: 100vh;
+}
+
+.history {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+
+  app-monster-attack-deck-card {
+    margin-bottom: 0;
+    min-width: 25%;
+  }
+}
+
+app-monster-attack-deck-card {
+  display: block;
+  margin-bottom: $margin-between-cards;
+}
+
+.bottomStack {
+  position: relative;
+  width: 100%;
+}
+
+.cardDeck {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.animateStack {
+  backface-visibility: visible;
+  display: inline-block;
+  position: relative;
+  // Duration must match component JS.
+  transition: transform 0.5s ease-out;
+  transform-style: preserve-3d;
+  width: 100%;
+
+  &.flipped {
+    // Unclear why offset is is necessary.
+    transform: rotateX(180deg)
+      translateY($margin-between-cards + $animation-offset);
+  }
+
+  app-monster-attack-deck-card {
+    backface-visibility: hidden;
+    position: absolute;
+    // Unclear why top is necessary.
+    top: -17px;
+    left: 0;
+    transform-style: preserve-3d;
+    width: 100%;
+
+    &.animatedCardFront {
+      backface-visibility: visible;
+      transform: rotateX(180deg);
+    }
+
+    &.animatedCardBack {
+      // Put the card back on top so there's no clipping during animation.
+      transform: translateZ(1px);
+    }
+  }
+}
+
+// TODO: FIX THIS AWFUL HACK.
+.controls {
+  display: flex;
+  justify-content: space-around;
+  position: absolute;
+  bottom: 100px;
+  left: 0px;
+  padding: 16px;
+  width: 100%;
+}
+
+// .animatedCardStack app-monster-attack-deck-card {
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+
+//   .animatedCardBack {
+//   }
+
+//   &.animatedCardFront {
+//     backface-visibility: hidden;
+//   }
+// }

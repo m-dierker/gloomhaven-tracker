@@ -1,6 +1,10 @@
 [
   {
-    "origin": ["http://localhost:4200", "https://gloomhaven.muri.ca"],
+    "origin": [
+      "http://localhost:4200",
+      "https://gloomhaven.muri.ca",
+      "https://mattcaron.heron-pineapplefish.ts.net:4200"
+    ],
     "method": ["GET"],
     "maxAgeSeconds": 3600
   }

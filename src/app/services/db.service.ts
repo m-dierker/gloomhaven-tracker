@@ -59,6 +59,7 @@ import { EnemyClassId, EnemyType } from "src/types/enemy";
 import { Boss } from "../db/boss";
 import { GameContext } from "src/types/game";
 import { ScenarioInfo } from "../db/scenario";
+import { AttackModifierUtil } from "src/types/attack-modifiers";
 
 @Injectable({
   providedIn: "root",
@@ -174,12 +175,17 @@ export class DbService {
     );
   }
 
-  /** Resets everything to have a fresh game. */
-  async fullyResetGameState() {
+  /**
+   * Game destructor for the pieces of the game owned by this service.
+   *
+   * Should only be called by ResetService.
+   */
+  async resetGameStateFromResetService() {
     await this.deleteAllMonsters();
     await this.resetAllElements();
   }
 
+  /** Deletes all monsters. */
   private async deleteAllMonsters() {
     const monsterCol = await getDocs(this.dbRef.partyMonstersCollection());
     const batch = writeBatch(this.firestore);
@@ -200,6 +206,8 @@ export class DbService {
     }
     return batch.commit();
   }
+
+  private async resetMonsterDeck() {}
 
   /**
    * Returns an Enemy wrapper for the given ScenarioEnemyData.

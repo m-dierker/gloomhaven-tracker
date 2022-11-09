@@ -1,0 +1,16 @@
+.card-container {
+  background-color: #654321;
+  box-sizing: border-box;
+  border-radius: 16px;
+  padding-top: 66.6%;
+  position: relative;
+  width: 100%;
+}
+
+img {
+  border-radius: 16px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: 100%;
+}

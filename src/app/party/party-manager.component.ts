@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { Party } from "src/types/party";
 import { DbService } from "../services/db.service";
+import { ResetService } from "../services/reset.service";
 
 const MAX_SCENARIO = 95;
 const MIN_SCENARIO = 1;
@@ -21,6 +22,7 @@ export class PartyManagerComponent implements OnInit, OnDestroy {
 
   constructor(
     private db: DbService,
+    private reset: ResetService,
     private auth: Auth,
     private router: Router
   ) {}
@@ -55,7 +57,7 @@ export class PartyManagerComponent implements OnInit, OnDestroy {
           "Are you *absolutely sure* you want to irrevocably delete everything?"
         )
       ) {
-        this.db.fullyResetGameState();
+        this.reset.resetGameState();
       }
     }
   }

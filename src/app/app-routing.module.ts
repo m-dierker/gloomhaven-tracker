@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { DisplayComponent } from "./display/display.component";
+import { MonsterAttackDeckDisplayComponent } from "./monster/attack-deck/monster-attack-deck-display.component";
 import { PartyManagerComponent } from "./party/party-manager.component";
 import { LoginComponent } from "./ui/login.component";
 
@@ -8,6 +9,10 @@ const routes: Routes = [
   {
     path: "display",
     component: DisplayComponent,
+  },
+  {
+    path: "monsterattacks",
+    component: MonsterAttackDeckDisplayComponent,
   },
   {
     path: "",
