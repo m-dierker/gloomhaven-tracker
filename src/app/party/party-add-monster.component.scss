@@ -33,3 +33,53 @@ $select-enemy-height: 60px;
 form {
   margin-top: 10px;
 }
+
+.create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+app-party-monster-name {
+  display: block;
+  margin: 16px 0 8px 0;
+}
+
+.monster-counts {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.monster-count {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.monster-count-controls {
+  display: flex;
+  gap: 8px;
+
+  app-button {
+    width: 40px;
+  }
+
+  h1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 0;
+  }
+}
+
+.token-images {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.elite {
+  color: gold;
+}

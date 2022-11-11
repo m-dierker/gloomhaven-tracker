@@ -8,11 +8,9 @@
 </div>
 
 <div class="monster-class" *ngFor="let monsterClassId of monsterClassList">
-  <div class="monster-name">
-    <div class="monster-name-text">
-      {{ enemiesByClass.get(monsterClassId)[0].displayName }}
-    </div>
-  </div>
+  <app-party-monster-name>
+    {{ enemiesByClass.get(monsterClassId)[0].displayName }}
+  </app-party-monster-name>
   <ng-container *ngFor="let monster of enemiesByClass.get(monsterClassId)">
     <party-monster-cell
       [enemy]="monster"

@@ -42,6 +42,8 @@ import { AppBootstrap } from "./services/bootstrap";
 import { AdminComponent } from './admin/admin.component';
 import { MonsterAbilityDisplayComponent } from './monster/ability-deck/monster-ability-display.component';
 import { MonsterAbilityDeckComponent } from './monster/ability-deck/monster-ability-deck.component';
+import { PartyMonsterNameComponent } from './party/party-monster-name.component';
+import { PartyMonsterTokenComponent } from './party/party-monster-token.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +68,8 @@ import { MonsterAbilityDeckComponent } from './monster/ability-deck/monster-abil
     AdminComponent,
     MonsterAbilityDisplayComponent,
     MonsterAbilityDeckComponent,
+    PartyMonsterNameComponent,
+    PartyMonsterTokenComponent,
   ],
   imports: [
     BrowserAnimationsModule,

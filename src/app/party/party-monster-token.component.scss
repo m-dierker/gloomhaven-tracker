@@ -1,0 +1,24 @@
+.boss-img {
+  border-radius: 30px;
+}
+
+.monster-id {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+
+  img {
+    height: 60px;
+    margin-right: 4px;
+    width: 60px;
+  }
+
+  .monster-token {
+    font-size: 30pt;
+    font-weight: bold;
+  }
+}
+
+.elite {
+  color: gold;
+}

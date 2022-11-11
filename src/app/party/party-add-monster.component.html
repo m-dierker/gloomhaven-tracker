@@ -16,61 +16,64 @@
     >
       <img src="/assets/bosses/{{ classId }}.webp" />
     </div>
-    <div class="select-enemy-choice" (click)="showFullForm()">
+    <div class="select-enemy-choice" (click)="showAutocomplete()">
       <img src="/assets/statuses/muddle.png" />
     </div>
   </div>
 
-  <form
-    #createForm="ngForm"
-    (ngSubmit)="createMonsters()"
+  <input
+    [(ngModel)]="createMonsterData.enemyDisplayName"
+    (typeaheadOnSelect)="onCreateMonsterSelected($event)"
+    [typeahead]="allAutocompleteData"
+    typeaheadOptionField="title"
+    placeholder="Select an enemy"
+    name="monsterId"
+    class="form-control"
+    *ngIf="autocompleteVisible"
+    required
+  />
+
+  <div
+    class="create-form"
     *ngIf="createMonsterData.autocompleteEntry !== undefined"
-    autocomplete="off"
   >
-    <input
-      [(ngModel)]="createMonsterData.enemyDisplayName"
-      (typeaheadOnSelect)="onCreateMonsterSelected($event)"
-      [typeahead]="allAutocompleteData"
-      typeaheadOptionField="title"
-      placeholder="Select an enemy"
-      name="monsterId"
-      class="form-control"
-      required
-    />
-    <input
-      [(ngModel)]="createMonsterData.numMonsters"
-      type="number"
-      name="numMonsters"
-      placeholder="How many"
-      class="form-control"
-      #numMonsters
-      required
-    />
-    <input
-      [(ngModel)]="createMonsterData.level"
-      type="number"
-      name="level"
-      placeholder="Level"
-      class="form-control"
-      required
-      [(ngModel)]="createMonsterData.level"
-      disabled
-    />
-    <div class="form-check">
-      <!-- TODO: Do this disabling properly. -->
-      <input
-        type="checkbox"
-        [(ngModel)]="createMonsterData.elite"
-        [disabled]="createMonsterData?.autocompleteEntry?.enemyType !== 1"
-        name="elite"
-        class="form-check-input"
-        id="createMonsterElite"
-      />
-      <label class="form-check-label" for="createMonsterElite">Elite</label>
+    <app-party-monster-name
+      >Creating:
+      {{ createMonsterData.enemyDisplayName }}</app-party-monster-name
+    >
+
+    <div class="monster-counts">
+      <div class="monster-count">
+        <div class="monster-count-controls">
+          <app-button (click)="updateMonsterCount('elite', -1)">-</app-button>
+          <h1 class="elite">{{ createMonsterData.numElite }}</h1>
+          <app-button (click)="updateMonsterCount('elite', 1)">+</app-button>
+        </div>
+        <div class="monster-count-desc">Elite</div>
+      </div>
+
+      <div class="monster-count">
+        <div class="monster-count-controls">
+          <app-button (click)="updateMonsterCount('normal', -1)">-</app-button>
+          <h1>{{ createMonsterData.numNormal }}</h1>
+          <app-button (click)="updateMonsterCount('normal', 1)">+</app-button>
+        </div>
+        <div class="monster-count-desc">Normal</div>
+      </div>
     </div>
 
-    <button type="submit" [disabled]="!createForm.form.valid">
-      Create Monsters
-    </button>
-  </form>
+    <div class="token-images">
+      <app-party-monster-token
+        *ngFor="let pending of pendingTokens"
+        [dbClassId]="createMonsterData.autocompleteEntry.classId"
+        [tokenNum]="pending.tokenNum"
+        [isBoss]="
+          createMonsterData.autocompleteEntry.enemyType == EnemyType.BOSS
+        "
+        [isElite]="pending.elite"
+      ></app-party-monster-token>
+    </div>
+
+    <app-button (click)="createMonsters()">Create</app-button>
+  </div>
 </div>

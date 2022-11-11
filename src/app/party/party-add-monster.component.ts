@@ -18,7 +18,10 @@ import { DbService } from "../services/db.service";
 export class PartyAddMonsterComponent implements OnInit {
   public allAutocompleteData: AutocompleteEntry[];
 
-  public createMonsterData = {} as CreateMonsterData;
+  public createMonsterData: Partial<CreateMonsterData> = {};
+  public pendingTokens: PendingToken[] = [];
+  public autocompleteVisible = false;
+
   scenarioInfo: ScenarioInfo;
   panelVisible = false;
 
@@ -39,6 +42,7 @@ export class PartyAddMonsterComponent implements OnInit {
   constructor(private db: DbService) {}
 
   ngOnInit(): void {
+    this.resetForm();
     this.db.getAllMonsters().subscribe((monsters) => {
       this.allMonsterData = monsters;
       this.regenAutocompleteData();
@@ -49,7 +53,6 @@ export class PartyAddMonsterComponent implements OnInit {
     });
     this.db.getParty().subscribe((party) => {
       this.party = party;
-      this.createMonsterData.level = party.scenarioLevel;
     });
     this.db.getActiveScenarioInfo().subscribe((scenarioInfo) => {
       this.scenarioInfo = scenarioInfo;
@@ -73,8 +76,19 @@ export class PartyAddMonsterComponent implements OnInit {
     }
   }
 
+  private resetForm() {
+    this.createMonsterData = {
+      numElite: 0,
+      numNormal: 0,
+    };
+    this.autocompleteVisible = false;
+  }
+
   createMonsters() {
-    if (this.createMonsterData.numMonsters > 100) {
+    if (
+      this.createMonsterData.numElite + this.createMonsterData.numNormal >
+      100
+    ) {
       alert("Too many monsters.");
       return;
     }
@@ -83,37 +97,44 @@ export class PartyAddMonsterComponent implements OnInit {
       return;
     }
     const newMonsters = [];
-    const newIdsUsed = [];
-    for (let i = 0; i < this.createMonsterData.numMonsters; i++) {
-      const tokenNum = this.getNextTokenNum(this.createMonsterData, newIdsUsed);
+    const newIdsUsed: number[] = [];
+
+    // Redo token calculation because I'm lazy.
+    for (
+      let i = 0;
+      i < this.createMonsterData.numElite + this.createMonsterData.numNormal;
+      i++
+    ) {
+      const isElite = i < this.createMonsterData.numElite;
+      const tokenNum = this.getNextTokenNum(
+        this.createMonsterData as CreateMonsterData,
+        newIdsUsed
+      );
       const enemyType = this.createMonsterData.autocompleteEntry.enemyType;
       const scenarioData: ScenarioEnemyData = {
         id: "", // Generated in the service
         tokenNum,
         enemyType,
         classId: this.createMonsterData.autocompleteEntry.classId,
-        level: this.createMonsterData.level,
+        level: this.party.scenarioLevel,
         statuses: [],
       };
       if (enemyType == EnemyType.MONSTER) {
         scenarioData.monsterData = {
-          type: this.createMonsterData.elite
-            ? MonsterType.ELITE
-            : MonsterType.NORMAL,
+          type: isElite ? MonsterType.ELITE : MonsterType.NORMAL,
         };
       }
       newIdsUsed.push(tokenNum);
       newMonsters.push(scenarioData);
     }
     this.db.createPartyMonsters(newMonsters);
-    this.createMonsterData = {
-      level: this.party.scenarioLevel,
-    } as CreateMonsterData;
     this.setVisible(false);
+    this.resetForm();
   }
 
   onCreateMonsterSelected(evt: TypeaheadMatch) {
     this.createMonsterData.autocompleteEntry = evt.item;
+    this.updateMonsterCount("elite", 0);
   }
 
   selectEnemy(enemyType: EnemyType, classId: string) {
@@ -123,12 +144,49 @@ export class PartyAddMonsterComponent implements OnInit {
       title: classId,
     };
     this.createMonsterData.enemyDisplayName = classId;
-    setTimeout(() => this.numMonsters.nativeElement.focus());
+    this.autocompleteVisible = false;
+    // Fake an update for pending tokens.
+    this.updateMonsterCount("elite", 0);
   }
 
   /** Override to allow showing the full form and using typeahead. */
-  showFullForm() {
-    this.createMonsterData.autocompleteEntry = null;
+  showAutocomplete() {
+    this.autocompleteVisible = true;
+  }
+
+  public updateMonsterCount(count: "elite" | "normal", amt: number) {
+    const field = count === "elite" ? "numElite" : "numNormal";
+    this.createMonsterData[field] += amt;
+    if (this.createMonsterData[field] < 0) {
+      this.createMonsterData[field] = 0;
+    }
+
+    const pendingTokens: PendingToken[] = [];
+    const usedTokens: number[] = [];
+    // Reassign tokens.
+    for (let i = 0; i < this.createMonsterData.numElite; i++) {
+      const nextToken = this.getNextTokenNum(
+        this.createMonsterData as CreateMonsterData,
+        usedTokens
+      );
+      usedTokens.push(nextToken);
+      pendingTokens.push({
+        tokenNum: nextToken,
+        elite: true,
+      });
+    }
+    for (let i = 0; i < this.createMonsterData.numNormal; i++) {
+      const nextToken = this.getNextTokenNum(
+        this.createMonsterData as CreateMonsterData,
+        usedTokens
+      );
+      usedTokens.push(nextToken);
+      pendingTokens.push({
+        tokenNum: nextToken,
+        elite: false,
+      });
+    }
+    this.pendingTokens = pendingTokens;
   }
 
   /**
@@ -190,9 +248,8 @@ export class PartyAddMonsterComponent implements OnInit {
 interface CreateMonsterData {
   autocompleteEntry: AutocompleteEntry;
   enemyDisplayName: string;
-  numMonsters: number;
-  level: number;
-  elite: boolean;
+  numNormal: number;
+  numElite: number;
 }
 
 interface AutocompleteEntry {
@@ -200,4 +257,9 @@ interface AutocompleteEntry {
   classId: EnemyClassId;
 
   title: string;
+}
+
+interface PendingToken {
+  tokenNum: number;
+  elite: boolean;
 }

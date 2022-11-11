@@ -1,17 +1,12 @@
 <div class="monster-cell-wrapper" [class.elite]="monster && monster.isElite()">
   <div class="monster-cell">
-    <div class="monster-id" (click)="toggleStatusesVisible()">
-      <img
-        src="/assets/monsters/Vert-{{ enemy.dbClassId }}.png"
-        *ngIf="!isBoss"
-      />
-      <img
-        src="/assets/bosses/{{ enemy.dbClassId }}.webp"
-        *ngIf="isBoss"
-        class="boss-img"
-      />
-      <div class="monster-token">{{ enemy.tokenNum }}</div>
-    </div>
+    <app-party-monster-token
+      [dbClassId]="enemy.dbClassId"
+      [tokenNum]="enemy.tokenNum"
+      [isBoss]="enemy.isBoss()"
+      [isElite]="monster && monster.isElite()"
+      (click)="toggleStatusesVisible()"
+    ></app-party-monster-token>
     <div class="health-controls-wrapper">
       <div class="health-controls">
         <img src="/assets/icons/minus_1.png" (click)="changeHealth(-1)" />

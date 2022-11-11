@@ -1,0 +1,9 @@
+<div class="monster-id" [class.elite]="isElite">
+  <img src="/assets/monsters/Vert-{{ dbClassId }}.png" *ngIf="!isBoss" />
+  <img
+    src="/assets/bosses/{{ dbClassId }}.webp"
+    *ngIf="isBoss"
+    class="boss-img"
+  />
+  <div class="monster-token">{{ tokenNum }}</div>
+</div>

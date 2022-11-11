@@ -7,27 +7,6 @@
   justify-content: space-around;
 }
 
-.boss-img {
-  border-radius: 30px;
-}
-
-.monster-id {
-  display: flex;
-  align-items: center;
-  margin-right: 10px;
-
-  img {
-    height: 60px;
-    margin-right: 4px;
-    width: 60px;
-  }
-
-  .monster-token {
-    font-size: 30pt;
-    font-weight: bold;
-  }
-}
-
 .flex-space {
   flex-grow: 1;
 }
@@ -101,10 +80,6 @@ progressbar {
 .monster-status-icon {
   height: 32px;
   width: 32px;
-}
-
-.elite .monster-id {
-  color: gold;
 }
 
 .edit-controls {
