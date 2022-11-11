@@ -13,12 +13,14 @@ import {
   PARTY_COLLECTION,
   PARTY_MONSTERS_COLLECTION,
   SCENARIOS_COLLECTION,
+  MONSTER_ABILITY_DECK_COLLECTION,
 } from "../db/db-constants";
 import { UserData } from "../db/user";
 import { ScenarioEnemyData } from "src/types/scenario";
 import { ScenarioInfo } from "../db/scenario";
 import { Party } from "src/types/party";
 import { AppBootstrap } from "./bootstrap";
+import { MonsterAbilityDeckDocument } from "src/types/ability-cards";
 
 @Injectable({
   providedIn: "root",
@@ -67,6 +69,20 @@ export class DbRefService {
       this.firestore,
       `${SCENARIOS_COLLECTION}/${scenarioId}`
     ) as DocumentReference<ScenarioInfo>;
+  }
+
+  monsterAbilityDeckCollection() {
+    return collection(
+      this.firestore,
+      `${PARTIES_COLLECTION}/${this.partyId()}/${MONSTER_ABILITY_DECK_COLLECTION}`
+    ) as CollectionReference<MonsterAbilityDeckDocument>;
+  }
+
+  monsterAbilityDeckDoc(cardId: string) {
+    return doc(
+      this.firestore,
+      `${PARTIES_COLLECTION}/${this.partyId()}/${MONSTER_ABILITY_DECK_COLLECTION}/${cardId}`
+    ) as DocumentReference<MonsterAbilityDeckDocument>;
   }
 
   userDoc(uid: string): DocumentReference<UserData> {

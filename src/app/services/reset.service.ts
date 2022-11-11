@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { DbService } from "./db.service";
+import { MonsterAbilityDeckService } from "./monster-ability-deck.service";
 import { MonsterAttackDeckService } from "./monster-attack-deck.service";
 
 /**
@@ -12,11 +13,13 @@ import { MonsterAttackDeckService } from "./monster-attack-deck.service";
 export class ResetService {
   constructor(
     private db: DbService,
-    private mAttackDeck: MonsterAttackDeckService
+    private mAttackDeck: MonsterAttackDeckService,
+    private mAbilityDeck: MonsterAbilityDeckService
   ) {}
 
   async resetGameState() {
     await this.db.resetGameStateFromResetService();
     await this.mAttackDeck.resetDeck();
+    await this.mAbilityDeck.deleteAllDecks();
   }
 }

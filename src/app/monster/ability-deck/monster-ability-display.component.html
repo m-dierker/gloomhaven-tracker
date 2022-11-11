@@ -1,0 +1,7 @@
+<div class="display-wrapper">
+  <app-monster-ability-deck
+    *ngFor="let deck of decks"
+    [cardClassId]="deck.id"
+    [deck]="deck.deck"
+  ></app-monster-ability-deck>
+</div>

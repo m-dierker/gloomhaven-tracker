@@ -36,3 +36,29 @@ export interface ScenarioEnemyData {
 export interface ScenarioMonsterData {
   type: MonsterType;
 }
+
+/** Returns the name of the cards used. For monsters, this is usually their type (or a generic equivalent). For bosses, it's boss. */
+export function getClassCardId(enemy: ScenarioEnemyData) {
+  if (enemy.enemyType == EnemyType.BOSS) {
+    return "boss";
+  }
+  switch (enemy.classId) {
+    case "bandit_archer":
+    case "city_archer":
+    case "inox_archer":
+      return "archer";
+    case "bandit_guard":
+    case "city_guard":
+    case "inox_guard":
+      return "guard";
+    case "black_imp":
+      return "imp";
+    case "inox_shaman":
+      return "shaman";
+    case "vermling_scout":
+      return "scout";
+    // TODO: Special case different decks as needed.
+    default:
+      return enemy.classId;
+  }
+}

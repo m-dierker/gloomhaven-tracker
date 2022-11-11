@@ -29,6 +29,7 @@ import {
 } from "@angular/fire/firestore";
 import {
   deleteDoc,
+  getDoc,
   getDocFromCache,
   getDocsFromCache,
   loadBundle,
@@ -40,7 +41,7 @@ import { DbRefService } from "./db-ref.service";
 import { authState } from "rxfire/auth";
 import { Auth } from "@angular/fire/auth";
 import { UserData } from "../db/user";
-import { ScenarioEnemyData } from "src/types/scenario";
+import { getClassCardId, ScenarioEnemyData } from "src/types/scenario";
 import { Enemy } from "../db/enemy";
 import { EnemyClassId, EnemyType } from "src/types/enemy";
 import { Boss } from "../db/boss";
@@ -91,13 +92,24 @@ export class DbService {
     );
   }
 
-  createPartyMonsters(newMonsters: ScenarioEnemyData[]) {
+  async createPartyMonsters(newMonsters: ScenarioEnemyData[]): Promise<void> {
     const batch = writeBatch(this.firestore);
     for (const newMonster of newMonsters) {
       const newMonsterDoc = doc(this.dbRef.partyMonstersCollection());
       batch.set(newMonsterDoc, newMonster);
+
+      const monsterDeckDoc = this.dbRef.monsterAbilityDeckDoc(
+        getClassCardId(newMonster)
+      );
+      const monsterDeckSnap = await getDoc(monsterDeckDoc);
+      if (!monsterDeckSnap.exists()) {
+        batch.set(monsterDeckDoc, {
+          flipped: [],
+          unflipped: [1, 2, 3, 4, 5, 6, 7, 8],
+        });
+      }
     }
-    batch.commit();
+    return batch.commit();
   }
 
   /**

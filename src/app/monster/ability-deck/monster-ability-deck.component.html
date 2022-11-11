@@ -1,0 +1,13 @@
+<div class="deck">
+  <img
+    *ngIf="lastCard"
+    src="/assets/cards/monster-ability-cards/{{ cardClassId }}/{{
+      lastCard
+    }}.png"
+  />
+  <img
+    (click)="drawCard()"
+    src="/assets/cards/monster-ability-cards/{{ cardClassId }}/back.png"
+  />
+  <app-button (click)="shuffleCards()">Shuffle</app-button>
+</div>

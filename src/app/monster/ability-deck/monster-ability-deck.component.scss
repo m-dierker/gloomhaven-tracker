@@ -1,0 +1,14 @@
+.deck {
+  display: flex;
+  flex-direction: row;
+  padding: 16px;
+  gap: 32px;
+  width: 300px;
+  align-items: center;
+}
+
+img {
+  border-radius: 16px;
+  box-shadow: 8px 8px 10px 0px rgba(0, 0, 0, 0.5);
+  max-width: 100%;
+}
