@@ -6,11 +6,14 @@ button {
   border: #886922 4px double;
   border-radius: 4px;
   display: flex;
+  justify-content: center;
 
   padding: 2px 8px;
 
   font-family: "Nyala";
   font-size: 18pt;
+
+  width: 100%;
 
   ::ng-deep img {
     // Add a margin to an icon if there is one.

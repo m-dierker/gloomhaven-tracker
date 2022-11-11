@@ -3,12 +3,25 @@
   flex-direction: row;
   padding: 16px;
   gap: 32px;
-  width: 300px;
+  width: 100%;
   align-items: center;
 }
 
 img {
   border-radius: 16px;
   box-shadow: 8px 8px 10px 0px rgba(0, 0, 0, 0.5);
-  max-width: 100%;
+  max-width: 300px;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 32px;
+  height: 200px;
+  width: 120px;
+
+  app-button {
+    width: 100%;
+  }
 }

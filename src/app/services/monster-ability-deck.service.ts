@@ -44,6 +44,23 @@ export class MonsterAbilityDeckService {
     });
   }
 
+  undoFlip(cardClassId: string): Promise<void> {
+    return runTransaction(this.firestore, async (t) => {
+      const oldDeck = (
+        await t.get(this.dbRef.monsterAbilityDeckDoc(cardClassId))
+      ).data();
+      if (oldDeck.flipped.length === 0) {
+        alert("No cards to undo");
+        return;
+      }
+      const undoCard = oldDeck.flipped.splice(0, 1)[0];
+      t.set(this.dbRef.monsterAbilityDeckDoc(cardClassId), {
+        flipped: oldDeck.flipped,
+        unflipped: [...oldDeck.unflipped, undoCard],
+      });
+    });
+  }
+
   shuffleCards(cardClassId: string): Promise<void> {
     return setDoc(this.dbRef.monsterAbilityDeckDoc(cardClassId), {
       flipped: [],

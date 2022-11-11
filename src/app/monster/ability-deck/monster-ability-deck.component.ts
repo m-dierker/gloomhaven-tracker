@@ -34,4 +34,8 @@ export class MonsterAbilityDeckComponent implements OnInit, OnChanges {
   shuffleCards() {
     this.mAbilityDeck.shuffleCards(this.cardClassId);
   }
+
+  undoFlip() {
+    this.mAbilityDeck.undoFlip(this.cardClassId);
+  }
 }

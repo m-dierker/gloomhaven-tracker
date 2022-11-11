@@ -9,5 +9,10 @@
     (click)="drawCard()"
     src="/assets/cards/monster-ability-cards/{{ cardClassId }}/back.png"
   />
-  <app-button (click)="shuffleCards()">Shuffle</app-button>
+  <div class="controls">
+    <app-button (click)="shuffleCards()">Shuffle</app-button>
+    <app-button (click)="undoFlip()"
+      >Undo ({{ deck.flipped.length }})</app-button
+    >
+  </div>
 </div>
