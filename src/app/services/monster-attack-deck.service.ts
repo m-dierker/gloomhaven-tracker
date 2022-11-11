@@ -72,6 +72,25 @@ export class MonsterAttackDeckService {
     });
   }
 
+  async undoLastDraw(): Promise<void> {
+    return runTransaction(this.firestore, async (t) => {
+      const party = await (await t.get(this.dbRef.defaultPartyDoc())).data();
+      const oldDeck = party.monsterDeck;
+      const oldFlipped = oldDeck.flipped;
+      if (oldDeck.flipped.length === 0) {
+        alert("No cards to undo");
+        return;
+      }
+      const cardToUndo = oldFlipped.splice(0, 1)[0];
+      t.update(this.dbRef.defaultPartyDoc(), {
+        monsterDeck: {
+          unflipped: [cardToUndo].concat(oldDeck.unflipped),
+          flipped: oldFlipped,
+        },
+      });
+    });
+  }
+
   addCard(card: AttackModifier): Promise<void> {
     return runTransaction(this.firestore, async (t) => {
       const party = await (await t.get(this.dbRef.defaultPartyDoc())).data();

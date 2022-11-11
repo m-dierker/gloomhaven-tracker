@@ -99,6 +99,10 @@ export class MonsterAttackDeckDisplayComponent implements OnInit {
     this.mAttackDeck.addCard(card);
   }
 
+  public undoLastDraw() {
+    this.mAttackDeck.undoLastDraw();
+  }
+
   public toggleHistory() {
     this.historyVisible = !this.historyVisible;
   }
@@ -125,6 +129,7 @@ export class MonsterAttackDeckDisplayComponent implements OnInit {
         this.animatingFlipped = false;
         setTimeout(() => {
           this.animatingCard = undefined;
+          this.allFlippedCards = [];
           resolve();
         }, FLIP_ANIMATION_DURATION_MS);
       }, AFTER_DOM_THRESHOLD_MS);

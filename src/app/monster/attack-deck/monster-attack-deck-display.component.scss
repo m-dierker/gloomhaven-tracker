@@ -11,8 +11,8 @@ $animation-offset: 35px;
 main {
   padding-top: 10px;
   perspective: 1000px;
-  max-width: 380px;
   min-height: 100vh;
+  max-width: 380px;
 }
 
 .history {
@@ -81,6 +81,11 @@ app-monster-attack-deck-card {
   }
 }
 
+.deckShadow {
+  border-radius: 16px;
+  box-shadow: 8px 8px 10px 0px rgba(0, 0, 0, 0.5);
+}
+
 // TODO: FIX THIS AWFUL HACK.
 .controls {
   display: flex;
@@ -91,17 +96,3 @@ app-monster-attack-deck-card {
   padding: 16px;
   width: 100%;
 }
-
-// .animatedCardStack app-monster-attack-deck-card {
-//   position: absolute;
-//   top: 0;
-//   left: 0;
-//   width: 100%;
-
-//   .animatedCardBack {
-//   }
-
-//   &.animatedCardFront {
-//     backface-visibility: hidden;
-//   }
-// }

@@ -4,6 +4,7 @@
       (click)="toggleHistory()"
       [val]="lastCard"
       [flipped]="true"
+      class="deckShadow"
       id="flippedCard"
     ></app-monster-attack-deck-card>
     <div class="history" *ngIf="historyVisible">
@@ -17,7 +18,7 @@
       <app-monster-attack-deck-card
         [flipped]="false"
         (click)="drawCard()"
-        class="cardDeck"
+        class="cardDeck deckShadow"
       ></app-monster-attack-deck-card>
 
       <div
@@ -40,13 +41,16 @@
         </app-monster-attack-deck-card>
       </div>
     </div>
-    <div class="controls">
-      <app-button (click)="addToDeck(AttackModifier.BLESS)"
-        >Add Bless ({{ blessCount }})</app-button
-      >
-      <app-button (click)="addToDeck(AttackModifier.CURSE)"
-        >Add Curse ({{ curseCount }})</app-button
-      >
-    </div>
   </main>
+  <div class="controls">
+    <app-button (click)="addToDeck(AttackModifier.BLESS)"
+      >Add Bless ({{ blessCount }})</app-button
+    >
+    <app-button (click)="addToDeck(AttackModifier.CURSE)"
+      >Add Curse ({{ curseCount }})</app-button
+    >
+    <app-button (click)="undoLastDraw()"
+      >Undo Last ({{ allFlippedCards.length }})</app-button
+    >
+  </div>
 </div>
