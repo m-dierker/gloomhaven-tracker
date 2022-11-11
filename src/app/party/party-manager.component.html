@@ -6,9 +6,13 @@
       <app-party-monster-tracker></app-party-monster-tracker>
       <hr />
       <app-party-add-monster></app-party-add-monster>
-      <div class="game-controls">
+      <div class="game-controls" *ngIf="party">
         <a href="#" (click)="resetGameState()">Fully reset game</a><br />
         <a href="#" (click)="changeScenario()">Change scenario</a><br />
+        <a href="#" (click)="changeScenarioLevel()"
+          >Change scenario level ({{ party.scenarioLevel }})</a
+        ><br />
+        <a routerLink="/admin" *ngIf="isAdmin">Admin panel</a><br />
         <a href="#" (click)="logout()" *ngIf="user"
           >Log out {{ user.displayName }}</a
         >

@@ -7,7 +7,11 @@ import { DbService } from "../services/db.service";
 import { ResetService } from "../services/reset.service";
 
 const MAX_SCENARIO = 95;
-const MIN_SCENARIO = 1;
+// Scenario 0 = debugging scenario with all monsters.
+const MIN_SCENARIO = 0;
+
+const MAX_SCENARIO_LEVEL = 7;
+const MIN_SCENARIO_LEVEL = 0;
 
 @Component({
   selector: "party-manager",
@@ -18,6 +22,7 @@ export class PartyManagerComponent implements OnInit, OnDestroy {
   public party: Party;
 
   public user: User;
+  public isAdmin: boolean;
   private user$: Subscription;
 
   constructor(
@@ -37,6 +42,8 @@ export class PartyManagerComponent implements OnInit, OnDestroy {
         return;
       }
       this.user = user;
+      // Haaaaaaacks. (DB blocks things, this is just for UI.)
+      this.isAdmin = user.uid == "BSzss3ZuWLVfW8qB3m5IlNIBX432";
     });
 
     // this.initializeChromecast();
@@ -68,15 +75,31 @@ export class PartyManagerComponent implements OnInit, OnDestroy {
     if (
       scenarioNum < MIN_SCENARIO ||
       scenarioNum > MAX_SCENARIO ||
-      scenarioNum == NaN
+      isNaN(scenarioNum)
     ) {
       alert(
         `Invalid scenario. Enter just a number ${MIN_SCENARIO}-${MAX_SCENARIO}.`
       );
       return;
     }
-    await this.db.updateScenarioLevel(scenarioNum);
+    await this.db.updateScenarioNumber(scenarioNum);
     alert("Scenario updated!");
+  }
+
+  async changeScenarioLevel() {
+    const newLevel = prompt("Enter new scenario level: ");
+    const scenarioLevel = parseInt(newLevel);
+    if (
+      scenarioLevel < MIN_SCENARIO_LEVEL ||
+      scenarioLevel > MAX_SCENARIO_LEVEL ||
+      isNaN(scenarioLevel)
+    ) {
+      alert(
+        `Invalid scenario level. Enter just a number ${MIN_SCENARIO_LEVEL}-${MAX_SCENARIO_LEVEL}.`
+      );
+      return;
+    }
+    await this.db.updateScenarioLevel(scenarioLevel);
   }
 
   async logout() {

@@ -4,7 +4,6 @@ import { updateDoc, doc } from "firebase/firestore";
 import { map, Observable } from "rxjs";
 import { AttackModifier, AttackModifierUtil } from "src/types/attack-modifiers";
 import { MonsterDeck, Party } from "src/types/party";
-import { DEFAULT_PARTY } from "../db/db-constants";
 import { DbRefService } from "./db-ref.service";
 import { DbService } from "./db.service";
 

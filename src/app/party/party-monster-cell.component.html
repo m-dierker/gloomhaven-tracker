@@ -29,18 +29,31 @@
       </progressbar>
     </div>
   </div>
-  <div class="monster-statuses" *ngIf="statusesVisible">
-    <div
-      class="monster-status"
-      *ngFor="let status of allStatuses"
-      [class.active]="enemy.hasStatus(status)"
-      (click)="toggleStatus(status)"
-    >
-      <img class="monster-status-icon" src="{{ status.getImgPath() }}" />
-      {{ status.displayName }}
+  <div class="monster-dropdown" *ngIf="dropdownVisible">
+    <div class="monster-statuses">
+      <div
+        class="monster-status"
+        *ngFor="let status of allStatuses"
+        [class.active]="enemy.hasStatus(status)"
+        (click)="toggleStatus(status)"
+      >
+        <img class="monster-status-icon" src="{{ status.getImgPath() }}" />
+        {{ status.displayName }}
+      </div>
+    </div>
+    <div class="edit-controls" *ngIf="!editsVisible">
+      <app-button (click)="toggleEditsVisible()" *ngIf="!editsVisible"
+        >Edit</app-button
+      >
+    </div>
+    <div class="edit-controls" *ngIf="editsVisible">
+      <app-button (click)="changeToken()">Token</app-button>
+      <app-button *ngIf="enemy.isMonster()" (click)="toggleElite()"
+        >Make {{ monster.isElite() ? "Normal" : "Elite" }}
+      </app-button>
     </div>
   </div>
-  <ng-container *ngIf="!statusesVisible">
+  <ng-container *ngIf="!dropdownVisible">
     <div
       class="monster-active-statuses"
       *ngFor="let status of enemy.getStatuses()"

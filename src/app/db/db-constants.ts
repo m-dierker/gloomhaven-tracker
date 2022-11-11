@@ -10,6 +10,8 @@ export const PARTY_BOSSES_COLLECTION = "bosses";
 
 export const SCENARIOS_COLLECTION = "scenarios";
 
+export const USERS_COLLECTION = "users";
+
 export const DEFAULT_PARTY = "amen";
 
 /** Storage */

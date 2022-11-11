@@ -43,6 +43,10 @@ export abstract class Enemy {
     return this.scenarioData.tokenNum;
   }
 
+  setTokenNum(newNum: number) {
+    this.scenarioData.tokenNum = newNum;
+  }
+
   /** Returns a unique ID for this instance of this enemy, globally unique. */
   getScenarioId() {
     return this.scenarioData.id;
@@ -95,6 +99,9 @@ export abstract class Enemy {
   isDead(): boolean {
     return this.getHealth() <= 0;
   }
+
+  abstract isMonster(): boolean;
+  abstract isBoss(): boolean;
 
   compareTo(other: Enemy) {
     if (this.isDead() !== other.isDead()) {

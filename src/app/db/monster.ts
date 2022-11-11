@@ -28,8 +28,22 @@ export class Monster extends Enemy {
     this.enemyStats.displayName = this.monsterData.displayName;
   }
 
+  setElite(isElite: boolean) {
+    this.scenarioData.monsterData.type = isElite
+      ? MonsterType.ELITE
+      : MonsterType.NORMAL;
+  }
+
   isElite(): boolean {
     return this.scenarioData.monsterData.type == MonsterType.ELITE;
+  }
+
+  isMonster(): boolean {
+    return true;
+  }
+
+  isBoss(): boolean {
+    return false;
   }
 
   /**

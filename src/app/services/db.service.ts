@@ -1,17 +1,9 @@
 import { Injectable } from "@angular/core";
-import {
-  Observable,
-  ReplaySubject,
-  of,
-  forkJoin,
-  from,
-  combineLatest,
-} from "rxjs";
+import { Observable, ReplaySubject, of, forkJoin, from } from "rxjs";
 import {
   map,
   first,
   switchMap,
-  flatMap,
   mergeMap,
   combineLatestWith,
 } from "rxjs/operators";
@@ -19,10 +11,6 @@ import { MonsterData, BossData } from "../../types/monsters";
 import {
   MONSTERS_COLLECTION,
   BOSSES_COLLECTION,
-  PARTY_COLLECTION as PARTIES_COLLECTION,
-  DEFAULT_PARTY,
-  PARTY_MONSTERS_COLLECTION,
-  PARTY_COLLECTION,
   GAME_BUNDLE_NAME,
 } from "../db/db-constants";
 import { Party } from "../../types/party";
@@ -40,7 +28,6 @@ import {
   writeBatch,
 } from "@angular/fire/firestore";
 import {
-  arrayRemove,
   deleteDoc,
   getDocFromCache,
   getDocsFromCache,
@@ -59,7 +46,6 @@ import { EnemyClassId, EnemyType } from "src/types/enemy";
 import { Boss } from "../db/boss";
 import { GameContext } from "src/types/game";
 import { ScenarioInfo } from "../db/scenario";
-import { AttackModifierUtil } from "src/types/attack-modifiers";
 
 @Injectable({
   providedIn: "root",
@@ -108,12 +94,7 @@ export class DbService {
   createPartyMonsters(newMonsters: ScenarioEnemyData[]) {
     const batch = writeBatch(this.firestore);
     for (const newMonster of newMonsters) {
-      const newMonsterDoc = doc(
-        collection(
-          this.firestore,
-          `${PARTIES_COLLECTION}/${DEFAULT_PARTY}/${PARTY_MONSTERS_COLLECTION}`
-        )
-      );
+      const newMonsterDoc = doc(this.dbRef.partyMonstersCollection());
       batch.set(newMonsterDoc, newMonster);
     }
     batch.commit();
@@ -207,8 +188,6 @@ export class DbService {
     return batch.commit();
   }
 
-  private async resetMonsterDeck() {}
-
   /**
    * Returns an Enemy wrapper for the given ScenarioEnemyData.
    * Uses cached Enemy if possible.
@@ -252,10 +231,10 @@ export class DbService {
 
   saveEnemy(enemy: Enemy) {
     const saveData = enemy.getSaveData();
-    console.log("savedata", saveData);
     const enemyDoc = doc(
       this.firestore,
-      `${PARTIES_COLLECTION}/${DEFAULT_PARTY}/${PARTY_MONSTERS_COLLECTION}/${saveData.id}`
+      this.dbRef.partyMonstersCollection().path,
+      saveData.id
     );
     // Remove dead enemies automatically.
     if (enemy.isDead()) {
@@ -268,20 +247,23 @@ export class DbService {
   getParty(): Observable<Party> {
     if (!this.partySubj) {
       this.partySubj = new ReplaySubject(1);
-      docSnapshots(
-        doc(this.firestore, `${PARTIES_COLLECTION}/${DEFAULT_PARTY}`)
-      ).subscribe((snap) => this.partySubj.next(snap.data() as Party));
+      docSnapshots(this.dbRef.defaultPartyDoc()).subscribe((snap) =>
+        this.partySubj.next(snap.data() as Party)
+      );
     }
     return this.partySubj.asObservable();
   }
 
-  updateScenarioLevel(newLevel: number): Promise<void> {
-    return updateDoc(
-      doc(this.firestore, `${PARTIES_COLLECTION}/${DEFAULT_PARTY}`),
-      {
-        activeScenario: `gh-${newLevel}`,
-      }
-    );
+  updateScenarioNumber(newLevel: number): Promise<void> {
+    return updateDoc(this.dbRef.defaultPartyDoc(), {
+      activeScenario: `gh-${newLevel}`,
+    });
+  }
+
+  updateScenarioLevel(scenarioLevel: number): Promise<void> {
+    return updateDoc(this.dbRef.defaultPartyDoc(), {
+      scenarioLevel,
+    });
   }
 
   /** Returns a streaming list of element updates. This is done so a tracker can handle bulk updates at once. Each update includes all elements. */

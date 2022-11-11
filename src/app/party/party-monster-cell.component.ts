@@ -26,7 +26,8 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   public isBoss: boolean;
 
   public allStatuses: StatusEffect[];
-  public statusesVisible = false;
+  public dropdownVisible = false;
+  public editsVisible = false;
 
   constructor(private db: DbService) {}
 
@@ -54,7 +55,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   }
 
   toggleStatusesVisible() {
-    this.statusesVisible = !this.statusesVisible;
+    this.dropdownVisible = !this.dropdownVisible;
   }
 
   toggleStatus(status: StatusEffect) {
@@ -64,6 +65,33 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
       this.enemy.setStatus(status, true);
     }
     this.db.saveEnemy(this.enemy);
-    this.statusesVisible = false;
+    this.dropdownVisible = false;
+  }
+
+  toggleEditsVisible() {
+    this.editsVisible = !this.editsVisible;
+  }
+
+  toggleElite() {
+    if (!this.monster) {
+      return;
+    }
+    this.monster.setElite(!this.monster.isElite());
+    this.db.saveEnemy(this.enemy);
+    this.editsVisible = false;
+    this.dropdownVisible = false;
+  }
+
+  changeToken() {
+    const newId = prompt("Enter new token ID: ");
+    const newIdNum = parseInt(newId);
+    if (newIdNum == NaN) {
+      alert("Invalid, enter just a token number");
+      return;
+    }
+    this.monster.setTokenNum(newIdNum);
+    this.db.saveEnemy(this.enemy);
+    this.editsVisible = false;
+    this.dropdownVisible = false;
   }
 }

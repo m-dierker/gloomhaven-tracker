@@ -1,5 +1,9 @@
 import { BrowserModule } from "@angular/platform-browser";
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import {
+  NgModule,
+  CUSTOM_ELEMENTS_SCHEMA,
+  APP_INITIALIZER,
+} from "@angular/core";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -16,6 +20,7 @@ import { PartyMonsterCellComponent } from "./party/party-monster-cell.component"
 import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
 import {
   enableMultiTabIndexedDbPersistence,
+  Firestore,
   getFirestore,
   provideFirestore,
 } from "@angular/fire/firestore";
@@ -25,14 +30,16 @@ import { PartyElementTrackerComponent } from "./party/elements/party-element-tra
 import { PartyElementTrackerCellComponent } from "./party/elements/party-element-tracker-cell.component";
 import { LoginComponent } from "./ui/login.component";
 import { ButtonComponent } from "./ui/button.component";
-import { provideAuth } from "@angular/fire/auth";
+import { Auth, provideAuth } from "@angular/fire/auth";
 import { getAuth } from "firebase/auth";
 import { PartyRoleHeaderComponent } from "./party/party-role-header.component";
 import { PartyMonsterTrackerComponent } from "./party/party-monster-tracker.component";
 import { PartyAddMonsterComponent } from "./party/party-add-monster.component";
 import { BossCellComponent } from "./display/boss-cell.component";
-import { MonsterAttackDeckDisplayComponent } from './monster/attack-deck/monster-attack-deck-display.component';
-import { MonsterAttackDeckCardComponent } from './monster/attack-deck/monster-attack-deck-card.component';
+import { MonsterAttackDeckDisplayComponent } from "./monster/attack-deck/monster-attack-deck-display.component";
+import { MonsterAttackDeckCardComponent } from "./monster/attack-deck/monster-attack-deck-card.component";
+import { AppBootstrap } from "./services/bootstrap";
+import { AdminComponent } from './admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +61,7 @@ import { MonsterAttackDeckCardComponent } from './monster/attack-deck/monster-at
     BossCellComponent,
     MonsterAttackDeckDisplayComponent,
     MonsterAttackDeckCardComponent,
+    AdminComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -85,7 +93,15 @@ import { MonsterAttackDeckCardComponent } from './monster/attack-deck/monster-at
     }),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: AppBootstrap.bootstrap,
+      // deps must exactly match AppBootstrap.bootstrap args.
+      deps: [Firestore, Auth],
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

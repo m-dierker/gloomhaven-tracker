@@ -18,6 +18,7 @@ import { UserData } from "../db/user";
 import { ScenarioEnemyData } from "src/types/scenario";
 import { ScenarioInfo } from "../db/scenario";
 import { Party } from "src/types/party";
+import { AppBootstrap } from "./bootstrap";
 
 @Injectable({
   providedIn: "root",
@@ -25,10 +26,15 @@ import { Party } from "src/types/party";
 export class DbRefService {
   constructor(private firestore: Firestore) {}
 
+  /** Returns the active party ID for this session. */
+  private partyId(): string {
+    return AppBootstrap.partyId;
+  }
+
   defaultPartyDoc(): DocumentReference<Party> {
     return doc(
       this.firestore,
-      `${PARTIES_COLLECTION}/${DEFAULT_PARTY}`
+      `${PARTIES_COLLECTION}/${this.partyId()}`
     ) as DocumentReference<Party>;
   }
 
@@ -36,7 +42,7 @@ export class DbRefService {
   elementDoc(element: ElementType): DocumentReference<ElementData> {
     return doc(
       this.firestore,
-      `${PARTIES_COLLECTION}/${DEFAULT_PARTY}/elements/${element}`
+      `${PARTIES_COLLECTION}/${this.partyId()}/elements/${element}`
     ) as DocumentReference<ElementData>;
   }
 
@@ -44,7 +50,7 @@ export class DbRefService {
   elementsCollection(): CollectionReference<ElementData> {
     return collection(
       this.firestore,
-      `${PARTIES_COLLECTION}/${DEFAULT_PARTY}/elements`
+      `${PARTIES_COLLECTION}/${this.partyId()}/elements`
     ) as CollectionReference<ElementData>;
   }
 
@@ -52,7 +58,7 @@ export class DbRefService {
   partyMonstersCollection(): CollectionReference<ScenarioEnemyData> {
     return collection(
       this.firestore,
-      `${PARTY_COLLECTION}/${DEFAULT_PARTY}/${PARTY_MONSTERS_COLLECTION}`
+      `${PARTY_COLLECTION}/${this.partyId()}/${PARTY_MONSTERS_COLLECTION}`
     ) as CollectionReference<ScenarioEnemyData>;
   }
 
@@ -66,7 +72,7 @@ export class DbRefService {
   userDoc(uid: string): DocumentReference<UserData> {
     return doc(
       this.firestore,
-      `${PARTIES_COLLECTION}/${DEFAULT_PARTY}/members/${uid}`
+      `${PARTIES_COLLECTION}/${this.partyId()}/members/${uid}`
     ) as DocumentReference<UserData>;
   }
 }

@@ -34,6 +34,14 @@ export class Boss extends Enemy {
     enemyStats.displayName = this.bossData.displayName;
     this.enemyStats = enemyStats;
   }
+
+  isMonster(): boolean {
+    return false;
+  }
+
+  isBoss(): boolean {
+    return true;
+  }
 }
 
 /**

@@ -1,0 +1,62 @@
+<h1>Create Party</h1>
+<form (ngSubmit)="createParty()">
+  <input
+    type="text"
+    required
+    [(ngModel)]="partyId"
+    name="partyId"
+    placeholder="Party ID"
+  />
+  <input
+    type="text"
+    required
+    [(ngModel)]="newParty.numCharacters"
+    name="numCharacters"
+    placeholder="Num Characters"
+  />
+  <input
+    type="text"
+    required
+    [(ngModel)]="newParty.partyName"
+    name="partyName"
+    placeholder="Party Name"
+  />
+  <button type="submit">Create Party</button>
+</form>
+
+<h1>Add to party</h1>
+<form (ngSubmit)="addPartyMember()">
+  <input
+    type="text"
+    name="partyId"
+    required
+    [(ngModel)]="partyId"
+    placeholder="Party ID"
+  />
+  <input type="text" name="uid" required [(ngModel)]="uid" placeholder="UID" />
+  <select
+    type="select"
+    name="addUserClassname"
+    required
+    [(ngModel)]="addUserClassname"
+  >
+    <option selected disabled>Class Name</option>
+    <option *ngFor="let data of roleClassOptions" [value]="data.id">
+      {{ data.name }}
+    </option>
+  </select>
+  <button type="submit">Add user to party</button>
+</form>
+
+<h1>Set Party</h1>
+<form (ngSubmit)="setParty()">
+  <input
+    type="text"
+    name="partyId"
+    required
+    [(ngModel)]="partyId"
+    placeholder="Party ID"
+  />
+  <input type="text" name="uid" required [(ngModel)]="uid" placeholder="UID" />
+  <button type="submit">Set user's party</button>
+</form>

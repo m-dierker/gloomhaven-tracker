@@ -70,14 +70,18 @@ progressbar {
   margin-top: 3px;
 }
 
-.monster-status-text {
-  align-self: center;
-  font-size: 14pt;
-  margin-left: 5px;
+.monster-statuses {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  height: 160px;
+  justify-content: space-between;
+  margin-top: 16px;
 }
 
 .monster-status {
-  margin: 8px;
+  // 4 per column.
+  height: 25%;
 
   &:not(.active) {
     color: gray;
@@ -88,6 +92,12 @@ progressbar {
   }
 }
 
+.monster-status-text {
+  align-self: center;
+  font-size: 14pt;
+  margin-left: 5px;
+}
+
 .monster-status-icon {
   height: 32px;
   width: 32px;
@@ -95,4 +105,10 @@ progressbar {
 
 .elite .monster-id {
   color: gold;
+}
+
+.edit-controls {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
 }

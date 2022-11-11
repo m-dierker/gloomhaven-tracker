@@ -1,4 +1,4 @@
-export enum RoleClasses {
+export enum RoleClass {
   BEAST_TYRANT = "beast_tyrant",
   BERSERKER = "berserker",
   BRUTE = "brute",

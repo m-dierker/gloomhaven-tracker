@@ -1,6 +1,6 @@
-import { RoleClasses } from "./classes";
+import { RoleClass } from "./classes";
 
 export interface UserData {
-  class: RoleClasses;
+  class: RoleClass;
   member: boolean;
 }
