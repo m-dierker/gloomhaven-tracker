@@ -54,6 +54,7 @@ export function getClassCardId(enemy: ScenarioEnemyData) {
     case "black_imp":
       return "imp";
     case "inox_shaman":
+    case "vermling_shaman":
       return "shaman";
     case "vermling_scout":
       return "scout";

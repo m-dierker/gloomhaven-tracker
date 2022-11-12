@@ -14,5 +14,6 @@ export enum RoleClass {
   SOOTHSINGER = "soothsinger",
   SPELLWEAVER = "spellweaver",
   SUMMONER = "summoner",
+  SUNKEEPER = "sunkeeper",
   TINKERER = "tinkerer",
 }
