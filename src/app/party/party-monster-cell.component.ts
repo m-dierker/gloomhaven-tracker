@@ -10,6 +10,7 @@ import { DbService } from "../services/db.service";
 import { StatusEffect } from "../../types/status";
 import { Enemy } from "../db/enemy";
 import { EnemyType } from "src/types/enemy";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "party-monster-cell",
@@ -29,6 +30,10 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   public dropdownVisible = false;
   public editsVisible = false;
 
+  public localHealth?: number = undefined;
+
+  private enemy$: Subscription;
+
   constructor(private db: DbService) {}
 
   ngOnInit() {
@@ -36,6 +41,8 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    // TODO: Understand why this method runs 10x for every change. -_-
+    console.log("changes!", changes);
     if (changes.enemy) {
       if (this.enemy.enemyType == EnemyType.MONSTER) {
         this.monster = this.enemy as Monster;
@@ -46,12 +53,55 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
       if (this.enemy.enemyType == EnemyType.BOSS) {
         this.isBoss = true;
       }
+      if (changes.enemy.currentValue !== changes.enemy.previousValue) {
+        if (this.enemy$) {
+          this.enemy$.unsubscribe();
+        }
+        this.enemy$ = this.enemy.onScenarioDataUpdate.subscribe(() => {
+          // Network changes blow away local changes.
+          if (this.enemy.getHealth() !== this.localHealth) {
+            console.log("blowing away local");
+            this.localHealth = undefined;
+          }
+        });
+      }
     }
   }
 
   changeHealth(amount: number) {
-    this.enemy.setHealth(this.enemy.getHealth() + amount);
+    if (this.localHealth === undefined) {
+      this.localHealth = this.monster.getHealth();
+    }
+    this.localHealth += amount;
+    if (this.localHealth < 0) {
+      this.localHealth = 0;
+    }
+  }
+
+  setLocalHealth(newLocalHealth: number) {
+    this.localHealth = newLocalHealth;
+  }
+
+  applyLocalHealth() {
+    this.enemy.setHealth(this.localHealth);
     this.db.saveEnemy(this.enemy);
+    this.localHealth = undefined;
+  }
+
+  /** Display string for how much health has changed. */
+  localHealthDeltaStr(): string {
+    if (this.localHealth === undefined) {
+      return "";
+    }
+
+    const diff = this.enemy.getHealth() - this.localHealth;
+    if (diff === 0) {
+      return "Cancel";
+    } else if (diff < 0) {
+      return `Add ${-1 * diff} heal`;
+    } else {
+      return `Do ${diff} dmg`;
+    }
   }
 
   toggleStatusesVisible() {

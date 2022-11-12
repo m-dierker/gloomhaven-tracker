@@ -11,17 +11,26 @@
       <div class="health-controls">
         <img src="/assets/icons/minus_1.png" (click)="changeHealth(-1)" />
         <div class="health-display flex-space">
-          {{ enemy.getHealth() }} / {{ enemy.getMaxHealth() }}
+          {{ localHealth !== undefined ? localHealth : enemy.getHealth() }} /
+          {{ enemy.getMaxHealth() }}
         </div>
         <img src="/assets/icons/plus_1.png" (click)="changeHealth(1)" />
       </div>
       <progressbar
         [animate]="true"
-        [value]="enemy.getHealth()"
+        [value]="localHealth !== undefined ? localHealth : enemy.getHealth()"
         [max]="enemy.getMaxHealth()"
         type="danger"
       >
       </progressbar>
+      <div class="health-buttons" *ngIf="localHealth !== undefined">
+        <app-button (click)="setLocalHealth(0)" [disabled]="localHealth === 0"
+          >Kill</app-button
+        >
+        <app-button (click)="applyLocalHealth()">{{
+          localHealthDeltaStr()
+        }}</app-button>
+      </div>
     </div>
   </div>
   <div class="monster-dropdown" *ngIf="dropdownVisible">

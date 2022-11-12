@@ -1,3 +1,4 @@
+import { EventEmitter } from "@angular/core";
 import { EnemyClassId } from "src/types/enemy";
 import { GameContext } from "src/types/game";
 import { ScenarioEnemyData } from "src/types/scenario";
@@ -20,6 +21,8 @@ export abstract class Enemy {
 
   /** Stats specific to this level of enemy. */
   private enemyStats_: EnemyStats;
+
+  public onScenarioDataUpdate: EventEmitter<void> = new EventEmitter();
 
   /**
    * Returns a unique ID for this monster class (ex: "Bandit Archer" or "Jekserah").
@@ -140,12 +143,14 @@ export abstract class Enemy {
     return this.scenarioData_;
   }
 
-  /** Exposes setting scenarioData to 4ild classes. */
+  /** Exposes setting scenarioData to child classes. */
   protected set scenarioData(data: ScenarioEnemyData) {
     this.scenarioData_ = data;
   }
 
   onNewScenarioData(data: ScenarioEnemyData, context: GameContext) {
     this.scenarioData = data;
+    // Emit an update so controllers know there is one.
+    this.onScenarioDataUpdate.emit();
   }
 }
