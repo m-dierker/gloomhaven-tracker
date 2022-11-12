@@ -76,3 +76,19 @@ $header-box-shadow-size: 10px;
 .role-mindthief {
   @include role-color("mindthief", "Mindthief", #8097c7);
 }
+
+.role-beast_tyrant {
+  @include role-color("beast_tyrant", "Beast Tyrant", #ab8470);
+}
+
+.role-sunkeeper {
+  @include role-color("sunkeeper", "Sunkeeper", #f6dc8b);
+}
+
+.role-soothsinger {
+  @include role-color("soothsinger", "Soothsinger", #d9837a);
+}
+
+.role-scoundrel {
+  @include role-color("scoundrel", "Scoundrel", #9ec85d);
+}
