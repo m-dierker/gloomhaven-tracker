@@ -45,6 +45,7 @@ export class AppBootstrap {
               AppBootstrap.partyId = newParty;
               if (!resolvedBefore) {
                 resolvedBefore = true;
+                prevParty = newParty;
                 resolve();
                 return;
               }
