@@ -42,7 +42,6 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     // TODO: Understand why this method runs 10x for every change. -_-
-    console.log("changes!", changes);
     if (changes.enemy) {
       if (this.enemy.enemyType == EnemyType.MONSTER) {
         this.monster = this.enemy as Monster;

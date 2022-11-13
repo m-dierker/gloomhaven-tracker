@@ -1,5 +1,5 @@
 import { Auth } from "@angular/fire/auth";
-import { doc, Firestore, getDoc } from "@angular/fire/firestore";
+import { doc, docSnapshots, Firestore, getDoc } from "@angular/fire/firestore";
 import { setDoc } from "firebase/firestore";
 import { ConnectableObservable } from "rxjs";
 import { DEFAULT_PARTY, USERS_COLLECTION } from "../db/db-constants";
@@ -24,19 +24,35 @@ export class AppBootstrap {
             return;
           }
           const currentUserPath = `/${USERS_COLLECTION}/${user.uid}`;
-          const userSnap = await getDoc(doc(firestore, currentUserPath));
-          if (!userSnap.exists()) {
-            // Attach the user to the default party if they don't have a doc.
-            await setDoc(doc(firestore, currentUserPath), {
-              name: user.displayName,
-              party: DEFAULT_PARTY,
-            });
-            AppBootstrap.partyId = DEFAULT_PARTY;
-          } else {
-            AppBootstrap.partyId = (await userSnap.data()).party;
-          }
-
-          resolve();
+          // When the user's party changes, force a refresh. Not the best, but
+          // this is what it means to be bootstrapped with the party.
+          let resolvedBefore = false;
+          let prevParty: string = undefined;
+          docSnapshots(doc(firestore, currentUserPath)).subscribe(
+            async (userSnap) => {
+              // Note for future Matthew: I'm not 100% sure docSnapshots works with a doc that doesn't exist.
+              let newParty: string;
+              if (!userSnap.exists()) {
+                // Attach the user to the default party if they don't have a doc.
+                await setDoc(doc(firestore, currentUserPath), {
+                  name: user.displayName,
+                  party: DEFAULT_PARTY,
+                });
+                newParty = DEFAULT_PARTY;
+              } else {
+                newParty = (await userSnap.data()).party;
+              }
+              AppBootstrap.partyId = newParty;
+              if (!resolvedBefore) {
+                resolvedBefore = true;
+                resolve();
+                return;
+              }
+              if (newParty !== prevParty) {
+                window.location.reload();
+              }
+            }
+          );
         });
       });
     };
