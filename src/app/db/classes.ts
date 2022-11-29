@@ -1,4 +1,5 @@
 export enum RoleClass {
+  // Gloomhaven
   BEAST_TYRANT = "beast_tyrant",
   BERSERKER = "berserker",
   BRUTE = "brute",
@@ -16,4 +17,10 @@ export enum RoleClass {
   SUMMONER = "summoner",
   SUNKEEPER = "sunkeeper",
   TINKERER = "tinkerer",
+
+  // Jaws of the Lion
+  DEMOLITIONIST = "demolitionist",
+  HATCHET = "hatchet",
+  RED_GUARD = "red_guard",
+  VOIDWARDEN = "voidwarden",
 }

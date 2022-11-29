@@ -92,3 +92,20 @@ $header-box-shadow-size: 10px;
 .role-scoundrel {
   @include role-color("scoundrel", "Scoundrel", #9ec85d);
 }
+
+/** Jaws of the Lion */
+.role-demolitionist {
+  @include role-color("demolitionist", "Demolitionist", #d56e31);
+}
+
+.role-hatchet {
+  @include role-color("hatchet", "Hatchet", #507fb5);
+}
+
+.role-red_guard {
+  @include role-color("red_guard", "Red Guard", #d33c35);
+}
+
+.role-voidwarden {
+  @include role-color("voidwarden", "Voidwarden", #b7b3b2);
+}
