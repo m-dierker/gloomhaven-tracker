@@ -23,11 +23,19 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(private auth: Auth, private router: Router) {}
 
   ngOnInit(): void {
+    let nullUserSeen = false;
     this.user$ = authState(this.auth).subscribe((user) => {
       console.log("user", user);
-      if (user) {
-        this.router.navigateByUrl("/");
+      if (!user) {
+        nullUserSeen = true;
+        return;
       }
+      // bootstrap.ts doesn't currently work with in-page login. Refresh is needed.
+      if (nullUserSeen) {
+        window.location.reload();
+        return;
+      }
+      this.router.navigateByUrl("/");
     });
   }
 

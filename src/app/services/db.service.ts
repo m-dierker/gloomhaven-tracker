@@ -70,7 +70,7 @@ export class DbService {
     private dbRef: DbRefService,
     private auth: Auth
   ) {
-    this.initLocalStorage();
+    this.initLoginListener();
   }
 
   // TODO: Comment this + getAllBosses properly.
@@ -373,6 +373,16 @@ export class DbService {
         return enemyMap.get(enemyId);
       })
     );
+  }
+
+  private async initLoginListener() {
+    authState(this.auth).subscribe((user) => {
+      if (user) {
+        this.initLocalStorage();
+      } else {
+        console.log("Deferring DB initialization until user is logged in");
+      }
+    });
   }
 
   /** Reads bundle and initializes static storage. */
