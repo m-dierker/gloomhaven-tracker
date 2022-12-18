@@ -1,3 +1,5 @@
+import { GameBox } from "./gamebox";
+
 /** Top level interface for any enemy (Monsters or Boss). */
 export interface EnemyStats {
   displayName: string;
@@ -17,6 +19,9 @@ export interface MonsterData {
 
   /** Display name of the monster. */
   displayName: string;
+
+  /** The game the monster belongs to (Gloomhaven, Jaws of the Lion, etc). */
+  gamebox: GameBox;
 
   /** Level --> stats for a monster. */
   levelStats: { [level: number]: MonsterLevelStats };

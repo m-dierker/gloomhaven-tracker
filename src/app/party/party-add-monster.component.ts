@@ -127,6 +127,7 @@ export class PartyAddMonsterComponent implements OnInit {
       newIdsUsed.push(tokenNum);
       newMonsters.push(scenarioData);
     }
+    console.log("monsterData", newMonsters);
     this.db.createPartyMonsters(newMonsters);
     this.setVisible(false);
     this.resetForm();

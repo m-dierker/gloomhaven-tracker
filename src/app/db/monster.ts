@@ -25,6 +25,7 @@ export class Monster extends Enemy {
         getMonsterTypeDbString(data.monsterData.type)
       ],
     };
+    console.log(this.monsterData);
     this.enemyStats.displayName = this.monsterData.displayName;
   }
 

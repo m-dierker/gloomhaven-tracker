@@ -1,9 +1,11 @@
-const { initializeApp, cert } = require("firebase-admin/app");
-const { getFirestore } = require("firebase-admin/firestore");
-const { getStorage } = require("firebase-admin/storage");
-const fs = require("fs/promises");
+import { initializeApp, cert } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
+import { getStorage } from "firebase-admin/storage";
+import * as fs from "fs";
 
-const accountKey = require("../keys/glo2mhaven-tracker-firebase-adminsdk.json");
+const accountKey = JSON.parse(
+  fs.readFileSync("./keys/glo2mhaven-tracker-firebase-adminsdk.json").toString()
+);
 // TODO: See about merging with real source.
 const GAME_BUNDLE_NAME = "gamedata.bundle";
 
