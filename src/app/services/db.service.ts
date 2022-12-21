@@ -50,6 +50,7 @@ import { EnemyClassId, EnemyType } from "src/types/enemy";
 import { Boss } from "../db/boss";
 import { GameContext } from "src/types/game";
 import { ScenarioInfo } from "../db/scenario";
+import { GameBox } from "src/types/gamebox";
 
 @Injectable({
   providedIn: "root",
@@ -270,8 +271,18 @@ export class DbService {
   }
 
   updateScenarioNumber(newLevel: number): Promise<void> {
-    return updateDoc(this.dbRef.defaultPartyDoc(), {
-      activeScenario: `gh-${newLevel}`,
+    return new Promise((resolve) => {
+      this.partySubj.pipe(first()).subscribe(async (party) => {
+        console.log("party", party);
+        await updateDoc(this.dbRef.defaultPartyDoc(), {
+          // TODO: Matt........ make the same convention please.
+          activeScenario:
+            party.gamebox === GameBox.GLOOMHAVEN
+              ? `gh-${newLevel}`
+              : `jotl_${newLevel}`,
+        });
+        resolve();
+      });
     });
   }
 

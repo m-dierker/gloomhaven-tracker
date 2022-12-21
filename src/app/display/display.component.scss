@@ -9,6 +9,14 @@ main {
   justify-content: space-evenly;
 }
 
+.jotl-icon {
+  position: absolute;
+  top: 0px;
+  left: 8px;
+  height: 80px;
+  width: 60px;
+}
+
 .display-wrapper {
   background: url(/assets/bg_map_trimmed.jpg) no-repeat top center fixed;
   background-size: cover;

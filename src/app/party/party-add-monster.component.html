@@ -7,7 +7,7 @@
       *ngFor="let classId of scenarioInfo.monsterIds"
       (click)="selectEnemy(EnemyType.MONSTER, classId)"
     >
-      <img src="/assets/monsters/Vert-{{ classId }}.png" />
+      <app-enemy-image [dbClassId]="classId"></app-enemy-image>
     </div>
     <div
       class="select-enemy-choice boss"
