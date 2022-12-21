@@ -1,18 +1,18 @@
 .monster-name-wrapper {
-    display: flex;
-    font-family: 'Pirata One';
-    font-size: 30pt;
-    justify-content: center;
+  display: flex;
+  font-family: "Pirata One";
+  font-size: 30pt;
+  justify-content: center;
 }
 
-img {
-    align-self: center;
-    height: auto;
-    width: 80px;
+app-enemy-image {
+  align-self: center;
+  height: 80px;
+  width: 80px;
 }
 
 .monster-name {
-    align-self: center;
-    min-width: 200px;
-    padding-left: 10px;
+  align-self: center;
+  min-width: 200px;
+  padding-left: 10px;
 }

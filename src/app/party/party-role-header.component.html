@@ -2,6 +2,16 @@
   <div class="role-inner-header">
     <div class="role-icon"></div>
     <span class="role-name"></span>
-    <div class="role-spacer"></div>
+
+    <!-- TODO: Refactor to include all icons. -->
+    <div
+      class="role-spacer"
+      *ngIf="(party | async).gamebox != 'jotl'; else jotl"
+    ></div>
+    <ng-template #jotl>
+      <div class="game-icon">
+        <img src="/assets/icons/jotl.webp" />
+      </div>
+    </ng-template>
   </div>
 </div>

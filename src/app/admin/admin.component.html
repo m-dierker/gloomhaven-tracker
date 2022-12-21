@@ -21,6 +21,18 @@
     name="partyName"
     placeholder="Party Name"
   />
+  <select
+    type="select"
+    name="setGamebox"
+    required
+    [(ngModel)]="newParty.gamebox"
+  >
+    <option selected disabled>Select a game</option>
+    <option *ngFor="let data of gameboxOptions" [value]="data.id">
+      {{ data.name }}
+    </option>
+  </select>
+
   <button type="submit">Create Party</button>
 </form>
 

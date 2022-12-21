@@ -50,7 +50,10 @@ export class AppBootstrap {
                 return;
               }
               if (newParty !== prevParty) {
-                window.location.reload();
+                // Snooze in case this is the admin interface changing the party.
+                // This is so ugly....
+
+                setTimeout(() => window.location.reload(), 500);
               }
             }
           );

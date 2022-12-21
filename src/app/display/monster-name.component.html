@@ -1,4 +1,4 @@
 <div class="monster-name-wrapper" *ngIf="monster">
-  <img src="/assets/monsters/Horz-{{ monster.dbClassId }}.png" />
+  <app-enemy-image [dbClassId]="monster.dbClassId"></app-enemy-image>
   <div class="monster-name">{{ monster.displayName }}</div>
 </div>

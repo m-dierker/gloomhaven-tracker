@@ -6,6 +6,7 @@ import { Party } from "src/types/party";
 import { PARTY_COLLECTION, USERS_COLLECTION } from "../db/db-constants";
 import { RoleClass } from "../db/classes";
 import { ALL_ELEMENT_TYPES } from "../db/elements";
+import { GameBox } from "src/types/gamebox";
 
 @Injectable({
   providedIn: "root",
@@ -27,6 +28,8 @@ export class AdminService {
     const party: Party = {
       activeScenario: "gh-1",
       averageCharacterLevel: 1,
+      // Note to self: This field is untested.
+      gamebox: partyData.gamebox,
       numCharacters: partyData.numCharacters,
       monsterDeck: {
         flipped: [],

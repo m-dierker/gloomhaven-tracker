@@ -3,6 +3,7 @@
 .role-header {
   background: url("/assets/backgrounds/class_name_bg.png");
   background-size: cover;
+  // display: flex;
   height: 74px;
   padding: 8px;
 }
@@ -47,6 +48,18 @@ $header-box-shadow-size: 10px;
   .role-spacer {
     height: 50px;
     width: 50px;
+  }
+
+  .game-icon {
+    height: 50px;
+    width: 41px;
+    padding-right: 4px;
+
+    img {
+      height: 100%;
+      opacity: 0.8;
+      width: 100%;
+    }
   }
 
   .role-name {

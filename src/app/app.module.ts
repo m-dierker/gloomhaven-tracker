@@ -44,6 +44,7 @@ import { MonsterAbilityDisplayComponent } from './monster/ability-deck/monster-a
 import { MonsterAbilityDeckComponent } from './monster/ability-deck/monster-ability-deck.component';
 import { PartyMonsterNameComponent } from './party/party-monster-name.component';
 import { PartyMonsterTokenComponent } from './party/party-monster-token.component';
+import { EnemyImageComponent } from './monster/enemy-image.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { PartyMonsterTokenComponent } from './party/party-monster-token.componen
     MonsterAbilityDeckComponent,
     PartyMonsterNameComponent,
     PartyMonsterTokenComponent,
+    EnemyImageComponent,
   ],
   imports: [
     BrowserAnimationsModule,

@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { GameBox } from "src/types/gamebox";
 import { Party } from "src/types/party";
 import { RoleClass } from "../db/classes";
 import { AdminService } from "./admin.service";
@@ -16,6 +17,9 @@ export class AdminComponent implements OnInit {
   public addUserClassname: RoleClass;
   public roleClassOptions = Object.keys(RoleClass).map((val) => {
     return { name: val, id: RoleClass[val] };
+  });
+  public gameboxOptions = Object.keys(GameBox).map((val) => {
+    return { name: val, id: GameBox[val] };
   });
 
   constructor(private dbAdmin: AdminService) {}

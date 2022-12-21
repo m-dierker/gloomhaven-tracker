@@ -5,11 +5,10 @@
 .monster-id {
   display: flex;
   align-items: center;
-  margin-right: 10px;
 
-  img {
+  app-enemy-image {
     height: 60px;
-    margin-right: 4px;
+    margin-right: 16px;
     width: 60px;
   }
 

@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { Enemy } from "../db/enemy";
 
 @Component({
   selector: "app-party-monster-token",

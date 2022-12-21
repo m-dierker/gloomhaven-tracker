@@ -23,8 +23,10 @@ import {
   docSnapshots,
   Firestore,
   getDocs,
+  query,
   setDoc,
   updateDoc,
+  where,
   writeBatch,
 } from "@angular/fire/firestore";
 import {
@@ -33,6 +35,7 @@ import {
   getDocFromCache,
   getDocsFromCache,
   loadBundle,
+  Query,
   QueryDocumentSnapshot,
 } from "firebase/firestore";
 import { getBlob, getStorage, ref } from "firebase/storage";
@@ -73,7 +76,7 @@ export class DbService {
     this.initLoginListener();
   }
 
-  // TODO: Comment this + getAllBosses properly.
+  /** Returns all eligible monsters for this gamebox. */
   getAllMonsters(): Observable<MonsterData[]> {
     return this.monsterDataMapSubj.pipe(
       map((monsterMap) => {
@@ -413,32 +416,40 @@ export class DbService {
    * Initializes local storage for all monster stats.
    */
   private async initMonsterMap() {
-    this.monsterDataMapSubj.next(
-      await getCollectionMapById(
-        collection(
-          this.firestore,
-          MONSTERS_COLLECTION
-        ) as CollectionReference<MonsterData>
-      )
-    );
+    this.partySubj.subscribe(async (party) => {
+      this.monsterDataMapSubj.next(
+        await getCollectionMapById(
+          query(
+            collection(
+              this.firestore,
+              MONSTERS_COLLECTION
+            ) as CollectionReference<MonsterData>,
+            where("gamebox", "==", party.gamebox)
+          )
+        )
+      );
+    });
   }
 
   private async initBossMap() {
-    this.bossDataMapSubj.next(
-      await getCollectionMapById(
-        collection(
-          this.firestore,
-          BOSSES_COLLECTION
-        ) as CollectionReference<BossData>
-      )
-    );
+    this.partySubj.subscribe(async (party) => {
+      this.bossDataMapSubj.next(
+        await getCollectionMapById(
+          query(
+            collection(
+              this.firestore,
+              BOSSES_COLLECTION
+            ) as CollectionReference<BossData>,
+            where("gamebox", "==", party.gamebox)
+          )
+        )
+      );
+    });
   }
 }
 
 /** Returns a map of all docs in a collection by {id, all data}. Fires on update. */
-async function getCollectionMapById<T>(
-  ref: CollectionReference<T>
-): Promise<Map<string, T>> {
+async function getCollectionMapById<T>(ref: Query<T>): Promise<Map<string, T>> {
   const querySnap = await getDocsFromCache(ref);
   return new Map<string, T>(
     querySnap.docs.map((doc) => [doc.id, doc.data() as T])

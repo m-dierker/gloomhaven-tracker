@@ -1,5 +1,6 @@
 import { Monster } from "src/app/db/monster";
 import { AttackModifier } from "./attack-modifiers";
+import { GameBox } from "./gamebox";
 import { MonsterType } from "./monsters";
 
 export interface Party {
@@ -8,6 +9,11 @@ export interface Party {
   numCharacters: number;
   partyName: string;
   scenarioLevel: number;
+
+  /** Which game the party is playing
+   *
+   */
+  gamebox: GameBox;
 
   monsterDeck: MonsterDeck;
 }
