@@ -1,4 +1,4 @@
-import { MonsterData } from "../../src/types/monsters";
+import { BossData, MonsterData } from "../../src/types/monsters";
 
 import { promises as fs } from "fs";
 import { Firestore } from "@google-cloud/firestore";
@@ -15,6 +15,29 @@ async function importMonsters() {
     const monsterData = JSON.parse(
       (await fs.readFile(`${DATA_DIR}/${file}`)).toString()
     );
+
+    if (monsterData.boss) {
+      const out: Partial<BossData> = {
+        id: `jotl_${monsterData.name.replaceAll("-", "_")}`,
+        displayName: camelCase(monsterData.name) + " (JotL Boss)",
+        // @ts-ignore
+        gamebox: "jotl",
+      };
+      // @ts-ignore
+      out.levelStats = {};
+
+      for (let levelStat of monsterData.stats) {
+        out.levelStats[levelStat["level"]] = {
+          attack: levelStat["attack"],
+          move: levelStat["movement"] || 0,
+          health: levelStat["health"],
+        };
+      }
+
+      firestore.collection("bosses").doc(out.id).set(out);
+
+      continue;
+    }
 
     const out: Partial<MonsterData> = {
       // @ts-ignore
@@ -45,40 +68,6 @@ async function importMonsters() {
 
     firestore.collection("monsters").doc(out.id).set(out);
   }
-
-  // const monstersData = JSON.parse(fs.readFileSync('scripts/monster_stats.json'));
-  // const batch = firestore.batch();
-  // for (const [monsterName, monsterData] of Object.entries(monstersData['monsters'])) {
-  //     const monsterId = monsterName.toLowerCase().replace(' ', '_');
-  //     const levelObj = {};
-  //     monsterData['level'].forEach(levelData => {
-  //         levelObj[levelData['level']] = {
-  //             normal: levelData['normal'],
-  //             elite: levelData['elite'],
-  //         };
-  //     });
-  //     const stats = {
-  //         id: monsterId,
-  //         displayName: monsterName,
-  //         levelStats: levelObj
-  //     };
-  //     batch.create(firestore.collection('monsters').doc(monsterId), stats);
-  // }
-  // for (const [bossName, bossData] of Object.entries(monstersData['bosses'])) {
-  // const bossId = bossName.toLowerCase().replace(/ /g, '_');
-  //     const levelObj = {};
-  //     bossData['level'].forEach(levelData => {
-  //         levelObj[levelData['level']] = levelData;
-  //     });
-  //     const stats = {
-  //         id: bossId,
-  //         displayName: bossName,
-  //         levelStats: levelObj
-  //     };
-  //     batch.create(firestore.collection('bosses').doc(bossId), stats);
-  // }
-  // await batch.commit();
-  // console.log('Monsters and bosses imported');
 }
 
 importMonsters();

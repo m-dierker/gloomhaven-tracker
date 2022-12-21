@@ -73,6 +73,9 @@ export interface BossData {
   /** Display name of the boss. */
   displayName: string;
 
+  /** Which game the boss comes from. */
+  gamebox: GameBox;
+
   /** Level --> stats r a boss. */
   levelStats: { number: BossStats };
 }
