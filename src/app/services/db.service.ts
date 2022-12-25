@@ -354,6 +354,19 @@ export class DbService {
     );
   }
 
+  async getEligibleParties() {
+    const docs = await getDocs(
+      query(
+        collection(this.firestore, "parties"),
+        where(`members.BSzss3ZuWLVfW8qB3m5IlNIBX432`, "!=", "null")
+      )
+    );
+    console.log(
+      "docs",
+      docs.docs.map((doc) => doc.data())
+    );
+  }
+
   /**
    * Returns *snapshot* of generic monster stats.
    *

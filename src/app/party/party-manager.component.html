@@ -1,4 +1,5 @@
 <div class="party-page">
+  <div class="party-header-margin"></div>
   <app-party-role-header></app-party-role-header>
   <div class="party-main">
     <main role="main" class="container">
@@ -13,6 +14,7 @@
           >Change scenario level ({{ party.scenarioLevel }})</a
         ><br />
         <a routerLink="/admin" *ngIf="isAdmin">Admin panel</a><br />
+        <a href="#" (click)="goFullscreen()">Fullscreen</a><br />
         <a href="#" (click)="logout()" *ngIf="user"
           >Log out {{ user.displayName }}</a
         >

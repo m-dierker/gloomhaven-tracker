@@ -6,7 +6,7 @@
     <!-- TODO: Refactor to include all icons. -->
     <div
       class="role-spacer"
-      *ngIf="(party | async).gamebox != 'jotl'; else jotl"
+      *ngIf="(party | async)?.gamebox != 'jotl'; else jotl"
     ></div>
     <ng-template #jotl>
       <div class="game-icon">

@@ -110,6 +110,14 @@ $header-box-shadow-size: 10px;
   @include role-color("nightshroud", "Nightshroud", #7d7db8);
 }
 
+.role-plagueherald {
+  @include role-color("plagueherald", "Plagueherald", #6aa69f);
+}
+
+.role-cragheart {
+  @include role-color("cragheart", "Cragheart", #a0aa4f);
+}
+
 /** Jaws of the Lion */
 .role-demolitionist {
   @include role-color("demolitionist", "Demolitionist", #d56e31);
