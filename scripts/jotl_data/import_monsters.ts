@@ -19,7 +19,7 @@ async function importMonsters() {
     if (monsterData.boss) {
       const out: Partial<BossData> = {
         id: `jotl_${monsterData.name.replaceAll("-", "_")}`,
-        displayName: camelCase(monsterData.name) + " (JotL Boss)",
+        displayName: camelCase(monsterData.name),
         // @ts-ignore
         gamebox: "jotl",
       };
@@ -45,7 +45,7 @@ async function importMonsters() {
     };
 
     out.id = `jotl_${monsterData.name.replaceAll("-", "_")}`;
-    out.displayName = camelCase(monsterData.name) + " (JotL)";
+    out.displayName = camelCase(monsterData.name);
     out.levelStats = {};
 
     for (let levelStat of monsterData.stats) {
