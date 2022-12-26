@@ -6,13 +6,6 @@ import { Party } from "src/types/party";
 import { DbService } from "../services/db.service";
 import { ResetService } from "../services/reset.service";
 
-const MAX_SCENARIO = 95;
-// Scenario 0 = debugging scenario with all monsters.
-const MIN_SCENARIO = 0;
-
-const MAX_SCENARIO_LEVEL = 7;
-const MIN_SCENARIO_LEVEL = 0;
-
 @Component({
   selector: "party-manager",
   templateUrl: "./party-manager.component.html",
@@ -27,7 +20,6 @@ export class PartyManagerComponent implements OnInit, OnDestroy {
 
   constructor(
     private db: DbService,
-    private reset: ResetService,
     private auth: Auth,
     private router: Router
   ) {}
@@ -52,55 +44,6 @@ export class PartyManagerComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.user$.unsubscribe();
-  }
-
-  resetGameState() {
-    if (
-      confirm(
-        "Are you sure you wish to reset the game? THIS WILL CLEAR ALL HEALTH TRACKING."
-      )
-    ) {
-      if (
-        confirm(
-          "Are you *absolutely sure* you want to irrevocably delete everything?"
-        )
-      ) {
-        this.reset.resetGameState();
-      }
-    }
-  }
-
-  async changeScenario() {
-    const newScenario = prompt("Enter a scenario number:");
-    const scenarioNum = parseInt(newScenario.trim());
-    if (
-      scenarioNum < MIN_SCENARIO ||
-      scenarioNum > MAX_SCENARIO ||
-      isNaN(scenarioNum)
-    ) {
-      alert(
-        `Invalid scenario. Enter just a number ${MIN_SCENARIO}-${MAX_SCENARIO}.`
-      );
-      return;
-    }
-    await this.db.updateScenarioNumber(scenarioNum);
-    alert("Scenario updated!");
-  }
-
-  async changeScenarioLevel() {
-    const newLevel = prompt("Enter new scenario level: ");
-    const scenarioLevel = parseInt(newLevel);
-    if (
-      scenarioLevel < MIN_SCENARIO_LEVEL ||
-      scenarioLevel > MAX_SCENARIO_LEVEL ||
-      isNaN(scenarioLevel)
-    ) {
-      alert(
-        `Invalid scenario level. Enter just a number ${MIN_SCENARIO_LEVEL}-${MAX_SCENARIO_LEVEL}.`
-      );
-      return;
-    }
-    await this.db.updateScenarioLevel(scenarioLevel);
   }
 
   goFullscreen() {

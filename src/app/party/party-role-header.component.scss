@@ -134,3 +134,34 @@ $header-box-shadow-size: 10px;
 .role-voidwarden {
   @include role-color("voidwarden", "Voidwarden", #b7b3b2);
 }
+
+/** Dropdown panel */
+
+.role-menu {
+  background-color: rgb(57, 57, 57);
+  padding: 10px 0 20px 0;
+
+  & > div {
+    color: white;
+    text-align: center;
+  }
+
+  .header {
+    color: gold;
+    font-family: "Nyala";
+    font-size: 14pt;
+    height: 25px;
+    text-decoration: underline dashed;
+    text-transform: uppercase;
+
+    &:not(:first-child) {
+      margin-top: 25px;
+    }
+  }
+
+  .option {
+    font-family: "Pirata One";
+    font-size: 18pt;
+    height: 40px;
+  }
+}

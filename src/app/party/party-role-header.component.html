@@ -1,17 +1,36 @@
-<div class="role-header" class="role-{{ (user | async)?.class }}">
-  <div class="role-inner-header">
-    <div class="role-icon"></div>
-    <span class="role-name"></span>
+<div class="role-panel">
+  <div
+    class="role-header"
+    class="role-{{ (user | async)?.class }}"
+    (click)="toggleMenuVisible()"
+  >
+    <div class="role-inner-header">
+      <div class="role-icon"></div>
+      <span class="role-name"></span>
 
-    <!-- TODO: Refactor to include all icons. -->
-    <div
-      class="role-spacer"
-      *ngIf="(party | async)?.gamebox != 'jotl'; else jotl"
-    ></div>
-    <ng-template #jotl>
-      <div class="game-icon">
-        <img src="/assets/icons/jotl.webp" />
-      </div>
-    </ng-template>
+      <!-- TODO: Refactor to include all icons. -->
+      <div
+        class="role-spacer"
+        *ngIf="(party | async)?.gamebox != 'jotl'; else jotl"
+      ></div>
+      <ng-template #jotl>
+        <div class="game-icon">
+          <img src="/assets/icons/jotl.webp" />
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  <div class="role-menu" *ngIf="menuVisible">
+    <div class="header">Party</div>
+    <div class="option">Select Party</div>
+    <div class="header">Scenario</div>
+    <div class="option" (click)="changeScenario()">
+      Change Scenario ({{ (party | async)?.activeScenario }})
+    </div>
+    <div class="option" (click)="changeScenarioLevel()">
+      Change Scenario Level ({{ (party | async)?.scenarioLevel }})
+    </div>
+    <div class="header">Game</div>
+    <div class="option" (click)="resetGameState()">Fully Reset Game</div>
   </div>
 </div>
