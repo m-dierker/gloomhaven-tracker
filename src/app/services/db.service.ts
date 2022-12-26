@@ -165,7 +165,7 @@ export class DbService {
   getUserInfo(): Observable<UserData> {
     return authState(this.auth).pipe(
       switchMap((user) => {
-        return docSnapshots(this.dbRef.userDoc(user.uid)).pipe(
+        return docSnapshots(this.dbRef.toBeDeletedMembersDoc(user.uid)).pipe(
           map((doc) => doc.data())
         );
       })
@@ -354,17 +354,32 @@ export class DbService {
     );
   }
 
-  async getEligibleParties() {
-    const docs = await getDocs(
+  /** Returns all parties with the current user as a member. */
+  async getEligibleParties(): Promise<Party[]> {
+    if (!this.auth.currentUser) {
+      console.warn("User not logged in, cannot select parties");
+      return [];
+    }
+    const resp = await getDocs(
       query(
         collection(this.firestore, "parties"),
-        where(`members.BSzss3ZuWLVfW8qB3m5IlNIBX432`, "!=", "null")
+        where(`members.${this.auth.currentUser.uid}`, "!=", "null")
       )
     );
-    console.log(
-      "docs",
-      docs.docs.map((doc) => doc.data())
-    );
+    return resp.docs.map((doc) => {
+      const party = doc.data() as Party;
+      party.id = doc.id;
+      return party;
+    });
+  }
+
+  async setActiveParty(partyId: string): Promise<void> {
+    if (this.auth.currentUser == null) {
+      alert("Not logged in");
+    }
+    await updateDoc(this.dbRef.userDocNew(this.auth.currentUser.uid), {
+      party: partyId,
+    });
   }
 
   /**

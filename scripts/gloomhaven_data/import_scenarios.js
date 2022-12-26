@@ -1,8 +1,10 @@
-const { initializeApp, cert } = require("firebase-admin/app");
-const { getFirestore } = require("firebase-admin/firestore");
-const fs = require("fs");
+import { initializeApp, cert } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
+import * as fs from "fs";
 
-const accountKey = require("../keys/glo2mhaven-tracker-firebase-adminsdk.json");
+const accountKey = JSON.parse(
+  fs.readFileSync("./keys/glo2mhaven-tracker-firebase-adminsdk.json").toString()
+);
 
 initializeApp({
   credential: cert(accountKey),
@@ -13,7 +15,9 @@ const db = getFirestore();
 
 async function importScenarios() {
   const scenarioData = JSON.parse(
-    (await fs.promises.readFile("scripts/scenarios.json")).toString()
+    (
+      await fs.promises.readFile("scripts/gloomhaven_data/scenarios.json")
+    ).toString()
   );
 
   const allBossIds = new Set(
@@ -40,7 +44,8 @@ async function importScenarios() {
 
     const monsterIds = [];
     const bossIds = [];
-    for (const classId of idsToFind) {
+    for (const jsonClassId of idsToFind) {
+      const classId = `gh_${jsonClassId}`;
       if (allMonsterIds.has(classId)) {
         monsterIds.push(classId);
       } else if (allBossIds.has(classId)) {

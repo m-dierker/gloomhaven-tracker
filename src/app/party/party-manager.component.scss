@@ -8,6 +8,10 @@ app-party-role-header {
   box-shadow: 0px 10px 13px 0px rgba(0, 0, 0, 0.75);
   position: fixed;
   width: 100%;
+
+  // Make sure header is above other elements.
+  // This has to be here since position is set here.
+  z-index: 100;
 }
 
 .party-header-margin {

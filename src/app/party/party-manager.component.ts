@@ -25,7 +25,6 @@ export class PartyManagerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.db.getEligibleParties();
     this.db.getParty().subscribe((party) => {
       this.party = party;
     });

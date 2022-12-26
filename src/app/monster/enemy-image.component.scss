@@ -1,7 +1,11 @@
 img {
-  // TODO: Make more interesting.
-  border-radius: 50%;
-  border: 2px brown solid;
+  // Only show a border for JotL where the monster images don't have borders.
+  &.jotl {
+    // TODO: Make more interesting.
+    border-radius: 50%;
+    border: 2px brown solid;
+  }
+
   object-fit: cover;
   height: 100%;
   width: 100%;

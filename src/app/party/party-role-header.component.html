@@ -22,7 +22,7 @@
   </div>
   <div class="role-menu" *ngIf="menuVisible">
     <div class="header">Party</div>
-    <div class="option">Select Party</div>
+    <div class="option" routerLink="/select_party">Select Party</div>
     <div class="header">Scenario</div>
     <div class="option" (click)="changeScenario()">
       Change Scenario ({{ (party | async)?.activeScenario }})

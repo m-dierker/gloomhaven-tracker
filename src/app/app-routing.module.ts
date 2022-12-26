@@ -5,6 +5,7 @@ import { DisplayComponent } from "./display/display.component";
 import { MonsterAbilityDisplayComponent } from "./monster/ability-deck/monster-ability-display.component";
 import { MonsterAttackDeckDisplayComponent } from "./monster/attack-deck/monster-attack-deck-display.component";
 import { PartyManagerComponent } from "./party/party-manager.component";
+import { SelectPartyComponent } from "./party/select-party.component";
 import { LoginComponent } from "./ui/login.component";
 
 const routes: Routes = [
@@ -27,6 +28,10 @@ const routes: Routes = [
   {
     path: "login",
     component: LoginComponent,
+  },
+  {
+    path: "select_party",
+    component: SelectPartyComponent,
   },
   {
     path: "admin",

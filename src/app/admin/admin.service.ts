@@ -25,7 +25,7 @@ export class AdminService {
       alert("Party already exists");
       return;
     }
-    const party: Party = {
+    const party: Partial<Party> = {
       activeScenario: "gh-1",
       averageCharacterLevel: 1,
       // Note to self: This field is untested.

@@ -1,0 +1,27 @@
+<div class="party-page">
+  <div class="party-main">
+    <div class="select-title">Select a Party</div>
+    <div class="game-logo">
+      <img src="/assets/logos/gloomhaven_logo.webp" />
+    </div>
+    <div
+      class="select-party"
+      *ngFor="let party of partiesByGame.get(GameBox.GLOOMHAVEN)"
+    >
+      <app-button (click)="changeParty(party)"
+        >{{ party.partyName }} ({{ party.members[user.uid].class }})</app-button
+      >
+    </div>
+    <div class="game-logo jotl">
+      <img src="/assets/logos/jotl.png" />
+    </div>
+    <div
+      class="select-party"
+      *ngFor="let party of partiesByGame.get(GameBox.JAWS_OF_THE_LION)"
+    >
+      <app-button (click)="changeParty(party)"
+        >{{ party.partyName }} ({{ party.members[user.uid].class }})</app-button
+      >
+    </div>
+  </div>
+</div>
