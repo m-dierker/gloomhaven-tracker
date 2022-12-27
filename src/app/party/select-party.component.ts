@@ -12,7 +12,7 @@ import { DbService } from "../services/db.service";
   styleUrls: ["./select-party.component.scss"],
 })
 export class SelectPartyComponent implements OnInit, OnDestroy {
-  partiesByGame: Map<GameBox, Party[]>;
+  partiesByGame: Map<GameBox, Party[]> = new Map();
   GameBox = GameBox;
   user: User;
 
@@ -30,15 +30,14 @@ export class SelectPartyComponent implements OnInit, OnDestroy {
         return;
       }
       const parties = await this.db.getEligibleParties();
-
       const partiesByGame = new Map();
-      for (const gameBox of ALL_GAME_BOXES) {
-        // Initialize all the games so they're found in the map.
-        partiesByGame.set(gameBox, []);
-      }
 
       for (let party of parties) {
-        partiesByGame.get(party.gamebox).push(party);
+        if (this.partiesByGame.has(party.gamebox)) {
+          partiesByGame.get(party.gamebox).push(party);
+        } else {
+          partiesByGame.set(party.gamebox, [party]);
+        }
       }
       this.partiesByGame = partiesByGame;
       this.user = user;

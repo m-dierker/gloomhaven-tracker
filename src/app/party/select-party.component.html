@@ -6,7 +6,7 @@
     </div>
     <div
       class="select-party"
-      *ngFor="let party of partiesByGame.get(GameBox.GLOOMHAVEN)"
+      *ngFor="let party of partiesByGame.get(GameBox.GLOOMHAVEN) || []"
     >
       <app-button (click)="changeParty(party)"
         >{{ party.partyName }} ({{ party.members[user.uid].class }})</app-button
@@ -17,7 +17,7 @@
     </div>
     <div
       class="select-party"
-      *ngFor="let party of partiesByGame.get(GameBox.JAWS_OF_THE_LION)"
+      *ngFor="let party of partiesByGame.get(GameBox.JAWS_OF_THE_LION) || []"
     >
       <app-button (click)="changeParty(party)"
         >{{ party.partyName }} ({{ party.members[user.uid].class }})</app-button
