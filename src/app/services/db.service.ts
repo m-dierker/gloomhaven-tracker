@@ -360,14 +360,12 @@ export class DbService {
       console.warn("User not logged in, cannot select parties");
       return [];
     }
-    console.log("currentUser", this.auth.currentUser.uid);
     const resp = await getDocs(
       query(
         collection(this.firestore, "parties"),
         where(`members.${this.auth.currentUser.uid}`, "!=", null)
       )
     );
-    console.log("resp", resp);
     return resp.docs.map((doc) => {
       const party = doc.data() as Party;
       party.id = doc.id;
