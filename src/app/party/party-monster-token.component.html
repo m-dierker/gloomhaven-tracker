@@ -10,5 +10,7 @@
     *ngIf="isBoss"
     class="boss-img"
   />
-  <div class="monster-token">{{ tokenNum }}</div>
+  <div class="monster-token" *ngIf="!isBoss || tokenNum !== 1">
+    {{ tokenNum }}
+  </div>
 </div>

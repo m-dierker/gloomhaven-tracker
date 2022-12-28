@@ -59,7 +59,6 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
         this.enemy$ = this.enemy.onScenarioDataUpdate.subscribe(() => {
           // Network changes blow away local changes.
           if (this.enemy.getHealth() !== this.localHealth) {
-            console.log("blowing away local");
             this.localHealth = undefined;
           }
         });
@@ -69,7 +68,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
 
   changeHealth(amount: number) {
     if (this.localHealth === undefined) {
-      this.localHealth = this.monster.getHealth();
+      this.localHealth = this.enemy.getHealth();
     }
     this.localHealth += amount;
     if (this.localHealth < 0) {
@@ -138,7 +137,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
       alert("Invalid, enter just a token number");
       return;
     }
-    this.monster.setTokenNum(newIdNum);
+    this.enemy.setTokenNum(newIdNum);
     this.db.saveEnemy(this.enemy);
     this.editsVisible = false;
     this.dropdownVisible = false;
