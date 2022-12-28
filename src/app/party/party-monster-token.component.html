@@ -1,5 +1,9 @@
 <div class="monster-id" [class.elite]="isElite">
-  <app-enemy-image [dbClassId]="dbClassId"></app-enemy-image>
+  <!-- FIXME -->
+  <app-enemy-image
+    [dbClassId]="dbClassId"
+    *ngIf="dbClassId !== 'gh_prime_demon'"
+  ></app-enemy-image>
   <!-- <img src="/assets/monsters/Vert-{{ dbClassId }}.png" *ngIf="!isBoss" /> -->
   <img
     src="/assets/bosses/{{ dbClassId }}.webp"
