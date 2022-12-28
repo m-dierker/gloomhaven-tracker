@@ -133,7 +133,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   changeToken() {
     const newId = prompt("Enter new token ID: ");
     const newIdNum = parseInt(newId);
-    if (newIdNum == NaN) {
+    if (Number.isNaN(newIdNum)) {
       alert("Invalid, enter just a token number");
       return;
     }
