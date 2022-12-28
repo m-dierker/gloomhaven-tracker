@@ -24,9 +24,14 @@
       >
       </progressbar>
       <div class="health-buttons" *ngIf="localHealth !== undefined">
-        <app-button (click)="setLocalHealth(0)" [disabled]="localHealth === 0"
+        <app-button
+          (click)="setLocalHealth(0)"
+          *ngIf="localHealth !== 0; else cancel"
           >Kill</app-button
         >
+        <ng-template #cancel>
+          <app-button (click)="setLocalHealth(undefined)">Cancel</app-button>
+        </ng-template>
         <app-button (click)="applyLocalHealth()">{{
           localHealthDeltaStr()
         }}</app-button>
