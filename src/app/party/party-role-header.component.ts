@@ -1,4 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Auth } from "@angular/fire/auth";
+import { Unsubscribe, User } from "firebase/auth";
 import { Observable } from "rxjs";
 import { Party } from "src/types/party";
 import { UserData } from "../db/user";
@@ -18,17 +20,27 @@ const MIN_SCENARIO_LEVEL = 0;
   templateUrl: "./party-role-header.component.html",
   styleUrls: ["./party-role-header.component.scss"],
 })
-export class PartyRoleHeaderComponent implements OnInit {
-  public user: Observable<UserData>;
+export class PartyRoleHeaderComponent implements OnInit, OnDestroy {
   public party: Observable<Party>;
+  public user: User;
 
   public menuVisible = false;
 
-  constructor(private db: DbService, private reset: ResetService) {}
+  private authUnsub: Unsubscribe;
+
+  constructor(
+    private db: DbService,
+    private reset: ResetService,
+    private auth: Auth
+  ) {}
 
   ngOnInit(): void {
-    this.user = this.db.getUserInfo();
     this.party = this.db.getParty();
+    this.authUnsub = this.auth.onAuthStateChanged((user) => (this.user = user));
+  }
+
+  ngOnDestroy(): void {
+    this.authUnsub();
   }
 
   toggleMenuVisible() {

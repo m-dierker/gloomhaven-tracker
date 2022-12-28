@@ -1,7 +1,7 @@
 <div class="role-panel">
   <div
     class="role-header"
-    class="role-{{ (user | async)?.class }}"
+    class="role-{{ (party | async)?.members[user.uid].class }}"
     (click)="toggleMenuVisible()"
   >
     <div class="role-inner-header">
