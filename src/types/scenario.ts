@@ -27,6 +27,9 @@ export interface ScenarioEnemyData {
   /** Current health. If missing, uses monster default from the DB. */
   health?: number;
 
+  /** Max health for the enemy, only set if it's overriding the DB default. */
+  maxHealth?: number;
+
   /** Array of active status IDs. */
   statuses: string[];
 }

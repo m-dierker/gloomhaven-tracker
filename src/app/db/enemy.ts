@@ -67,11 +67,22 @@ export abstract class Enemy {
   }
 
   getMaxHealth() {
+    if (this.scenarioData.maxHealth) {
+      return this.scenarioData.maxHealth;
+    }
     // Returning the max in case a single monster gets some sort of buff that bumps it above max health.
     if (this.scenarioData.health !== undefined) {
       return Math.max(this.enemyStats_.health, this.scenarioData.health);
     }
     return this.enemyStats_.health;
+  }
+
+  setHealth(health: number) {
+    this.scenarioData.health = health;
+  }
+
+  setMaxHealth(health: number) {
+    this.scenarioData.maxHealth = health;
   }
 
   get displayName() {
@@ -117,10 +128,6 @@ export abstract class Enemy {
       return this.classId.localeCompare(other.classId);
     }
     return this.scenarioData.tokenNum - other.scenarioData.tokenNum;
-  }
-
-  setHealth(health: number) {
-    this.scenarioData.health = health;
   }
 
   /**

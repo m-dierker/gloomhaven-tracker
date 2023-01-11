@@ -12,6 +12,9 @@ import { Enemy } from "../db/enemy";
 import { EnemyType } from "src/types/enemy";
 import { Subscription } from "rxjs";
 
+// Threshold for double tap to trigger.
+const DOUBLE_CLICK_THRESHOLD_MS = 500;
+
 @Component({
   selector: "party-monster-cell",
   templateUrl: "./party-monster-cell.component.html",
@@ -33,6 +36,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   public localHealth?: number = undefined;
 
   private enemy$: Subscription;
+  private lastHealthClick: number;
 
   constructor(private db: DbService) {}
 
@@ -141,5 +145,33 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
     this.db.saveEnemy(this.enemy);
     this.editsVisible = false;
     this.dropdownVisible = false;
+  }
+
+  onHealthClick() {
+    const time = Date.now();
+    const triggered = time - this.lastHealthClick < DOUBLE_CLICK_THRESHOLD_MS;
+    this.lastHealthClick = time;
+    if (triggered) {
+      this.changeMaxHealth();
+    }
+  }
+
+  changeMaxHealth() {
+    const newHealth = prompt("Enter new max health: ");
+    const newHealthNum = parseInt(newHealth);
+    if (Number.isNaN(newHealth)) {
+      alert("Invalid, enter just a number");
+      return;
+    }
+    const isFull = this.enemy.getHealth() === this.enemy.getMaxHealth();
+    this.enemy.setMaxHealth(newHealthNum);
+    if (this.enemy.getHealth() > newHealthNum) {
+      // If the health is over the new max, reset to just full health.
+      this.enemy.setHealth(newHealthNum);
+    } else if (isFull) {
+      // If the health is full, we assume the user wants to adjust the health as well.
+      this.enemy.setHealth(newHealthNum);
+    }
+    this.db.saveEnemy(this.enemy);
   }
 }

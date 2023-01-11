@@ -10,7 +10,7 @@
     <div class="health-controls-wrapper">
       <div class="health-controls">
         <img src="/assets/icons/minus_1.png" (click)="changeHealth(-1)" />
-        <div class="health-display flex-space">
+        <div class="health-display flex-space" (click)="onHealthClick()">
           {{ localHealth !== undefined ? localHealth : enemy.getHealth() }} /
           {{ enemy.getMaxHealth() }}
         </div>
