@@ -1,4 +1,11 @@
-import { Component, Input, OnInit } from "@angular/core";
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from "@angular/core";
+import { GameBox, getGameBoxFromClassId } from "src/types/gamebox";
 import { Enemy } from "../db/enemy";
 
 @Component({
@@ -6,7 +13,7 @@ import { Enemy } from "../db/enemy";
   templateUrl: "./party-monster-token.component.html",
   styleUrls: ["./party-monster-token.component.scss"],
 })
-export class PartyMonsterTokenComponent implements OnInit {
+export class PartyMonsterTokenComponent implements OnChanges {
   @Input()
   dbClassId: string;
 
@@ -19,7 +26,14 @@ export class PartyMonsterTokenComponent implements OnInit {
   @Input()
   isElite: boolean;
 
+  gameBox: GameBox;
+  GameBox = GameBox;
+
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.dbClassId) {
+      this.gameBox = getGameBoxFromClassId(this.dbClassId);
+    }
+  }
 }
