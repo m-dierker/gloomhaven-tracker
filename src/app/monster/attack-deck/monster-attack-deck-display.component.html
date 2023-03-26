@@ -14,7 +14,7 @@
         [val]="card"
       ></app-monster-attack-deck-card>
     </div>
-    <div class="bottomStack">
+    <div class="bottomStack" [class.cardDrawing]="cardFlipTransactionRunning">
       <app-monster-attack-deck-card
         [flipped]="false"
         (click)="drawCard()"

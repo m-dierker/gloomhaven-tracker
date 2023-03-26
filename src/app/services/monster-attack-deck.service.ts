@@ -32,8 +32,9 @@ export class MonsterAttackDeckService {
     return this.db.getParty().pipe(map((party) => party.monsterDeck));
   }
 
-  flipAttackCard() {
-    runTransaction(this.firestore, async (t) => {
+  flipAttackCard(): Promise<unknown> {
+    // Latency notes: This transaction can take 250-750ms or so.
+    return runTransaction(this.firestore, async (t) => {
       const party = await (await t.get(this.dbRef.defaultPartyDoc())).data();
       const oldDeck = party.monsterDeck;
       if (oldDeck.unflipped.length === 0) {
@@ -63,6 +64,8 @@ export class MonsterAttackDeckService {
       }
 
       const { drawnCard, remainingCards } = drawCard(unflipped);
+      // const drawnCard = AttackModifier.ZERO;
+      // const remainingCards = unflipped;
       t.update(this.dbRef.defaultPartyDoc(), {
         monsterDeck: {
           unflipped: remainingCards,

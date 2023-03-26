@@ -19,10 +19,9 @@ export class MonsterAttackDeckDisplayComponent implements OnInit {
 
   public animatingCard?: AttackModifier;
   public animatingFlipped: boolean;
+  public cardFlipTransactionRunning: boolean;
   public AttackModifier = AttackModifier;
   private animatingCardTimeout?: any;
-
-  private lastFlip: number | undefined;
 
   constructor(private mAttackDeck: MonsterAttackDeckService) {}
 
@@ -44,12 +43,14 @@ export class MonsterAttackDeckDisplayComponent implements OnInit {
       // TODO: This should go away at some point.
       if (flippedCards.length === this.allFlippedCards.length) {
         // Drop the update for now.
+        console.warn("Monster attack update dropped due to no-op update");
         this.recomputeStats(unflippedCards);
         return;
       }
 
       // End the animation early if it's still happening.
       if (this.animatingCard) {
+        console.warn("Monster attack update rushing animation end");
         this.onEndCardAnimation();
       }
 
@@ -82,17 +83,16 @@ export class MonsterAttackDeckDisplayComponent implements OnInit {
 
     await this.maybeAnimateShuffle();
 
-    // const now = Date.now();
-    // if (this.lastFlip && now - this.lastFlip < CLICK_DEDUPE_THRESHOLD_MS) {
-    //   console.log("Dropping card draw as too close to last draw");
-    //   return;
-    // }
     // Drop the press if an animation is happening.
-    if (this.animatingCard) {
+    if (this.animatingCard || this.cardFlipTransactionRunning) {
       return;
     }
-    this.lastFlip = Date.now();
-    return this.mAttackDeck.flipAttackCard();
+    this.cardFlipTransactionRunning = true;
+    try {
+      await this.mAttackDeck.flipAttackCard();
+    } finally {
+      this.cardFlipTransactionRunning = false;
+    }
   }
 
   public addToDeck(card: AttackModifier) {

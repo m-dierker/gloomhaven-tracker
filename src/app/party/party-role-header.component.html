@@ -1,6 +1,7 @@
 <div class="role-panel">
   <div
     class="role-header"
+    *ngIf="user"
     class="role-{{ (party | async)?.members[user.uid].class }}"
     (click)="toggleMenuVisible()"
   >
@@ -32,5 +33,15 @@
     </div>
     <div class="header">Game</div>
     <div class="option" (click)="resetGameState()">Fully Reset Game</div>
+    <div class="header">Other Tools</div>
+    <div class="option" *ngIf="(party | async)?.gamebox == 'gh'">
+      <a href="https://tree.gloomhaven.muri.ca" target="_blank"
+        >Gloomhaven Tree</a
+      >
+    </div>
+    <div routerLink="/monsterattacks" class="option">Monster Attack Deck</div>
+    <div routerLink="/monsterabilities" class="option">
+      Monster Ability Decks
+    </div>
   </div>
 </div>

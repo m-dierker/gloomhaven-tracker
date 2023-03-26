@@ -241,7 +241,6 @@ export class PartyAddMonsterComponent implements OnInit {
       }
     );
     this.allAutocompleteData = monsterAutocomplete.concat(bossAutocomplete);
-    console.log(this.allAutocompleteData);
   }
 }
 

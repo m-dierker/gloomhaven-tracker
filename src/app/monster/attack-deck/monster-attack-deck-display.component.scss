@@ -36,6 +36,12 @@ app-monster-attack-deck-card {
 .bottomStack {
   position: relative;
   width: 100%;
+  transition: opacity 0.2s linear;
+}
+
+.cardDrawing {
+  background: black;
+  opacity: 0.85;
 }
 
 .cardDeck {

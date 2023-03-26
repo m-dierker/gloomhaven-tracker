@@ -1,4 +1,10 @@
-import { Component, Input, OnInit } from "@angular/core";
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from "@angular/core";
 import { AttackModifier } from "src/types/attack-modifiers";
 
 @Component({
@@ -6,14 +12,14 @@ import { AttackModifier } from "src/types/attack-modifiers";
   templateUrl: "./monster-attack-deck-card.component.html",
   styleUrls: ["./monster-attack-deck-card.component.scss"],
 })
-export class MonsterAttackDeckCardComponent implements OnInit {
+export class MonsterAttackDeckCardComponent {
   @Input()
   val: AttackModifier | undefined;
 
   @Input()
   flipped: boolean;
 
-  constructor() {}
+  visible: boolean;
 
-  ngOnInit(): void {}
+  constructor() {}
 }
