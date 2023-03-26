@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { collection, doc, Firestore, getDoc } from "@angular/fire/firestore";
-import { setDoc, updateDoc } from "firebase/firestore";
+import { runTransaction, setDoc, updateDoc } from "firebase/firestore";
 import { AttackModifierUtil } from "src/types/attack-modifiers";
 import { Party } from "src/types/party";
 import { PARTY_COLLECTION, USERS_COLLECTION } from "../db/db-constants";
@@ -54,14 +54,17 @@ export class AdminService {
   }
 
   async addUserToParty(partyId: string, uid: string, className: RoleClass) {
-    const partyMemberDoc = doc(
-      this.firestore,
-      `${PARTY_COLLECTION}/${partyId}/members/${uid}`
-    );
-    await setDoc(partyMemberDoc, {
-      class: className,
-      member: true,
+    const partyDoc = doc(this.firestore, `${PARTY_COLLECTION}/${partyId}`);
+    await runTransaction(this.firestore, async (t) => {
+      const membersSnap = await t.get(partyDoc);
+      const party = membersSnap.data() as Party;
+      const newMembers = party.members || {};
+      newMembers[uid] = {
+        class: className,
+      };
+      await t.update(partyDoc, { members: newMembers });
     });
+
     alert("Party member added");
   }
 
