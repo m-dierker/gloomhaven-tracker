@@ -30,16 +30,17 @@ export class SelectPartyComponent implements OnInit, OnDestroy {
         return;
       }
       const parties = await this.db.getEligibleParties();
-      const partiesByGame = new Map();
 
+      const partiesByGame = new Map();
       for (let party of parties) {
-        if (this.partiesByGame.has(party.gamebox)) {
+        if (partiesByGame.has(party.gamebox)) {
           partiesByGame.get(party.gamebox).push(party);
         } else {
           partiesByGame.set(party.gamebox, [party]);
         }
       }
       this.partiesByGame = partiesByGame;
+
       this.user = user;
     });
   }
