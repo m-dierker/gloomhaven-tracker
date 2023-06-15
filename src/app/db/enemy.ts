@@ -78,6 +78,11 @@ export abstract class Enemy {
   }
 
   setHealth(health: number) {
+    // If HP goes over the max, reset the max.
+    // Maybe there's a future case where this breaks, but the other way is confusing.
+    if (health > this.getMaxHealth()) {
+      this.scenarioData.maxHealth = health;
+    }
     this.scenarioData.health = health;
   }
 

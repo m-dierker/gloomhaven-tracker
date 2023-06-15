@@ -12,9 +12,6 @@ import { Enemy } from "../db/enemy";
 import { EnemyType } from "src/types/enemy";
 import { Subscription } from "rxjs";
 
-// Threshold for double tap to trigger.
-const DOUBLE_CLICK_THRESHOLD_MS = 500;
-
 @Component({
   selector: "party-monster-cell",
   templateUrl: "./party-monster-cell.component.html",
@@ -36,7 +33,6 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   public localHealth?: number = undefined;
 
   private enemy$: Subscription;
-  private lastHealthClick: number;
 
   constructor(private db: DbService) {}
 
@@ -147,15 +143,6 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
     this.dropdownVisible = false;
   }
 
-  onHealthClick() {
-    const time = Date.now();
-    const triggered = time - this.lastHealthClick < DOUBLE_CLICK_THRESHOLD_MS;
-    this.lastHealthClick = time;
-    if (triggered) {
-      this.changeMaxHealth();
-    }
-  }
-
   changeMaxHealth() {
     const newHealth = prompt("Enter new max health: ");
     const newHealthNum = parseInt(newHealth);
@@ -173,5 +160,8 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
       this.enemy.setHealth(newHealthNum);
     }
     this.db.saveEnemy(this.enemy);
+
+    this.editsVisible = false;
+    this.dropdownVisible = false;
   }
 }
