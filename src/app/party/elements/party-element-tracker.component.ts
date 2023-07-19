@@ -23,7 +23,7 @@ export class PartyElementTrackerComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  togglePanelOpen() {
+  togglePanel() {
     this.panelOpen = !this.panelOpen;
   }
 
@@ -38,7 +38,6 @@ export class PartyElementTrackerComponent implements OnInit {
 
   async onSetElementState(element: ElementType, state: ElementState) {
     this.db.setElementState(element, state);
-    this.togglePanelOpen();
   }
 }
 

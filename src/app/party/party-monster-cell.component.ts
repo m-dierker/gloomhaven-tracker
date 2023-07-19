@@ -27,6 +27,10 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   public isBoss: boolean;
 
   public allStatuses: StatusEffect[];
+  public cancelledStatuses: StatusEffect[] = [
+    StatusEffect.POISON,
+    StatusEffect.WOUND,
+  ];
   public dropdownVisible = false;
   public editsVisible = false;
 
@@ -164,4 +168,6 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
     this.editsVisible = false;
     this.dropdownVisible = false;
   }
+
+  private recalculateCancelledStatuses() {}
 }

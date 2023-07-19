@@ -4,10 +4,10 @@
   </div>
   <div class="party-element-controls">
     <button
-      (click)="setState(ElementState.INACTIVE)"
-      [class.selected]="state == ElementState.INACTIVE"
+      (click)="setState(ElementState.ACTIVE)"
+      [class.selected]="state == ElementState.ACTIVE"
     >
-      Inactive
+      Active
     </button>
     <button
       (click)="setState(ElementState.WANING)"
@@ -16,10 +16,10 @@
       Waning
     </button>
     <button
-      (click)="setState(ElementState.ACTIVE)"
-      [class.selected]="state == ElementState.ACTIVE"
+      (click)="setState(ElementState.INACTIVE)"
+      [class.selected]="state == ElementState.INACTIVE"
     >
-      Active
+      Inactive
     </button>
   </div>
 </div>
