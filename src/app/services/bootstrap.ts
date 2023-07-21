@@ -52,7 +52,7 @@ export class AppBootstrap {
               if (newParty !== prevParty) {
                 // Snooze in case this is the admin interface changing the party.
                 // This is so ugly....
-
+                console.log("Refreshing due to party change.");
                 setTimeout(() => window.location.reload(), 500);
               }
             }

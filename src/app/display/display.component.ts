@@ -35,10 +35,6 @@ export class DisplayComponent implements OnInit {
       .subscribe((scenarioInfo) => (this.scenarioInfo = scenarioInfo));
   }
 
-  onPartyUpdate(party: Party) {
-    this.party = party;
-  }
-
   private onPartyEnemiesUpdate() {
     this.bossClassList = [];
     this.monsterClassList = [];

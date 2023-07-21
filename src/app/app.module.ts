@@ -39,13 +39,13 @@ import { BossCellComponent } from "./display/boss-cell.component";
 import { MonsterAttackDeckDisplayComponent } from "./monster/attack-deck/monster-attack-deck-display.component";
 import { MonsterAttackDeckCardComponent } from "./monster/attack-deck/monster-attack-deck-card.component";
 import { AppBootstrap } from "./services/bootstrap";
-import { AdminComponent } from './admin/admin.component';
-import { MonsterAbilityDisplayComponent } from './monster/ability-deck/monster-ability-display.component';
-import { MonsterAbilityDeckComponent } from './monster/ability-deck/monster-ability-deck.component';
-import { PartyMonsterNameComponent } from './party/party-monster-name.component';
-import { PartyMonsterTokenComponent } from './party/party-monster-token.component';
-import { EnemyImageComponent } from './monster/enemy-image.component';
-import { SelectPartyComponent } from './party/select-party.component';
+import { AdminComponent } from "./admin/admin.component";
+import { MonsterAbilityDisplayComponent } from "./monster/ability-deck/monster-ability-display.component";
+import { MonsterAbilityDeckComponent } from "./monster/ability-deck/monster-ability-deck.component";
+import { PartyMonsterNameComponent } from "./party/party-monster-name.component";
+import { PartyMonsterTokenComponent } from "./party/party-monster-token.component";
+import { EnemyImageComponent } from "./monster/enemy-image.component";
+import { SelectPartyComponent } from "./party/select-party.component";
 
 @NgModule({
   declarations: [
@@ -111,6 +111,8 @@ import { SelectPartyComponent } from './party/select-party.component';
       useFactory: AppBootstrap.bootstrap,
       // deps must exactly match AppBootstrap.bootstrap args.
       deps: [Firestore, Auth],
+      // This is only when multiple APP_INITIALIZERs are used.
+      // I don't think it's strictly necessary here.
       multi: true,
     },
   ],

@@ -1,12 +1,6 @@
-import { Injectable } from "@angular/core";
-import { Observable, ReplaySubject, of, forkJoin, from } from "rxjs";
-import {
-  map,
-  first,
-  switchMap,
-  mergeMap,
-  combineLatestWith,
-} from "rxjs/operators";
+import { Injectable, NgZone } from "@angular/core";
+import { Observable, ReplaySubject, from, combineLatest } from "rxjs";
+import { map, first, mergeMap, combineLatestWith } from "rxjs/operators";
 import { MonsterData, BossData } from "../../types/monsters";
 import {
   MONSTERS_COLLECTION,
@@ -35,15 +29,16 @@ import {
   getDocFromCache,
   getDocsFromCache,
   loadBundle,
+  DocumentChange,
   Query,
   QueryDocumentSnapshot,
+  onSnapshot,
 } from "firebase/firestore";
 import { getBlob, getStorage, ref } from "firebase/storage";
 import { ElementData, ElementState, ElementType } from "../db/elements";
 import { DbRefService } from "./db-ref.service";
 import { authState } from "rxfire/auth";
 import { Auth } from "@angular/fire/auth";
-import { UserData } from "../db/user";
 import { getClassCardId, ScenarioEnemyData } from "src/types/scenario";
 import { Enemy } from "../db/enemy";
 import { EnemyClassId, EnemyType } from "src/types/enemy";
@@ -52,17 +47,31 @@ import { GameContext } from "src/types/game";
 import { ScenarioInfo } from "../db/scenario";
 import { GameBox } from "src/types/gamebox";
 
+/**
+ * NOTE: AngularFire exports the API from RxFire and then doesn't really document it. -_-
+ * RxFire docs are here: https://github.com/FirebaseExtended/rxfire/blob/main/docs/firestore.md.
+ */
+
 @Injectable({
   providedIn: "root",
 })
 export class DbService {
-  private monsterDataMapSubj: ReplaySubject<Map<string, MonsterData>> =
-    new ReplaySubject(1);
-  private bossDataMapSubj: ReplaySubject<Map<string, BossData>> =
-    new ReplaySubject(1);
   private partySubj: ReplaySubject<Party>;
-  private partyEnemySubj: ReplaySubject<Map<EnemyClassId, Enemy[]>>;
-  private enemyIdMap: Map<string, Enemy> = new Map();
+
+  /** Calling these maps needs to check enemyDataLoadedPromise first. */
+  private monsterDataMap: Map<string, MonsterData>;
+  private bossDataMap: Map<string, BossData>;
+  private enemyDataLoadedPromise = new Promise((resolve) => {
+    this.enemyDataLoadedResolve = resolve;
+  });
+  private enemyDataLoadedResolve: Function;
+
+  /** Unsubscribe function for non-Angular Firebase listener while avoiding the AngularFire bug. */
+  private partyMonsterUnsub: Function;
+  // Map of global ID --> enemy. This is basically the local database.
+  private enemyIdMapNew: Map<string, Enemy> = new Map();
+  // Map of class --> array of enemies of that class. this is effectively a cached DB index.
+  private partyEnemySubjNew: ReplaySubject<Map<EnemyClassId, Enemy[]>>;
 
   private gameDataLoadedPromise = new Promise((resolve) => {
     this.gameDataLoadedResolve = resolve;
@@ -72,26 +81,25 @@ export class DbService {
   constructor(
     private firestore: Firestore,
     private dbRef: DbRefService,
-    private auth: Auth
+    private auth: Auth,
+    private zone: NgZone
   ) {
     this.initLoginListener();
   }
 
   /** Returns all eligible monsters for this gamebox. */
   getAllMonsters(): Observable<MonsterData[]> {
-    return this.monsterDataMapSubj.pipe(
-      map((monsterMap) => {
-        const monsters = Array.from(monsterMap.values());
-        return monsters;
+    return from(this.enemyDataLoadedPromise).pipe(
+      map(() => {
+        return Array.from(this.monsterDataMap.values());
       })
     );
   }
 
   getAllBosses(): Observable<BossData[]> {
-    return this.bossDataMapSubj.pipe(
-      map((bossMap) => {
-        const bosses = Array.from(bossMap.values());
-        return bosses;
+    return from(this.enemyDataLoadedPromise).pipe(
+      map(() => {
+        return Array.from(this.bossDataMap.values());
       })
     );
   }
@@ -117,59 +125,84 @@ export class DbService {
   }
 
   /**
-   * Returns wrapper objects for Enemies in a given party, including
-   * both scenario-specific data and generic EnemyData.
+   * Returns wrapper objects for Enemies in a given party.
+   * The wrappers have both scenario-specific data and generic EnemyData.
    *
    * Results are grouped by class since every current usage requires this.
    */
   getPartyEnemies(): Observable<Map<EnemyClassId, Enemy[]>> {
-    if (!this.partyEnemySubj) {
-      this.partyEnemySubj = new ReplaySubject(1);
-      collectionSnapshots(this.dbRef.partyMonstersCollection()).subscribe(
-        (scenarioEnemyDocs) => {
-          // Preemptively return an empty list as forkJoin([]) never fires.
-          if (scenarioEnemyDocs.length === 0) {
-            this.partyEnemySubj.next(new Map());
-            return;
-          }
-          const enemyObservables: Observable<Enemy>[] = [];
-          for (const scenarioEnemyDoc of scenarioEnemyDocs) {
-            const scenarioEnemyData = scenarioEnemyDoc.data();
-            scenarioEnemyData.id = scenarioEnemyDoc.id;
-            enemyObservables.push(
-              // TODO: Understand why first() is needed here.
-              this.getEnemyFromScenarioData(scenarioEnemyData).pipe(first())
-            );
-          }
-          forkJoin(enemyObservables).subscribe((enemies) => {
-            const map = new Map();
-            for (const enemy of enemies) {
-              if (map.has(enemy.classId)) {
-                map.get(enemy.classId).push(enemy);
-              } else {
-                map.set(enemy.classId, [enemy]);
-              }
-            }
-            // Sort each class list by tokenNum.
-            Array.from(map.values()).forEach((arr) =>
-              arr.sort((m1, m2) => m1.compareTo(m2))
-            );
-            this.partyEnemySubj.next(map);
-          });
+    if (!this.partyEnemySubjNew) {
+      this.partyEnemySubjNew = new ReplaySubject(1);
+      combineLatest([
+        from(this.enemyDataLoadedPromise),
+        this.getContext(),
+      ]).subscribe(([_, context]) => {
+        if (this.partyMonsterUnsub) {
+          this.partyMonsterUnsub();
         }
-      );
+        // This is bypassing AngularFire because there's a bug where collectionSnapshots is including extra data unnecessarily.
+        // https://github.com/FirebaseExtended/rxfire/issues/75
+        // Instead, this uses the Firebase API directly.
+        this.partyMonsterUnsub = onSnapshot(
+          this.dbRef.partyMonstersCollection(),
+          (snapshot) => {
+            const updatePromises = snapshot
+              .docChanges()
+              .map((change) => this.processEnemyChange(change, context));
+            Promise.all(updatePromises).then(() => {
+              // Recalculate the "index" of EnemyType --> Enemy[].
+              const map: Map<EnemyClassId, Enemy[]> = new Map();
+              for (const enemy of this.enemyIdMapNew.values()) {
+                if (map.has(enemy.classId)) {
+                  map.get(enemy.classId).push(enemy);
+                } else {
+                  map.set(enemy.classId, [enemy]);
+                }
+              }
+              // Sort each class list by tokenNum.
+              Array.from(map.values()).forEach((arr) =>
+                arr.sort((m1, m2) => m1.compareTo(m2))
+              );
+              // Trigger in NgZone to get back in an Angular context.
+              this.zone.run(() => {
+                this.partyEnemySubjNew.next(map);
+              });
+            });
+          }
+        );
+      });
     }
-    return this.partyEnemySubj.asObservable();
+    return this.partyEnemySubjNew;
   }
 
-  getUserInfo(): Observable<UserData> {
-    return authState(this.auth).pipe(
-      switchMap((user) => {
-        return docSnapshots(this.dbRef.toBeDeletedMembersDoc(user.uid)).pipe(
-          map((doc) => doc.data())
+  /** Proceses new data for a single enemy. Returns a promise when that change is processed. */
+  private async processEnemyChange(
+    change: DocumentChange<ScenarioEnemyData>,
+    context: GameContext
+  ): Promise<void> {
+    const enemyData = change.doc.data();
+    // enemyData.id has to be manually set, just like idField in the Firebase library.
+    const id = (enemyData.id = change.doc.id);
+    if (change.type === "added") {
+      const enemy = await this.createEnemyFromScenarioData(enemyData, context);
+      if (!enemy) {
+        console.error(
+          "Unable to create enemy from scenario data",
+          change,
+          enemyData
         );
-      })
-    );
+        return;
+      }
+      this.enemyIdMapNew.set(id, enemy);
+    } else if (change.type === "modified") {
+      if (!this.enemyIdMapNew.has(id)) {
+        console.error("Enemy that should exist is missing", id);
+        return;
+      }
+      this.enemyIdMapNew.get(id).onNewScenarioData(enemyData, context);
+    } else if (change.type === "removed") {
+      this.enemyIdMapNew.delete(id);
+    }
   }
 
   /**
@@ -204,45 +237,24 @@ export class DbService {
     return batch.commit();
   }
 
-  /**
-   * Returns an Enemy wrapper for the given ScenarioEnemyData.
-   * Uses cached Enemy if possible.
-   */
-  private getEnemyFromScenarioData(
-    scenarioData: ScenarioEnemyData
-  ): Observable<Enemy> {
-    // TODO: Change to getContext() if other things enter GameContext.
-    return this.getParty().pipe(
-      mergeMap((party) => {
-        const context: GameContext = { party };
-        // Enemy objects that already exist should simply receive new ScenarioData.
-        if (this.enemyIdMap.has(scenarioData.id)) {
-          this.enemyIdMap
-            .get(scenarioData.id)
-            .onNewScenarioData(scenarioData, context);
-          return of(this.enemyIdMap.get(scenarioData.id));
-        } else {
-          // Construct a new Enemy only if needed.
-          if (scenarioData.enemyType == EnemyType.MONSTER) {
-            return this.getMonsterClassData(scenarioData.classId).pipe(
-              map((monsterData) => {
-                const monster = new Monster(scenarioData, context, monsterData);
-                this.enemyIdMap.set(scenarioData.id, monster);
-                return monster;
-              })
-            );
-          } else if (scenarioData.enemyType == EnemyType.BOSS) {
-            return this.getBossClassData(scenarioData.classId).pipe(
-              map((bossData) => {
-                const boss = new Boss(scenarioData, context, bossData);
-                this.enemyIdMap.set(scenarioData.id, boss);
-                return boss;
-              })
-            );
-          }
-        }
-      })
-    );
+  private async createEnemyFromScenarioData(
+    scenarioData: ScenarioEnemyData,
+    context: GameContext
+  ): Promise<Enemy | undefined> {
+    if (scenarioData.enemyType == EnemyType.MONSTER) {
+      const classData = await this.monsterDataMap.get(scenarioData.classId);
+      if (!classData) {
+        return;
+      }
+      return new Monster(scenarioData, context, classData);
+    }
+    if (scenarioData.enemyType == EnemyType.BOSS) {
+      const classData = await this.bossDataMap.get(scenarioData.classId);
+      if (!classData) {
+        return;
+      }
+      return new Boss(scenarioData, context, classData);
+    }
   }
 
   saveEnemy(enemy: Enemy) {
@@ -251,6 +263,12 @@ export class DbService {
       this.firestore,
       this.dbRef.partyMonstersCollection().path,
       saveData.id
+    );
+    console.log(
+      "Sending a save for enemy ",
+      saveData.id,
+      enemy.tokenNum,
+      enemy.classId
     );
     // Remove dead enemies automatically.
     if (enemy.isDead()) {
@@ -268,6 +286,15 @@ export class DbService {
       );
     }
     return this.partySubj.asObservable();
+  }
+
+  getContext(): Observable<GameContext> {
+    // I expect more probably comes here at some point and this is low overhead.
+    return this.getParty().pipe(
+      map((party) => {
+        return { party };
+      })
+    );
   }
 
   updateScenarioNumber(newLevel: number): Promise<void> {
@@ -382,41 +409,6 @@ export class DbService {
     });
   }
 
-  /**
-   * Returns *snapshot* of generic monster stats.
-   *
-   * This is a snapshot because it doesn't make sense to handle synchronizing base stats that don't change.
-   * If base stats change somehow in the future, this will need to refresh.
-   *
-   * @param data from the current scenario
-   */
-  private getMonsterClassData(monsterId: string): Observable<MonsterData> {
-    return this.getEnemyDataById(
-      this.monsterDataMapSubj.asObservable(),
-      monsterId
-    );
-  }
-
-  private getBossClassData(bossId: string): Observable<BossData> {
-    return this.getEnemyDataById(this.bossDataMapSubj.asObservable(), bossId);
-  }
-
-  private getEnemyDataById<T>(
-    dataMap: Observable<Map<string, T>>,
-    enemyId: string
-  ) {
-    return dataMap.pipe(
-      first(),
-      map((enemyMap) => {
-        if (!enemyMap.has(enemyId)) {
-          console.error("Invalid enemy specified: ", enemyId);
-          return null;
-        }
-        return enemyMap.get(enemyId);
-      })
-    );
-  }
-
   private async initLoginListener() {
     authState(this.auth).subscribe((user) => {
       if (user) {
@@ -430,7 +422,8 @@ export class DbService {
   /** Reads bundle and initializes static storage. */
   private async initLocalStorage() {
     await this.loadGameBundle();
-    return Promise.all([this.initMonsterMap(), this.initBossMap()]);
+    await Promise.all([this.initMonsterMap(), this.initBossMap()]);
+    this.enemyDataLoadedResolve();
   }
 
   /** Loads static data (monsters, bosses, scenarios) from Cloud Storage. */
@@ -453,11 +446,12 @@ export class DbService {
 
   /**
    * Initializes local storage for all monster stats.
+   * Loaded once because it doesn't make sense to keep updated.
    */
   private async initMonsterMap() {
-    this.getParty().subscribe(async (party) => {
-      this.monsterDataMapSubj.next(
-        await getCollectionMapById(
+    return new Promise<void>((resolve) => {
+      this.getParty().subscribe(async (party) => {
+        const map = await getCollectionMapById(
           query(
             collection(
               this.firestore,
@@ -465,15 +459,17 @@ export class DbService {
             ) as CollectionReference<MonsterData>,
             where("gamebox", "==", party.gamebox)
           )
-        )
-      );
+        );
+        this.monsterDataMap = map;
+        resolve();
+      });
     });
   }
 
   private async initBossMap() {
-    this.getParty().subscribe(async (party) => {
-      this.bossDataMapSubj.next(
-        await getCollectionMapById(
+    return new Promise<void>((resolve) => {
+      this.getParty().subscribe(async (party) => {
+        const map = await getCollectionMapById(
           query(
             collection(
               this.firestore,
@@ -481,8 +477,10 @@ export class DbService {
             ) as CollectionReference<BossData>,
             where("gamebox", "==", party.gamebox)
           )
-        )
-      );
+        );
+        this.bossDataMap = map;
+        resolve();
+      });
     });
   }
 }

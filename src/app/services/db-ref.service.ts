@@ -16,12 +16,12 @@ import {
   MONSTER_ABILITY_DECK_COLLECTION,
   USERS_COLLECTION,
 } from "../db/db-constants";
-import { UserData, UserDataNew } from "../db/user";
 import { ScenarioEnemyData } from "src/types/scenario";
 import { ScenarioInfo } from "../db/scenario";
 import { Party } from "src/types/party";
 import { AppBootstrap } from "./bootstrap";
 import { MonsterAbilityDeckDocument } from "src/types/ability-cards";
+import { UserData } from "../db/user";
 
 @Injectable({
   providedIn: "root",
@@ -86,17 +86,10 @@ export class DbRefService {
     ) as DocumentReference<MonsterAbilityDeckDocument>;
   }
 
-  toBeDeletedMembersDoc(uid: string): DocumentReference<UserData> {
-    return doc(
-      this.firestore,
-      `${PARTIES_COLLECTION}/${this.partyId()}/members/${uid}`
-    ) as DocumentReference<UserData>;
-  }
-
-  userDocNew(uid: string): DocumentReference<UserDataNew> {
+  userDocNew(uid: string): DocumentReference<UserData> {
     return doc(
       this.firestore,
       `${USERS_COLLECTION}/${uid}`
-    ) as DocumentReference<UserDataNew>;
+    ) as DocumentReference<UserData>;
   }
 }

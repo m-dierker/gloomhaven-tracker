@@ -3,7 +3,6 @@ import { Auth } from "@angular/fire/auth";
 import { Unsubscribe, User } from "firebase/auth";
 import { Observable } from "rxjs";
 import { Party } from "src/types/party";
-import { UserData } from "../db/user";
 import { DbService } from "../services/db.service";
 import { ResetService } from "../services/reset.service";
 

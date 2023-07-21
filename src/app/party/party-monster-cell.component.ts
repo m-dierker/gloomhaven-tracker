@@ -27,14 +27,12 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   public isBoss: boolean;
 
   public allStatuses: StatusEffect[];
-  public cancelledStatuses: StatusEffect[] = [
-    StatusEffect.POISON,
-    StatusEffect.WOUND,
-  ];
+  public cancelledStatuses: StatusEffect[] = [];
   public dropdownVisible = false;
   public editsVisible = false;
 
   public localHealth?: number = undefined;
+  public healBlockedByStatus: boolean = false;
 
   private enemy$: Subscription;
 
@@ -78,10 +76,12 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
     if (this.localHealth < 0) {
       this.localHealth = 0;
     }
+    this.recalculateCancelledStatuses();
   }
 
   setLocalHealth(newLocalHealth: number) {
     this.localHealth = newLocalHealth;
+    this.recalculateCancelledStatuses();
   }
 
   applyLocalHealth() {
@@ -90,19 +90,26 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
     this.localHealth = undefined;
   }
 
+  private clearLocalHealth() {
+    this.localHealth = undefined;
+    this.recalculateCancelledStatuses();
+  }
+
   /** Display string for how much health has changed. */
   localHealthDeltaStr(): string {
     if (this.localHealth === undefined) {
       return "";
     }
-
-    const diff = this.enemy.getHealth() - this.localHealth;
+    if (this.healBlockedByStatus) {
+      return "Heal Poison";
+    }
+    const diff = this.localHealthAdded();
     if (diff === 0) {
       return "Cancel";
-    } else if (diff < 0) {
-      return `Add ${-1 * diff} heal`;
+    } else if (diff > 0) {
+      return `Add ${diff} heal`;
     } else {
-      return `Do ${diff} dmg`;
+      return `Do ${-1 * diff} dmg`;
     }
   }
 
@@ -117,6 +124,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
       this.enemy.setStatus(status, true);
     }
     this.db.saveEnemy(this.enemy);
+
     this.dropdownVisible = false;
   }
 
@@ -169,5 +177,28 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
     this.dropdownVisible = false;
   }
 
-  private recalculateCancelledStatuses() {}
+  private recalculateCancelledStatuses() {
+    this.healBlockedByStatus = false;
+    if (this.localHealthAdded() <= 0) {
+      this.cancelledStatuses = [];
+      return;
+    }
+    const newCancelledStatuses: StatusEffect[] = [];
+    for (const effect of this.enemy.getStatuses()) {
+      if (effect.blocksHeal) {
+        newCancelledStatuses.push(effect);
+        this.healBlockedByStatus = true;
+      } else if (effect.removedOnHeal) {
+        newCancelledStatuses.push(effect);
+      }
+    }
+    this.cancelledStatuses = newCancelledStatuses;
+  }
+
+  private localHealthAdded(): number {
+    if (this.localHealth === undefined) {
+      return 0;
+    }
+    return this.localHealth - this.enemy.getHealth();
+  }
 }
