@@ -25,10 +25,15 @@
         }
       ],
       "rewrites": [
-        // Exclude requests for static assets that should be handled by Firebase Hosting.
-        // Including these caches a permanent redirect that's annoying to get rid of.
+        // Exclude assets that might be cached as a bad redirect.
+        // Inlcuding permanent redirects for these is a pain to clear from the browser cache.
         {
-          "source": "!/@(js|css|png|jpg|jpeg|gif|webp|ico|svg|eot|ttf|woff|woff2|json)/**",
+          "source": "**/*.@(js|css|png|jpg|jpeg|webp|gif|svg|woff|woff2|ttf|eot)",
+          "destination": "404.html"
+        },
+        // All other URLs go to the homepage.
+        {
+          "source": "**",
           "destination": "/index.html"
         }
       ]
