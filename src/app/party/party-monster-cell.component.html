@@ -9,15 +9,15 @@
     ></app-party-monster-token>
     <div class="health-controls-wrapper">
       <div class="health-controls">
-        <img src="/assets/icons/minus_1.png" (click)="changeHealth(-1)" />
+        <img src="/assets/icons/minus_1.png" (click)="changeLocalHealth(-1)" />
         <div class="health-display flex-space">
           {{ localHealth !== undefined ? localHealth : enemy.getHealth() }} /
           {{ enemy.getMaxHealth() }}
         </div>
         <img
           src="/assets/icons/plus_1.png"
-          (click)="!healBlockedByStatus && changeHealth(1)"
-          [class.disabled]="healBlockedByStatus"
+          (click)="changeLocalHealth(1)"
+          [class.disabled]="statusesBlockingHeal.length > 0"
         />
       </div>
       <progressbar
@@ -51,7 +51,7 @@
         (click)="toggleStatus(status)"
       >
         <img class="monster-status-icon" src="{{ status.getImgPath() }}" />
-        {{ status.displayName }}
+        {{ status.conditionName }}
       </div>
     </div>
     <div class="edit-controls" *ngIf="!editsVisible">
@@ -75,7 +75,7 @@
     >
       <!-- There are more efficient ways to do this, but whatever.-->
       <img src="{{ status.getImgPath() }}" class="monster-status-icon" />
-      <span class="monster-status-text">{{ status.displayName }}</span>
+      <span class="monster-status-text">{{ status.conditionName }}</span>
     </div>
   </ng-container>
 </div>

@@ -32,7 +32,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   public editsVisible = false;
 
   public localHealth?: number = undefined;
-  public healBlockedByStatus: boolean = false;
+  public statusesBlockingHeal: StatusEffect[] = [];
 
   private enemy$: Subscription;
 
@@ -62,13 +62,17 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
           // Network changes blow away local changes.
           if (this.enemy.getHealth() !== this.localHealth) {
             this.localHealth = undefined;
+            this.recalculateCancelledStatuses();
           }
         });
       }
     }
   }
 
-  changeHealth(amount: number) {
+  changeLocalHealth(amount: number) {
+    if (this.statusesBlockingHeal.length > 0 && amount > 0) {
+      return;
+    }
     if (this.localHealth === undefined) {
       this.localHealth = this.enemy.getHealth();
     }
@@ -100,8 +104,10 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
     if (this.localHealth === undefined) {
       return "";
     }
-    if (this.healBlockedByStatus) {
-      return "Heal Poison";
+    if (this.statusesBlockingHeal.length > 0) {
+      return (
+        "Heal " + this.statusesBlockingHeal.map((s) => s.displayName).join(", ")
+      );
     }
     const diff = this.localHealthAdded();
     if (diff === 0) {
@@ -178,18 +184,18 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   }
 
   private recalculateCancelledStatuses() {
-    this.healBlockedByStatus = false;
+    this.statusesBlockingHeal = [];
     if (this.localHealthAdded() <= 0) {
       this.cancelledStatuses = [];
       return;
     }
     const newCancelledStatuses: StatusEffect[] = [];
     for (const effect of this.enemy.getStatuses()) {
+      if (effect.blocksHeal || effect.removedOnHeal) {
+        newCancelledStatuses.push(effect);
+      }
       if (effect.blocksHeal) {
-        newCancelledStatuses.push(effect);
-        this.healBlockedByStatus = true;
-      } else if (effect.removedOnHeal) {
-        newCancelledStatuses.push(effect);
+        this.statusesBlockingHeal.push(effect);
       }
     }
     this.cancelledStatuses = newCancelledStatuses;

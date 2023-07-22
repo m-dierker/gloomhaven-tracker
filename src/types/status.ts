@@ -1,25 +1,25 @@
 const effectIdMap: Map<string, StatusEffect> = new Map();
 
 export class StatusEffect {
-  public static DISARM: StatusEffect = new StatusEffect("disarm", "Disarmed");
+  public static DISARM: StatusEffect = new StatusEffect("disarm", "Disarm");
   public static IMMOBILIZE: StatusEffect = new StatusEffect(
     "immobilize",
-    "Immobilized"
+    "Immobilize"
   );
-  public static INVISIBILITY: StatusEffect = new StatusEffect(
-    "invisibility",
+  public static INVISIBLE: StatusEffect = new StatusEffect(
+    "invisible",
     "Invisible"
   );
-  public static MUDDLE: StatusEffect = new StatusEffect("muddle", "Muddled");
-  public static POISON: StatusEffect = new StatusEffect("poison", "Poisoned", {
+  public static MUDDLE: StatusEffect = new StatusEffect("muddle", "Muddle");
+  public static POISON: StatusEffect = new StatusEffect("poison", "Poison", {
     blocksHeal: true,
   });
-  public static STRENGTH: StatusEffect = new StatusEffect(
-    "strength",
-    "Strength"
+  public static STRENGTHEN: StatusEffect = new StatusEffect(
+    "strengthen",
+    "Strengthen"
   );
-  public static STUN: StatusEffect = new StatusEffect("stun", "Stunned");
-  public static WOUND: StatusEffect = new StatusEffect("wound", "Wounded", {
+  public static STUN: StatusEffect = new StatusEffect("stun", "Stun");
+  public static WOUND: StatusEffect = new StatusEffect("wound", "Wound", {
     removedOnHeal: true,
   });
 
@@ -49,5 +49,9 @@ export class StatusEffect {
 
   public getImgPath(): string {
     return `assets/statuses/${this.id}.png`;
+  }
+
+  public compareTo(other: StatusEffect): number {
+    return this.displayName.localeCompare(other.displayName);
   }
 }

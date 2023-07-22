@@ -52,6 +52,10 @@ progressbar {
 .monster-cancelled-statuses {
   color: #919191;
   text-decoration: line-through;
+
+  img {
+    opacity: 0.5;
+  }
 }
 
 .monster-statuses {

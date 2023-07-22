@@ -95,9 +95,9 @@ export abstract class Enemy {
   }
 
   getStatuses(): StatusEffect[] {
-    return this.scenarioData.statuses.map((statusId) =>
-      StatusEffect.getEffectById(statusId)
-    );
+    return this.scenarioData.statuses
+      .map((statusId) => StatusEffect.getEffectById(statusId))
+      .sort((a, b) => a.compareTo(b));
   }
 
   hasStatus(status: StatusEffect): boolean {
