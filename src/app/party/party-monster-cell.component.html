@@ -51,7 +51,7 @@
         (click)="toggleStatus(status)"
       >
         <img class="monster-status-icon" src="{{ status.getImgPath() }}" />
-        {{ status.conditionName }}
+        {{ status.displayName }}
       </div>
     </div>
     <div class="edit-controls" *ngIf="!editsVisible">
@@ -75,7 +75,7 @@
     >
       <!-- There are more efficient ways to do this, but whatever.-->
       <img src="{{ status.getImgPath() }}" class="monster-status-icon" />
-      <span class="monster-status-text">{{ status.conditionName }}</span>
+      <span class="monster-status-text">{{ status.displayName }}</span>
     </div>
   </ng-container>
 </div>

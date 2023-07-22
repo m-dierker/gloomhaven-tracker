@@ -89,9 +89,29 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   }
 
   applyLocalHealth() {
-    this.enemy.setHealth(this.localHealth);
+    // It's a heal if health is added, or if statuses are actively blocking a heal.
+    const isHeal =
+      this.localHealthAdded() > 0 || this.statusesBlockingHeal.length;
+    if (isHeal && this.statusesBlockingHeal.length) {
+      // Statuses blocking heal are removed instead of healing.
+      for (const status of this.statusesBlockingHeal) {
+        this.enemy.setStatus(status, false);
+      }
+    } else {
+      this.enemy.setHealth(this.localHealth);
+    }
+    // On any heal, statuses removed on heal are removed.
+    if (isHeal) {
+      for (const status of this.enemy.getStatuses()) {
+        if (status.removedOnHeal) {
+          this.enemy.setStatus(status, false);
+        }
+      }
+    }
     this.db.saveEnemy(this.enemy);
+
     this.localHealth = undefined;
+    this.recalculateCancelledStatuses();
   }
 
   private clearLocalHealth() {
@@ -120,7 +140,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   }
 
   toggleStatusesVisible() {
-    this.dropdownVisible = !this.dropdownVisible;
+    this.setDropdown(!this.dropdownVisible);
   }
 
   toggleStatus(status: StatusEffect) {
@@ -131,7 +151,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
     }
     this.db.saveEnemy(this.enemy);
 
-    this.dropdownVisible = false;
+    this.setDropdown(false);
   }
 
   toggleEditsVisible() {
@@ -144,8 +164,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
     }
     this.monster.setElite(!this.monster.isElite());
     this.db.saveEnemy(this.enemy);
-    this.editsVisible = false;
-    this.dropdownVisible = false;
+    this.setDropdown(false);
   }
 
   changeToken() {
@@ -157,8 +176,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
     }
     this.enemy.setTokenNum(newIdNum);
     this.db.saveEnemy(this.enemy);
-    this.editsVisible = false;
-    this.dropdownVisible = false;
+    this.setDropdown(false);
   }
 
   changeMaxHealth() {
@@ -179,8 +197,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
     }
     this.db.saveEnemy(this.enemy);
 
-    this.editsVisible = false;
-    this.dropdownVisible = false;
+    this.setDropdown(false);
   }
 
   private recalculateCancelledStatuses() {
@@ -196,15 +213,27 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
       }
       if (effect.blocksHeal) {
         this.statusesBlockingHeal.push(effect);
+        this.localHealth = this.enemy.getHealth();
       }
     }
     this.cancelledStatuses = newCancelledStatuses;
   }
 
+  /**
+   * Returns the amount of health added locally.
+   * Positive numbers indicate healing, negative numbers indicate damage.
+   */
   private localHealthAdded(): number {
     if (this.localHealth === undefined) {
       return 0;
     }
     return this.localHealth - this.enemy.getHealth();
+  }
+
+  private setDropdown(visible: boolean) {
+    this.dropdownVisible = visible;
+    if (!this.dropdownVisible) {
+      this.editsVisible = false;
+    }
   }
 }

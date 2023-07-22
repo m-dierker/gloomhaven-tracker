@@ -14,7 +14,7 @@
   </div>
   <div class="boss-status" *ngFor="let status of boss.getStatuses()">
     <img src="{{ status.getImgPath() }}" class="boss-status-icon" />
-    <span class="boss-status-text">{{ status.conditionName }}</span>
+    <span class="boss-status-text">{{ status.displayName }}</span>
   </div>
   <img class="boss-img" src="/assets/bosses/{{ boss.dbClassId }}.webp" />
 </div>
