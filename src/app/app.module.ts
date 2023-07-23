@@ -26,10 +26,8 @@ import {
 } from "@angular/fire/firestore";
 import { PartyElementTrackerComponent } from "./party/elements/party-element-tracker.component";
 import { LoginComponent } from "./ui/login.component";
-import { ButtonComponent } from "./ui/button.component";
 import { Auth, provideAuth } from "@angular/fire/auth";
 import { getAuth } from "firebase/auth";
-import { PartyRoleHeaderComponent } from "./party/party-role-header.component";
 import { PartyMonsterTrackerComponent } from "./party/party-monster-tracker.component";
 import { PartyAddMonsterComponent } from "./party/party-add-monster.component";
 import { BossCellComponent } from "./display/boss-cell.component";
@@ -45,6 +43,7 @@ import { EnemyImageComponent } from "./monster/enemy-image.component";
 import { SelectPartyComponent } from "./party/select-party.component";
 import { PartyModule } from "./party/party.module";
 import { ElementTrackerModule } from "./elements/element-tracker.module";
+import { UiModule } from "./ui/ui.module";
 
 @NgModule({
   declarations: [
@@ -55,8 +54,6 @@ import { ElementTrackerModule } from "./elements/element-tracker.module";
     PartyManagerComponent,
     PartyMonsterCellComponent,
     LoginComponent,
-    ButtonComponent,
-    PartyRoleHeaderComponent,
     PartyMonsterTrackerComponent,
     PartyAddMonsterComponent,
     BossCellComponent,
@@ -76,8 +73,11 @@ import { ElementTrackerModule } from "./elements/element-tracker.module";
     ReactiveFormsModule,
     BrowserModule,
     AppRoutingModule,
+
+    // Local modules
     PartyModule,
     ElementTrackerModule,
+    UiModule,
 
     // UI Modules
     ProgressbarModule.forRoot(),

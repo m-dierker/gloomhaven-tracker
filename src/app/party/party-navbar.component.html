@@ -7,10 +7,27 @@
 </div>
 <div class="navbar">
   <div class="monster-filler"></div>
-  <div class="elements" routerLink="/party/elements">
+  <div
+    class="monsters"
+    routerLink="/party/monsters"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+  >
+    <img src="/assets/icons/skull.webp" />
+  </div>
+  <div
+    class="elements"
+    routerLink="/party/elements"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+  >
     <img src="/assets/elements/wildcard.png" />
   </div>
-  <div routerLink="/party">
+  <div
+    routerLink="/party"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+  >
     <div class="character spellweaver"></div>
   </div>
 </div>

@@ -6,3 +6,10 @@
     (changeState)="onSetElementState(element, $event)"
   ></app-party-element-tracker-cell>
 </div>
+
+<!-- TODO: Consider moving this elsewhere. -->
+<div class="turn-controls">
+  <app-button (click)="nextTurn()" [disabled]="disableNextTurn">
+    Next Turn
+  </app-button>
+</div>
