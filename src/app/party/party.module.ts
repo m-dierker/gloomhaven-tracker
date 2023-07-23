@@ -11,7 +11,12 @@ import { ElementTrackerModule } from "../elements/element-tracker.module";
 import { UiModule } from "../ui/ui.module";
 import { PartyCharacterComponent } from "./party-character.component";
 import { PartyRoleHeaderComponent } from "./party-role-header.component";
-import { PartyMonstersPageComponent } from './party-monsters-page.component';
+import { PartyMonstersPageComponent } from "./party-monsters-page.component";
+import { PartyMonsterNameComponent } from "./party-monster-name.component";
+import { PartyMonsterTokenComponent } from "./party-monster-token.component";
+import { PartyMonsterCellComponent } from "./party-monster-cell.component";
+import { ProgressbarModule } from "ngx-bootstrap/progressbar";
+import { SelectPartyComponent } from "./select-party.component";
 
 @NgModule({
   declarations: [
@@ -24,7 +29,11 @@ import { PartyMonstersPageComponent } from './party-monsters-page.component';
     PartyElementTrackerCellComponent,
     PartyCharacterComponent,
     PartyRoleHeaderComponent,
+    PartyMonsterCellComponent,
     PartyMonstersPageComponent,
+    PartyMonsterNameComponent,
+    PartyMonsterTokenComponent,
+    SelectPartyComponent,
   ],
   imports: [CommonModule, PartyRoutingModule, ElementTrackerModule, UiModule],
 })

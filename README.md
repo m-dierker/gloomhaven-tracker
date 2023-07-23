@@ -2,7 +2,15 @@
 
 ## Local Dev
 
-Run `nodemon`.
+Run `ng serve`.
+
+To see on a phone:
+- Enable Tailscale.
+- `yarn run start`
+
+Refreshing SSL certs:
+- tailscale cert `domain`, where `domain` is printed when running the command.
+- Copy certs from directory printed into this directory overriding existing files.
 
 ## Deployment
 

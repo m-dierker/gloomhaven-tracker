@@ -11,10 +11,18 @@ $navbar-button-contents-height: $navbar-height - $navbar-vert-padding * 2;
   position: fixed;
   bottom: $navbar-height;
   width: 100%;
+
+  // Put the elements above the navbar's shadow.
+  z-index: 200;
+  // Pass clicks through to the underlying elements.
+  pointer-events: none;
 }
 
 .navbar {
-  background-color: rgb(47, 0, 0);
+  // background-color: rgb(47, 0, 0);
+  background: url("/assets/backgrounds/card_bg.jpg");
+  // box-shadow: 0px -8px 15px 0px rgb(27, 0, 0, 1);
+  box-shadow: 0px -32px 48px 0px rgb(27, 0, 0, 1);
   padding: 0;
 
   display: flex;
@@ -40,7 +48,7 @@ $navbar-button-contents-height: $navbar-height - $navbar-vert-padding * 2;
 }
 
 .active {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .monster-filler {

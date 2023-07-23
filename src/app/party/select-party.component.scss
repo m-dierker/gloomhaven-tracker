@@ -1,21 +1,5 @@
-.party-page {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.party-main {
-  background: url("/assets/backgrounds/wood_texture.webp");
-  color: white;
-  flex-grow: 1;
-  height: 100%;
-}
-
-.select-title {
-  text-align: center;
-  font-family: "Pirata One";
-  font-size: 30pt;
-  margin: 20px 0;
+.select-page {
+  padding: 8px;
 }
 
 .game-logo {

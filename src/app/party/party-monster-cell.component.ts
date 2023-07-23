@@ -4,6 +4,8 @@ import {
   Input,
   OnChanges,
   SimpleChanges,
+  ElementRef,
+  ViewChild,
 } from "@angular/core";
 import { Monster } from "../db/monster";
 import { DbService } from "../services/db.service";
@@ -35,6 +37,13 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   public statusesBlockingHeal: StatusEffect[] = [];
 
   private enemy$: Subscription;
+
+  private dropdownRef: ElementRef<HTMLElement>;
+  @ViewChild("dropdown", { static: false }) set content(content: ElementRef) {
+    if (content) {
+      this.dropdownRef = content;
+    }
+  }
 
   constructor(private db: DbService) {}
 
@@ -234,6 +243,19 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
     this.dropdownVisible = visible;
     if (!this.dropdownVisible) {
       this.editsVisible = false;
+    }
+    if (this.dropdownVisible) {
+      // Once the element is visible, make the dropdown scroll into view.
+      setTimeout(() => {
+        // Add an extra padding so it's above the elements.
+        this.dropdownRef.nativeElement.style.paddingBottom = "32px";
+        this.dropdownRef.nativeElement.scrollIntoView({
+          // @ts-ignore
+          behavior: "smooth",
+          block: "end",
+        });
+        this.dropdownRef.nativeElement.style.paddingBottom = "0px";
+      }, 0);
     }
   }
 }

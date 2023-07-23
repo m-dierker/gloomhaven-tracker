@@ -16,7 +16,6 @@ import { MonsterCellComponent } from "./display/monster-cell.component";
 import { MonsterNameComponent } from "./display/monster-name.component";
 import { PartyManagerComponent } from "./party/party-manager.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { PartyMonsterCellComponent } from "./party/party-monster-cell.component";
 import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
 import {
   enableMultiTabIndexedDbPersistence,
@@ -37,10 +36,6 @@ import { AppBootstrap } from "./services/bootstrap";
 import { AdminComponent } from "./admin/admin.component";
 import { MonsterAbilityDisplayComponent } from "./monster/ability-deck/monster-ability-display.component";
 import { MonsterAbilityDeckComponent } from "./monster/ability-deck/monster-ability-deck.component";
-import { PartyMonsterNameComponent } from "./party/party-monster-name.component";
-import { PartyMonsterTokenComponent } from "./party/party-monster-token.component";
-import { EnemyImageComponent } from "./monster/enemy-image.component";
-import { SelectPartyComponent } from "./party/select-party.component";
 import { PartyModule } from "./party/party.module";
 import { ElementTrackerModule } from "./elements/element-tracker.module";
 import { UiModule } from "./ui/ui.module";
@@ -52,7 +47,6 @@ import { UiModule } from "./ui/ui.module";
     MonsterCellComponent,
     MonsterNameComponent,
     PartyManagerComponent,
-    PartyMonsterCellComponent,
     LoginComponent,
     PartyMonsterTrackerComponent,
     PartyAddMonsterComponent,
@@ -62,10 +56,6 @@ import { UiModule } from "./ui/ui.module";
     AdminComponent,
     MonsterAbilityDisplayComponent,
     MonsterAbilityDeckComponent,
-    PartyMonsterNameComponent,
-    PartyMonsterTokenComponent,
-    EnemyImageComponent,
-    SelectPartyComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -78,10 +68,6 @@ import { UiModule } from "./ui/ui.module";
     PartyModule,
     ElementTrackerModule,
     UiModule,
-
-    // UI Modules
-    ProgressbarModule.forRoot(),
-    TypeaheadModule.forRoot(),
 
     // AngularFire
     provideFirebaseApp(() => initializeApp(environment.firebase)),

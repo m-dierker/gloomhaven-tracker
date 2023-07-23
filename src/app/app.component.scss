@@ -2,4 +2,7 @@
   // Disables tap-to-zoom when double tapping something.
   touch-action: manipulation;
   height: 100vh;
+
+  // Mobile viewport fix for mobile Safari;
+  max-height: -webkit-fill-available;
 }

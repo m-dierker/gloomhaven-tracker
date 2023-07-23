@@ -28,6 +28,6 @@
     routerLinkActive="active"
     [routerLinkActiveOptions]="{ exact: true }"
   >
-    <div class="character spellweaver"></div>
+    <div class="character {{ party?.members[user?.uid].class }}"></div>
   </div>
 </div>

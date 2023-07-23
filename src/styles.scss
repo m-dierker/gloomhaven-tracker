@@ -15,9 +15,11 @@ body {
 
 html {
   height: 100%;
+  height: -webkit-fill-available;
 }
 body {
-  min-height: 100%;
+  // Mobile safari scrolling fix.
+  min-height: -webkit-fill-available;
 }
 
 @font-face {

@@ -6,13 +6,14 @@
   // No bg color until it's loaded.
   background-color: black;
 
-  &.gloomhaven,
-  &.jotl {
+  &.gamebox-gh,
+  &.gamebox-jotl {
     background: url("/assets/backgrounds/wood_texture.webp");
   }
 
-  // TODO: Change the HTML to Gloomhaven.
-  &.frosthaven {
+  // TODO: Remove Gloomhaven here.
+  &.gamebox-gh,
+  &.gamebox-fh {
     background: url("/assets/backgrounds/winter_dark.jpg");
     background-size: cover;
   }
@@ -20,6 +21,13 @@
 
 .party-main {
   flex-grow: 1;
+  // The content takes up the rest of the screen and scrolls.
+  max-height: calc(100vh - 64px);
+  // max-height: 50vh;
+  overflow-y: scroll;
+
+  // Add an extra buffer to every screen to allow extra scrolling over elements.
+  // padding-bottom: 64px;
 }
 
 .party-navbar {
