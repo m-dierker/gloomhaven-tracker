@@ -25,19 +25,9 @@ export abstract class Enemy {
   public onScenarioDataUpdate: EventEmitter<void> = new EventEmitter();
 
   /**
-   * Returns a unique ID for this monster class (ex: "Bandit Archer" or "Jekserah").
-   * This is guaranteed to be unique across all enemy types.
-   */
-  get classId(): EnemyClassId {
-    return `${this.scenarioData_.enemyType}-${this.dbClassId}`;
-  }
-
-  /**
    * Returns a type of monster (ex: monsterId from monster DB for monsters).
-   * This is not technically guaranteed to be unique right now.
-   * TODO: Consider if this is really needed publicly (or at all).
    */
-  get dbClassId() {
+  get classId() {
     return this.scenarioData.classId;
   }
 

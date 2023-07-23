@@ -15,7 +15,7 @@ import { Enemy } from "../db/enemy";
 })
 export class EnemyImageComponent implements OnInit, OnChanges {
   @Input()
-  dbClassId: string;
+  classId: string;
 
   @Input()
   isBoss: boolean;
@@ -28,12 +28,13 @@ export class EnemyImageComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.dbClassId) {
-      const split = this.dbClassId.indexOf("_");
+    // FIXME this is gonna break.
+    if (changes.classId) {
+      const split = this.classId.indexOf("_");
       if (split === -1) {
-        this.prefix = this.dbClassId;
+        this.prefix = this.classId;
       } else {
-        this.prefix = this.dbClassId.substring(0, split);
+        this.prefix = this.classId.substring(0, split);
       }
     }
   }

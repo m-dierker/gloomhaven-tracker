@@ -1,33 +1,47 @@
-<div class="element-tracker">
-  <app-element-tracker
-    [elementGapPx]="8"
-    direction="horz"
-    stateConfig="activeStates"
-  ></app-element-tracker>
-</div>
-<div class="navbar">
-  <div class="monster-filler"></div>
-  <div
-    class="monsters"
-    routerLink="/party/monsters"
-    routerLinkActive="active"
-    [routerLinkActiveOptions]="{ exact: true }"
-  >
-    <img src="/assets/icons/skull.webp" />
+<div [class.subbar-visible]="enemySubpanelOpen">
+  <div class="element-tracker">
+    <app-element-tracker
+      [elementGapPx]="8"
+      direction="horz"
+      stateConfig="activeStates"
+    ></app-element-tracker>
   </div>
-  <div
-    class="elements"
-    routerLink="/party/elements"
-    routerLinkActive="active"
-    [routerLinkActiveOptions]="{ exact: true }"
-  >
-    <img src="/assets/elements/wildcard.png" />
-  </div>
-  <div
-    routerLink="/party"
-    routerLinkActive="active"
-    [routerLinkActiveOptions]="{ exact: true }"
-  >
-    <div class="character {{ party?.members[user?.uid].class }}"></div>
+  <div class="navbar">
+    <div class="sub-navbar">
+      <div
+        class="monster-selector"
+        *ngFor="let classId of enemyClassIds"
+        routerLink="/party/monsters"
+        [state]="{ classId: classId }"
+      >
+        <app-enemy-image [classId]="classId"></app-enemy-image>
+      </div>
+    </div>
+    <div class="main-navbar">
+      <div class="monster-filler"></div>
+      <div
+        class="monsters"
+        routerLink="/party/monsters"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <img src="/assets/icons/skull.webp" />
+      </div>
+      <div
+        class="elements"
+        routerLink="/party/elements"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <img src="/assets/elements/wildcard.png" />
+      </div>
+      <div
+        routerLink="/party"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <div class="character {{ party?.members[user?.uid].class }}"></div>
+      </div>
+    </div>
   </div>
 </div>

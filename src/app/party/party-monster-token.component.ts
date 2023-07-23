@@ -15,7 +15,7 @@ import { Enemy } from "../db/enemy";
 })
 export class PartyMonsterTokenComponent implements OnChanges {
   @Input()
-  dbClassId: string;
+  classId: string;
 
   @Input()
   isBoss: boolean;
@@ -32,8 +32,8 @@ export class PartyMonsterTokenComponent implements OnChanges {
   constructor() {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.dbClassId) {
-      this.gameBox = getGameBoxFromClassId(this.dbClassId);
+    if (changes.classId) {
+      this.gameBox = getGameBoxFromClassId(this.classId);
     }
   }
 }

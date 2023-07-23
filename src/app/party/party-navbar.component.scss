@@ -1,15 +1,26 @@
 @import "src/app/css/roles.scss";
 
 // create a navbar height variable for 64px.
-$navbar-height: 64px;
-$navbar-vert-padding: 12px;
-$navbar-item-width: 64px;
-$navbar-button-contents-height: $navbar-height - $navbar-vert-padding * 2;
+$main-navbar-height: 64px;
+$sub-navbar-height: 64px;
+$total-navbar-height: $main-navbar-height + $sub-navbar-height;
+
+$main-vert-padding: 12px;
+$main-contents-height: $main-navbar-height - $main-vert-padding * 2;
+$main-item-width: 64px;
+
+$sub-vert-padding: 4px;
+$sub-contents-height: $sub-navbar-height - $sub-vert-padding * 2;
+$sub-item-width: 80px;
+$sub-contents-width: $sub-contents-height;
+
+$navbar-item-border: 1px gray solid;
 
 .element-tracker {
   padding: 4px 8px;
   position: fixed;
-  bottom: $navbar-height;
+  bottom: $main-navbar-height;
+  transition: bottom 0.2s ease-in-out;
   width: 100%;
 
   // Put the elements above the navbar's shadow.
@@ -18,32 +29,78 @@ $navbar-button-contents-height: $navbar-height - $navbar-vert-padding * 2;
   pointer-events: none;
 }
 
+.subbar-visible {
+  .element-tracker {
+    bottom: $total-navbar-height;
+  }
+
+  .sub-navbar {
+    // border-bottom: $navbar-item-border;
+    height: $sub-navbar-height;
+  }
+}
+
 .navbar {
-  // background-color: rgb(47, 0, 0);
-  background: url("/assets/backgrounds/card_bg.jpg");
-  // box-shadow: 0px -8px 15px 0px rgb(27, 0, 0, 1);
+  background-color: rgb(47, 0, 0);
   box-shadow: 0px -32px 48px 0px rgb(27, 0, 0, 1);
   padding: 0;
+}
 
+.main-navbar,
+.sub-navbar {
   display: flex;
-  height: $navbar-height;
+  height: $main-navbar-height;
+  width: 100%;
+}
+
+.main-navbar {
+  background: url("/assets/backgrounds/card_bg.jpg");
+  display: flex;
   justify-content: space-between;
 }
 
-.navbar > div {
-  padding: $navbar-vert-padding 0;
+.sub-navbar {
+  background-color: #1d0e0e;
+  height: 0px;
+  transition: height 0.2s ease-in-out;
+}
+
+.main-navbar > div,
+.sub-navbar > div {
   display: flex;
   justify-content: center;
-  min-width: $navbar-item-width;
+
+  img,
+  app-enemy-image {
+    fill: white;
+    object-fit: contain;
+  }
+}
+
+.main-navbar > div {
+  padding: $main-vert-padding 0;
+  min-width: $main-item-width;
 
   &:not(:first-child) {
-    border-left: 1px gray solid;
+    border-left: $navbar-item-border;
   }
 
-  img {
-    fill: white;
-    height: $navbar-button-contents-height;
-    max-height: $navbar-button-contents-height;
+  img,
+  app-enemy-image {
+    height: $main-contents-height;
+    max-height: $main-contents-height;
+  }
+}
+
+.sub-navbar > div {
+  padding: $sub-vert-padding 0;
+  min-width: $sub-item-width;
+
+  img,
+  app-enemy-image {
+    height: $sub-contents-height;
+    max-height: $sub-contents-height;
+    width: $sub-contents-width;
   }
 }
 
@@ -63,6 +120,6 @@ $navbar-button-contents-height: $navbar-height - $navbar-vert-padding * 2;
 
   // Offset with a different width because the SVGs are smaller.
   margin: -4px;
-  height: $navbar-button-contents-height + 8px;
-  width: $navbar-button-contents-height + 8px;
+  height: $main-contents-height + 8px;
+  width: $main-contents-height + 8px;
 }

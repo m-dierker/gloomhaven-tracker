@@ -3,5 +3,5 @@ export enum EnemyType {
   BOSS = 2,
 }
 
-/** String that identifies a class, unique across all enemy types. Should not be shown directly. */
+/** String that identifies a class, unique across all enemy types in all games. Should not be shown directly. */
 export type EnemyClassId = string;

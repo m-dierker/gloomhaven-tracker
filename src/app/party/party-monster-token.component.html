@@ -1,13 +1,13 @@
 <div class="monster-id" [class.elite]="isElite">
   <img
-    src="/assets/bosses/{{ dbClassId }}.webp"
+    src="/assets/bosses/{{ classId }}.webp"
     *ngIf="isBoss && gameBox == GameBox.GLOOMHAVEN; else enemyImage"
     else
     #enemyImage
     class="boss-img"
   />
   <ng-template #enemyImage>
-    <app-enemy-image [dbClassId]="dbClassId"></app-enemy-image>
+    <app-enemy-image [classId]="classId"></app-enemy-image>
   </ng-template>
   <!-- Show token number for non-bosses and for bosses that aren't #1 in case there are ever be two of the same class.-->
   <div class="monster-token" *ngIf="!isBoss || tokenNum !== 1">

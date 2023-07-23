@@ -7,7 +7,7 @@
       *ngFor="let classId of scenarioInfo.monsterIds"
       (click)="selectEnemy(EnemyType.MONSTER, classId)"
     >
-      <app-enemy-image [dbClassId]="classId"></app-enemy-image>
+      <app-enemy-image [classId]="classId"></app-enemy-image>
     </div>
     <div
       class="select-enemy-choice boss"
@@ -65,7 +65,7 @@
     <div class="token-images">
       <app-party-monster-token
         *ngFor="let pending of pendingTokens"
-        [dbClassId]="createMonsterData.autocompleteEntry.classId"
+        [classId]="createMonsterData.autocompleteEntry.classId"
         [tokenNum]="pending.tokenNum"
         [isBoss]="
           createMonsterData.autocompleteEntry.enemyType == EnemyType.BOSS

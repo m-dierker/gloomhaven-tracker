@@ -1,7 +1,7 @@
 <div class="monster-cell-wrapper" [class.elite]="monster && monster.isElite()">
   <div class="monster-cell">
     <app-party-monster-token
-      [dbClassId]="enemy.dbClassId"
+      [classId]="enemy.classId"
       [tokenNum]="enemy.tokenNum"
       [isBoss]="enemy.isBoss()"
       [isElite]="monster && monster.isElite()"

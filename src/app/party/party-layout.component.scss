@@ -22,14 +22,10 @@
 .party-main {
   flex-grow: 1;
   // The content takes up the rest of the screen and scrolls.
-  max-height: calc(100vh - 64px);
+  // max-height: calc(100vh - 64px);
   // max-height: 50vh;
-  overflow-y: scroll;
+  overflow-y: auto;
 
   // Add an extra buffer to every screen to allow extra scrolling over elements.
-  // padding-bottom: 64px;
-}
-
-.party-navbar {
-  height: 64px;
+  padding-bottom: 64px;
 }

@@ -19,6 +19,7 @@ html {
 }
 body {
   // Mobile safari scrolling fix.
+  min-height: 100vh;
   min-height: -webkit-fill-available;
 }
 
