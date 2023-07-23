@@ -17,8 +17,8 @@ import {
   ORDERED_ELEMENT_STATES,
 } from "src/app/db/elements";
 import { DbService } from "src/app/services/db.service";
-import { AnimatedElementTracker } from "../display/elements/AnimatedElementTracker";
 import { ElementTrackerCellComponent } from "./element-tracker-cell.component";
+import { AnimatedElementTracker } from "./AnimatedElementTracker";
 
 @Component({
   selector: "app-element-tracker",
