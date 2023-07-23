@@ -27,7 +27,6 @@ import {
 import { ElementTrackerComponent } from "./display/elements/element-tracker.component";
 import { ElementTrackerCellComponent } from "./display/elements/element-tracker-cell.component";
 import { PartyElementTrackerComponent } from "./party/elements/party-element-tracker.component";
-import { PartyElementTrackerCellComponent } from "./party/elements/party-element-tracker-cell.component";
 import { LoginComponent } from "./ui/login.component";
 import { ButtonComponent } from "./ui/button.component";
 import { Auth, provideAuth } from "@angular/fire/auth";
@@ -46,6 +45,7 @@ import { PartyMonsterNameComponent } from "./party/party-monster-name.component"
 import { PartyMonsterTokenComponent } from "./party/party-monster-token.component";
 import { EnemyImageComponent } from "./monster/enemy-image.component";
 import { SelectPartyComponent } from "./party/select-party.component";
+import { PartyModule } from "./party/party.module";
 
 @NgModule({
   declarations: [
@@ -58,7 +58,6 @@ import { SelectPartyComponent } from "./party/select-party.component";
     ElementTrackerComponent,
     ElementTrackerCellComponent,
     PartyElementTrackerComponent,
-    PartyElementTrackerCellComponent,
     LoginComponent,
     ButtonComponent,
     PartyRoleHeaderComponent,
@@ -81,6 +80,7 @@ import { SelectPartyComponent } from "./party/select-party.component";
     ReactiveFormsModule,
     BrowserModule,
     AppRoutingModule,
+    PartyModule,
 
     // UI Modules
     ProgressbarModule.forRoot(),

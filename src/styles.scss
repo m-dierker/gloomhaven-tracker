@@ -1,10 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
 @import "../node_modules/bootstrap/scss/bootstrap";
 
+/** Role colors have to be included globally. */
+@import "src/app/css/roles.scss";
+
 html,
 body {
   margin: 0;
   padding: 0;
+
+  // Disable extra scrolling.
+  overscroll-behavior: none;
 }
 
 html {

@@ -1,0 +1,24 @@
+.element-img {
+  background-color: black;
+  border-radius: 50%;
+  height: 100%;
+  width: 100%;
+
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.active img {
+  opacity: 1;
+  // TODO: Differentiate from Waning somehow.
+}
+
+.waning img {
+  opacity: 1;
+}
+
+.inactive img {
+  opacity: 0.2;
+}

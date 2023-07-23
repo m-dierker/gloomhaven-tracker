@@ -1,4 +1,5 @@
 .disable-touch {
   // Disables tap-to-zoom when double tapping something.
   touch-action: manipulation;
+  height: 100vh;
 }

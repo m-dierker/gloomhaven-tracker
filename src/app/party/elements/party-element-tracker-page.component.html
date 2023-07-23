@@ -1,0 +1,8 @@
+<app-party-header>Elements</app-party-header>
+<div class="element-controls">
+  <app-party-element-tracker-cell
+    *ngFor="let element of ALL_ELEMENT_TYPES"
+    [element]="element"
+    (changeState)="onSetElementState(element, $event)"
+  ></app-party-element-tracker-cell>
+</div>

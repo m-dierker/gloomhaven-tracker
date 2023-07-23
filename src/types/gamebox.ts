@@ -1,6 +1,7 @@
 export enum GameBox {
   GLOOMHAVEN = "gh",
   JAWS_OF_THE_LION = "jotl",
+  FROSTHAVEN = "fh",
 }
 
 export function getGameBoxFromClassId(classId: string): GameBox {

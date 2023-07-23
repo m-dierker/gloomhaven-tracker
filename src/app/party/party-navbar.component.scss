@@ -1,0 +1,53 @@
+@import "src/app/css/roles.scss";
+
+// create a navbar height variable for 64px.
+$navbar-height: 64px;
+$navbar-vert-padding: 12px;
+$navbar-inner-height: $navbar-height - $navbar-vert-padding * 2;
+
+.element-tracker {
+  padding: 4px 8px;
+  position: fixed;
+  bottom: $navbar-height;
+  width: 100%;
+}
+
+.navbar {
+  background-color: rgb(47, 0, 0);
+
+  display: flex;
+  height: $navbar-height;
+  padding: 8px $navbar-vert-padding;
+  justify-content: space-between;
+}
+
+.navbar > div {
+  height: $navbar-inner-height;
+  padding: 0 16px;
+
+  &:not(:first-child) {
+    border-left: 1px gray solid;
+  }
+
+  img {
+    fill: white;
+    height: $navbar-inner-height;
+    max-height: $navbar-inner-height;
+  }
+}
+
+.monster-filler {
+  flex-grow: 1;
+}
+
+.character {
+  @include role-css() using ($role-id, $role-color, $role-name) {
+    background-color: $role-color;
+    mask-image: url("/assets/classes/" + $role-id + ".svg");
+  }
+
+  // Offset with a different width because the SVGs are smaller.
+  margin: -4px;
+  height: $navbar-inner-height + 8px;
+  width: $navbar-inner-height + 8px;
+}

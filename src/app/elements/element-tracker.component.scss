@@ -1,0 +1,36 @@
+// This must stay in sync with JS too.
+
+@mixin sizeCss($element-size) {
+  app-element-tracker-cell {
+    height: $element-size;
+    width: $element-size;
+  }
+}
+
+.horz {
+  // This value needs to stay in sync with the size passed in.
+  @include sizeCss(32px);
+  height: 32px;
+  width: 100%;
+}
+
+.vert {
+  @include sizeCss(70px);
+  height: 100%;
+}
+.element-tracker-wrapper {
+  position: relative;
+}
+.hideInactive {
+  app-element-tracker-cell.inactive {
+    display: none;
+  }
+}
+
+app-element-tracker-cell {
+  display: inline-block;
+  position: absolute;
+  transition-property: left, top;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-out;
+}

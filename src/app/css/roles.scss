@@ -1,0 +1,39 @@
+$all-roles: (
+  // Gloomhaven
+  spellweaver: ("Spellweaver", #ab7fb8),
+  tinkerer: ("Tinkerer", #cdae91),
+  brute: ("Brute", #57a6ce),
+  mindthief: ("Mindthief", #8097c7),
+  beast_tyrant: ("Beast Tyrant", #ab8470),
+  sunkeeper: ("Sunkeeper", #f6dc8b),
+  soothsinger: ("Soothsinger", #d9837a),
+  scoundrel: ("Scoundrel", #9ec85d),
+  nightshroud: ("Nightshroud", #7d7db8),
+  plagueherald: ("Plagueherald", #6aa69f),
+  cragheart: ("Cragheart", #a0aa4f),
+  // Jaws of the Lion
+  demolitionist: ("Demolitionist", #d56e31),
+  hatchet: ("Hatchet", #507fb5),
+  red_guard: ("Red Guard", #d33c35),
+  voidwarden: ("Voidwarden", #b7b3b2)
+);
+
+/** Allows local CSS for each role. 
+
+Sample usage:
+@include role-css() using ($role-id, $role-color, $role-name) {
+  color: $role-color;
+}
+
+All the arguments must be included in the using clause, even if unused.
+
+*/
+@mixin role-css() {
+  @each $role-id, $data in $all-roles {
+    &.#{$role-id} {
+      $role-name: nth($data, 1);
+      $role-color: nth($data, 2);
+      @content ($role-id, $role-color, $role-name);
+    }
+  }
+}

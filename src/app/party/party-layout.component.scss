@@ -1,0 +1,27 @@
+.party {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  // No bg color until it's loaded.
+  background-color: black;
+
+  &.gloomhaven,
+  &.jotl {
+    background: url("/assets/backgrounds/wood_texture.webp");
+  }
+
+  // TODO: Change the HTML to Gloomhaven.
+  &.frosthaven {
+    background: url("/assets/backgrounds/winter_dark.jpg");
+    background-size: cover;
+  }
+}
+
+.party-main {
+  flex-grow: 1;
+}
+
+.party-navbar {
+  height: 64px;
+}
