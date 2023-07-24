@@ -4,10 +4,9 @@ import { ButtonComponent } from "./button.component";
 import { EnemyImageComponent } from "../monster/enemy-image.component";
 import { ProgressbarModule } from "ngx-bootstrap/progressbar";
 import { TypeaheadModule } from "ngx-bootstrap/typeahead";
-import { RedirectToNewUiComponent } from './redirect-to-new-ui.component';
 
 @NgModule({
-  declarations: [ButtonComponent, EnemyImageComponent, RedirectToNewUiComponent],
+  declarations: [ButtonComponent, EnemyImageComponent],
   imports: [
     CommonModule,
 

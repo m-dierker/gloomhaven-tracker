@@ -36,12 +36,24 @@ export class PartyNavbarComponent implements OnInit {
       this.enemyClassIds = Array.from(enemyMap.keys()).sort();
     });
 
-    this.enemySubpanelOpen = this.router.url.startsWith(PARTY_MONSTERS_URL);
+    this.onUrlChange(this.router.url);
     this.router.events.subscribe((evt) => {
       if (evt instanceof NavigationEnd) {
-        this.enemySubpanelOpen = evt.url.startsWith(PARTY_MONSTERS_URL);
+        this.onUrlChange(evt.url);
       }
     });
+  }
+
+  private onUrlChange(newUrl: string) {
+    this.enemySubpanelOpen = newUrl.startsWith(PARTY_MONSTERS_URL);
+    if (newUrl.startsWith(PARTY_ADD_MONSTERS_URL)) {
+      // Intentionally set null, which is not undefined (all).
+      this.lastSelectedClassId = null;
+    } else {
+      if (this.lastSelectedClassId === null) {
+        this.lastSelectedClassId = undefined;
+      }
+    }
   }
 
   setClassFilter(classId: EnemyClassId) {
@@ -72,3 +84,5 @@ export class PartyNavbarComponent implements OnInit {
 }
 
 const PARTY_MONSTERS_URL = "/party/monsters";
+
+const PARTY_ADD_MONSTERS_URL = "/party/monsters/add";

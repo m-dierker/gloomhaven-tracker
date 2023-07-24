@@ -17,6 +17,8 @@ import { PartyMonsterTokenComponent } from "./party-monster-token.component";
 import { PartyMonsterCellComponent } from "./party-monster-cell.component";
 import { ProgressbarModule } from "ngx-bootstrap/progressbar";
 import { SelectPartyComponent } from "./select-party.component";
+import { PartyAddMonsterComponent } from "./party-add-monster.component";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -34,7 +36,18 @@ import { SelectPartyComponent } from "./select-party.component";
     PartyMonsterNameComponent,
     PartyMonsterTokenComponent,
     SelectPartyComponent,
+    PartyAddMonsterComponent,
   ],
-  imports: [CommonModule, PartyRoutingModule, ElementTrackerModule, UiModule],
+  imports: [
+    // Angular
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+
+    // Other parts of app.
+    PartyRoutingModule,
+    ElementTrackerModule,
+    UiModule,
+  ],
 })
 export class PartyModule {}

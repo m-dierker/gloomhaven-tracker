@@ -7,7 +7,6 @@ import { MonsterAttackDeckDisplayComponent } from "./monster/attack-deck/monster
 import { PartyManagerComponent } from "./party/party-manager.component";
 import { SelectPartyComponent } from "./party/select-party.component";
 import { LoginComponent } from "./ui/login.component";
-import { RedirectToNewUiComponent } from "./ui/redirect-to-new-ui.component";
 
 const routes: Routes = [
   {
@@ -24,7 +23,8 @@ const routes: Routes = [
   },
   {
     path: "",
-    component: RedirectToNewUiComponent,
+    redirectTo: "/party/monsters",
+    pathMatch: "full",
   },
   {
     path: "login",

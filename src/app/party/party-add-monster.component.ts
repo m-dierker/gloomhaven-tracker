@@ -23,7 +23,6 @@ export class PartyAddMonsterComponent implements OnInit {
   public autocompleteVisible = false;
 
   scenarioInfo: ScenarioInfo;
-  panelVisible = false;
 
   EnemyType = EnemyType;
 
@@ -60,20 +59,6 @@ export class PartyAddMonsterComponent implements OnInit {
     this.db
       .getPartyEnemies()
       .subscribe((enemies) => (this.partyEnemiesByClass = enemies));
-  }
-
-  togglePanel() {
-    this.setVisible(!this.panelVisible);
-  }
-
-  private setVisible(visible: boolean) {
-    this.panelVisible = visible;
-    if (visible) {
-      // Run at the end once the panel is visible again.
-      setTimeout(() =>
-        this.monsterPanel.nativeElement.scrollIntoView({ behavior: "smooth" })
-      );
-    }
   }
 
   private resetForm() {
@@ -128,7 +113,6 @@ export class PartyAddMonsterComponent implements OnInit {
       newMonsters.push(scenarioData);
     }
     this.db.createPartyMonsters(newMonsters);
-    this.setVisible(false);
     this.resetForm();
   }
 

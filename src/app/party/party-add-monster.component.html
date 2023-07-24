@@ -1,6 +1,5 @@
-<app-button (click)="togglePanel()">Add Monsters</app-button>
-
-<div class="create-monsters" *ngIf="panelVisible" #monsterPanel>
+<app-party-header>Add Enemies</app-party-header>
+<div class="create-monsters" #monsterPanel>
   <div class="select-enemy" *ngIf="scenarioInfo">
     <div
       class="select-enemy-choice"

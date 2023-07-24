@@ -8,22 +8,27 @@
   </div>
   <div class="navbar">
     <div class="sub-navbar">
-      <div
-        [routerLink]="['/party/monsters']"
-        class="nav-item all-link"
-        (click)="setClassFilter(undefined)"
-        [class.selected]="lastSelectedClassId === undefined"
-      >
-        All
+      <div class="monster-selectors">
+        <div
+          [routerLink]="['/party/monsters']"
+          class="nav-item all-link"
+          (click)="setClassFilter(undefined)"
+          [class.selected]="lastSelectedClassId === undefined"
+        >
+          All
+        </div>
+        <div
+          *ngFor="let classId of enemyClassIds"
+          [routerLink]="['/party/monsters', { classIdFilter: classId }]"
+          (click)="setClassFilter(classId)"
+          class="nav-item"
+          [class.selected]="classId === lastSelectedClassId"
+        >
+          <app-enemy-image [classId]="classId"></app-enemy-image>
+        </div>
       </div>
-      <div
-        *ngFor="let classId of enemyClassIds"
-        [routerLink]="['/party/monsters', { classIdFilter: classId }]"
-        (click)="setClassFilter(classId)"
-        class="nav-item"
-        [class.selected]="classId === lastSelectedClassId"
-      >
-        <app-enemy-image [classId]="classId"></app-enemy-image>
+      <div class="add-monsters nav-item" routerLink="/party/monsters/add">
+        <div class="add-monsters-text">+</div>
       </div>
     </div>
     <div class="main-navbar">

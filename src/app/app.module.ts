@@ -28,7 +28,6 @@ import { LoginComponent } from "./ui/login.component";
 import { Auth, provideAuth } from "@angular/fire/auth";
 import { getAuth } from "firebase/auth";
 import { PartyMonsterTrackerComponent } from "./party/party-monster-tracker.component";
-import { PartyAddMonsterComponent } from "./party/party-add-monster.component";
 import { BossCellComponent } from "./display/boss-cell.component";
 import { MonsterAttackDeckDisplayComponent } from "./monster/attack-deck/monster-attack-deck-display.component";
 import { MonsterAttackDeckCardComponent } from "./monster/attack-deck/monster-attack-deck-card.component";
@@ -49,7 +48,6 @@ import { UiModule } from "./ui/ui.module";
     PartyManagerComponent,
     LoginComponent,
     PartyMonsterTrackerComponent,
-    PartyAddMonsterComponent,
     BossCellComponent,
     MonsterAttackDeckDisplayComponent,
     MonsterAttackDeckCardComponent,

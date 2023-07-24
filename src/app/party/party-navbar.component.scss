@@ -77,6 +77,34 @@ $navbar-item-border: 1px gray solid;
     display: flex;
     align-items: center;
   }
+
+  .monster-selectors {
+    display: flex;
+    flex-grow: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .add-monsters {
+    color: goldenrod;
+    font-family: "Pirata One";
+    font-size: 50pt;
+
+    &.nav-item {
+      // Match nav width.
+      min-width: $main-item-width;
+      width: $main-item-width;
+    }
+    border: 2px rgb(73, 55, 11) outset;
+
+    // Fix weird Pirata spacing to vertically align.
+    .add-monsters-text {
+      margin-top: -4px;
+    }
+
+    display: flex;
+    align-items: center;
+  }
 }
 
 .main-navbar .nav-item,

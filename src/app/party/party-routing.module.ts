@@ -6,6 +6,7 @@ import { PartyCharacterComponent } from "./party-character.component";
 import { PartyMonstersPageComponent } from "./party-monsters-page.component";
 import { SelectPartyComponent } from "./select-party.component";
 import { AuthGuard } from "../auth/auth.guard";
+import { PartyAddMonsterComponent } from "./party-add-monster.component";
 
 const routes: Routes = [
   {
@@ -17,7 +18,11 @@ const routes: Routes = [
       { path: "", redirectTo: "monsters", pathMatch: "prefix" },
       { path: "character", component: PartyCharacterComponent },
       { path: "elements", component: PartyElementTrackerPageComponent },
-      { path: "monsters", component: PartyMonstersPageComponent },
+      {
+        path: "monsters",
+        component: PartyMonstersPageComponent,
+      },
+      { path: "monsters/add", component: PartyAddMonsterComponent },
       { path: "select", component: SelectPartyComponent },
     ],
   },
