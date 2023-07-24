@@ -14,7 +14,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       // TODO: Change this to be all monsters page.
-      { path: "", component: PartyCharacterComponent },
+      { path: "", redirectTo: "monsters", pathMatch: "prefix" },
+      { path: "character", component: PartyCharacterComponent },
       { path: "elements", component: PartyElementTrackerPageComponent },
       { path: "monsters", component: PartyMonstersPageComponent },
       { path: "select", component: SelectPartyComponent },

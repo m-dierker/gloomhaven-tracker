@@ -9,10 +9,19 @@
   <div class="navbar">
     <div class="sub-navbar">
       <div
-        class="monster-selector"
+        [routerLink]="['/party/monsters']"
+        class="nav-item all-link"
+        (click)="setClassFilter(undefined)"
+        [class.selected]="lastSelectedClassId === undefined"
+      >
+        All
+      </div>
+      <div
         *ngFor="let classId of enemyClassIds"
-        routerLink="/party/monsters"
-        [state]="{ classId: classId }"
+        [routerLink]="['/party/monsters', { classIdFilter: classId }]"
+        (click)="setClassFilter(classId)"
+        class="nav-item"
+        [class.selected]="classId === lastSelectedClassId"
       >
         <app-enemy-image [classId]="classId"></app-enemy-image>
       </div>
@@ -20,15 +29,16 @@
     <div class="main-navbar">
       <div class="monster-filler"></div>
       <div
-        class="monsters"
-        routerLink="/party/monsters"
+        class="monsters nav-item"
+        (click)="onMonsterNavClick($event)"
+        [routerLink]="getLastMonstersRoute()"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
       >
         <img src="/assets/icons/skull.webp" />
       </div>
       <div
-        class="elements"
+        class="elements nav-item"
         routerLink="/party/elements"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
@@ -36,7 +46,8 @@
         <img src="/assets/elements/wildcard.png" />
       </div>
       <div
-        routerLink="/party"
+        class="nav-item"
+        routerLink="/party/character"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
       >

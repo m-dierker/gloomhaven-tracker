@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @import "src/app/css/roles.scss";
 
 // create a navbar height variable for 64px.
@@ -9,10 +11,12 @@ $main-vert-padding: 12px;
 $main-contents-height: $main-navbar-height - $main-vert-padding * 2;
 $main-item-width: 64px;
 
-$sub-vert-padding: 4px;
+$sub-vert-padding: 8px;
 $sub-contents-height: $sub-navbar-height - $sub-vert-padding * 2;
 $sub-item-width: 80px;
 $sub-contents-width: $sub-contents-height;
+$sub-horz-padding: $sub-item-width - $sub-contents-width;
+$sub-half-horz-padding: math.div($sub-horz-padding, 2);
 
 $navbar-item-border: 1px gray solid;
 
@@ -62,11 +66,21 @@ $navbar-item-border: 1px gray solid;
 .sub-navbar {
   background-color: #1d0e0e;
   height: 0px;
+  overflow: hidden;
   transition: height 0.2s ease-in-out;
+
+  .all-link {
+    color: white;
+    font-family: "Nyala";
+    font-size: 20pt;
+
+    display: flex;
+    align-items: center;
+  }
 }
 
-.main-navbar > div,
-.sub-navbar > div {
+.main-navbar .nav-item,
+.sub-navbar .nav-item {
   display: flex;
   justify-content: center;
 
@@ -77,7 +91,7 @@ $navbar-item-border: 1px gray solid;
   }
 }
 
-.main-navbar > div {
+.main-navbar .nav-item {
   padding: $main-vert-padding 0;
   min-width: $main-item-width;
 
@@ -92,15 +106,32 @@ $navbar-item-border: 1px gray solid;
   }
 }
 
-.sub-navbar > div {
+.sub-navbar .nav-item {
   padding: $sub-vert-padding 0;
   min-width: $sub-item-width;
+
+  // Relative position for white underline when selected.
+  // position: relative;
 
   img,
   app-enemy-image {
     height: $sub-contents-height;
     max-height: $sub-contents-height;
     width: $sub-contents-width;
+  }
+
+  &.selected {
+    position: relative;
+    &::after {
+      border-bottom: 2px white solid;
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: 1px;
+      left: $sub-half-horz-padding;
+      height: 2px;
+      width: $sub-contents-width;
+    }
   }
 }
 

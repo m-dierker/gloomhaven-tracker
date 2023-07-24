@@ -17,6 +17,7 @@ export class PartyNavbarComponent implements OnInit {
   enemySubpanelOpen = false;
 
   enemyClassIds: EnemyClassId[] = [];
+  lastSelectedClassId: EnemyClassId;
 
   constructor(
     private db: DbService,
@@ -35,11 +36,39 @@ export class PartyNavbarComponent implements OnInit {
       this.enemyClassIds = Array.from(enemyMap.keys()).sort();
     });
 
-    this.enemySubpanelOpen = this.router.url.startsWith("/party/monsters");
+    this.enemySubpanelOpen = this.router.url.startsWith(PARTY_MONSTERS_URL);
     this.router.events.subscribe((evt) => {
       if (evt instanceof NavigationEnd) {
-        this.enemySubpanelOpen = evt.url.startsWith("/party/monsters");
+        this.enemySubpanelOpen = evt.url.startsWith(PARTY_MONSTERS_URL);
       }
     });
   }
+
+  setClassFilter(classId: EnemyClassId) {
+    // Actually changing the filter is done with routerLink.
+    // This just updates internal state for highlighting.
+    this.lastSelectedClassId = classId;
+  }
+
+  onMonsterNavClick(evt: Event) {
+    // If the monster panel is already visible (i.e. this is a double tap), show all monsters.
+    if (this.router.url.startsWith(PARTY_MONSTERS_URL)) {
+      evt.preventDefault();
+      evt.stopPropagation();
+
+      this.router.navigate(["/party/monsters"]);
+      this.lastSelectedClassId = undefined;
+    }
+  }
+
+  /** Returns a list for routerLink of where the Skull button should navigate. */
+  getLastMonstersRoute() {
+    if (this.lastSelectedClassId) {
+      return [PARTY_MONSTERS_URL, { classIdFilter: this.lastSelectedClassId }];
+    } else {
+      return [PARTY_MONSTERS_URL];
+    }
+  }
 }
+
+const PARTY_MONSTERS_URL = "/party/monsters";

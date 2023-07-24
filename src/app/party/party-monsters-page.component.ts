@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { EnemyClassId, EnemyType } from "src/types/enemy";
 import { Enemy } from "../db/enemy";
 import { DbService } from "../services/db.service";
@@ -15,16 +15,14 @@ export class PartyMonstersPageComponent implements OnInit {
   public monsterClassList: EnemyClassId[];
   public enemiesByClass: Map<EnemyClassId, Enemy[]> = new Map();
 
+  @Input() classIdFilter: EnemyClassId;
+
   constructor(private db: DbService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.db.getPartyEnemies().subscribe((enemyMap) => {
       this.enemiesByClass = enemyMap;
       this.onPartyMonstersUpdate();
-    });
-
-    this.route.paramMap.subscribe((params) => {
-      console.log("monster params", params);
     });
   }
 
