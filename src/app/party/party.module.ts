@@ -19,6 +19,8 @@ import { ProgressbarModule } from "ngx-bootstrap/progressbar";
 import { SelectPartyComponent } from "./select-party.component";
 import { PartyAddMonsterComponent } from "./party-add-monster.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatIconModule } from "@angular/material/icon";
+import { PartyMenuComponent } from './party-menu.component';
 
 @NgModule({
   declarations: [
@@ -37,12 +39,14 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
     PartyMonsterTokenComponent,
     SelectPartyComponent,
     PartyAddMonsterComponent,
+    PartyMenuComponent,
   ],
   imports: [
     // Angular
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    MatIconModule,
 
     // Other parts of app.
     PartyRoutingModule,

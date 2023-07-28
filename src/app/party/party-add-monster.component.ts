@@ -9,6 +9,7 @@ import { Enemy } from "../db/enemy";
 import { Monster } from "../db/monster";
 import { ScenarioInfo } from "../db/scenario";
 import { DbService } from "../services/db.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-party-add-monster",
@@ -38,7 +39,7 @@ export class PartyAddMonsterComponent implements OnInit {
   @ViewChild("numMonsters")
   numMonsters: ElementRef;
 
-  constructor(private db: DbService) {}
+  constructor(private db: DbService, private router: Router) {}
 
   ngOnInit(): void {
     this.resetForm();
@@ -114,6 +115,7 @@ export class PartyAddMonsterComponent implements OnInit {
     }
     this.db.createPartyMonsters(newMonsters);
     this.resetForm();
+    this.router.navigate(["/party/monsters"]);
   }
 
   onCreateMonsterSelected(evt: TypeaheadMatch) {
@@ -188,9 +190,7 @@ export class PartyAddMonsterComponent implements OnInit {
   ): number {
     // TODO: Alex says you can't do this hack more than once.
     const existingEnemies =
-      this.partyEnemiesByClass.get(
-        `${data.autocompleteEntry.enemyType}-${data.autocompleteEntry.classId}`
-      ) || [];
+      this.partyEnemiesByClass.get(data.autocompleteEntry.classId) || [];
     const usedNumbers = new Set(existingEnemies.map((enemy) => enemy.tokenNum));
     otherUsedNumbers.forEach((num) => usedNumbers.add(num));
     // Return the next available number starting from 1 since tokens begin at 1.

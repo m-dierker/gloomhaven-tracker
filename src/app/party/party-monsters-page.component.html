@@ -1,31 +1,37 @@
-<app-party-header *ngIf="!classIdFilter">Monsters</app-party-header>
+<div class="monsters-container" #monstersContainer>
+  <app-party-header *ngIf="!_classIdFilter">Monsters</app-party-header>
 
-<div class="monsters-page">
-  <app-party-monster-name *ngIf="bossClassList?.length > 0">
-    Bosses
-  </app-party-monster-name>
-  <div class="monster-class" *ngFor="let bossClassId of bossClassList">
-    <ng-container *ngIf="!classIdFilter || bossClassId === classIdFilter">
-      <ng-container *ngFor="let boss of enemiesByClass.get(bossClassId)">
-        <party-monster-cell
-          [enemy]="boss"
-          *ngIf="!boss.isDead()"
-        ></party-monster-cell>
+  <div class="monsters-page">
+    <app-party-monster-name *ngIf="bossClassList?.length > 0">
+      Bosses
+    </app-party-monster-name>
+    <div class="monster-class" *ngFor="let bossClassId of bossClassList">
+      <ng-container *ngIf="!_classIdFilter || bossClassId === _classIdFilter">
+        <ng-container *ngFor="let boss of enemiesByClass.get(bossClassId)">
+          <party-monster-cell
+            [enemy]="boss"
+            *ngIf="!boss.isDead()"
+          ></party-monster-cell>
+        </ng-container>
       </ng-container>
-    </ng-container>
-  </div>
+    </div>
 
-  <div class="monster-class" *ngFor="let monsterClassId of monsterClassList">
-    <ng-container *ngIf="!classIdFilter || monsterClassId === classIdFilter">
-      <app-party-monster-name>
-        {{ enemiesByClass.get(monsterClassId)[0].displayName }}
-      </app-party-monster-name>
-      <ng-container *ngFor="let monster of enemiesByClass.get(monsterClassId)">
-        <party-monster-cell
-          [enemy]="monster"
-          *ngIf="!monster.isDead()"
-        ></party-monster-cell>
+    <div class="monster-class" *ngFor="let monsterClassId of monsterClassList">
+      <ng-container
+        *ngIf="!_classIdFilter || monsterClassId === _classIdFilter"
+      >
+        <app-party-monster-name>
+          {{ enemiesByClass.get(monsterClassId)[0].displayName }}
+        </app-party-monster-name>
+        <ng-container
+          *ngFor="let monster of enemiesByClass.get(monsterClassId)"
+        >
+          <party-monster-cell
+            [enemy]="monster"
+            *ngIf="!monster.isDead()"
+          ></party-monster-cell>
+        </ng-container>
       </ng-container>
-    </ng-container>
+    </div>
   </div>
 </div>

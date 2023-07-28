@@ -21,9 +21,6 @@ export interface ScenarioEnemyData {
   /** Level of the monster. */
   level: number;
 
-  /** Type of the monster, either "normal" or "elite". */
-  monsterData?: ScenarioMonsterData;
-
   /** Current health. If missing, uses monster default from the DB. */
   health?: number;
 
@@ -32,6 +29,9 @@ export interface ScenarioEnemyData {
 
   /** Array of active status IDs. */
   statuses: string[];
+
+  /** Metadata specific to being a Monster. */
+  monsterData?: ScenarioMonsterData;
 }
 
 /** Monster-specific metadata about an enemy. */

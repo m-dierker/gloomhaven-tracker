@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { EnemyClassId, EnemyType } from "src/types/enemy";
 import { Enemy } from "../db/enemy";
 import { DbService } from "../services/db.service";
@@ -15,7 +15,18 @@ export class PartyMonstersPageComponent implements OnInit {
   public monsterClassList: EnemyClassId[];
   public enemiesByClass: Map<EnemyClassId, Enemy[]> = new Map();
 
-  @Input() classIdFilter: EnemyClassId;
+  _classIdFilter: EnemyClassId;
+
+  @ViewChild("monstersContainer") monstersContainer: ElementRef;
+
+  @Input()
+  set classIdFilter(value: EnemyClassId) {
+    this._classIdFilter = value;
+    // Reset scroll position to the top when the class changes.
+    if (this.monstersContainer) {
+      this.monstersContainer.nativeElement.scrollTop = 0;
+    }
+  }
 
   constructor(private db: DbService, private route: ActivatedRoute) {}
 

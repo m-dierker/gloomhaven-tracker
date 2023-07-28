@@ -45,11 +45,16 @@ export class PartyNavbarComponent implements OnInit {
   }
 
   private onUrlChange(newUrl: string) {
+    console.log("newUrl", newUrl);
     this.enemySubpanelOpen = newUrl.startsWith(PARTY_MONSTERS_URL);
     if (newUrl.startsWith(PARTY_ADD_MONSTERS_URL)) {
       // Intentionally set null, which is not undefined (all).
       this.lastSelectedClassId = null;
     } else {
+      const existingClassMatch = newUrl.match(PARTY_MONSTER_CLASS_ID_REGEX);
+      if (existingClassMatch) {
+        this.lastSelectedClassId = existingClassMatch[1] as EnemyClassId;
+      }
       if (this.lastSelectedClassId === null) {
         this.lastSelectedClassId = undefined;
       }
@@ -86,3 +91,6 @@ export class PartyNavbarComponent implements OnInit {
 const PARTY_MONSTERS_URL = "/party/monsters";
 
 const PARTY_ADD_MONSTERS_URL = "/party/monsters/add";
+
+// There has to be a better way to do this. -_-
+const PARTY_MONSTER_CLASS_ID_REGEX = /classIdFilter=([a-zA-Z_]+)/;

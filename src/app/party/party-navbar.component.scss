@@ -9,7 +9,7 @@ $total-navbar-height: $main-navbar-height + $sub-navbar-height;
 
 $main-vert-padding: 12px;
 $main-contents-height: $main-navbar-height - $main-vert-padding * 2;
-$main-item-width: 64px;
+$main-item-width: 96px;
 
 $sub-vert-padding: 8px;
 $sub-contents-height: $sub-navbar-height - $sub-vert-padding * 2;
@@ -19,6 +19,9 @@ $sub-horz-padding: $sub-item-width - $sub-contents-width;
 $sub-half-horz-padding: math.div($sub-horz-padding, 2);
 
 $navbar-item-border: 1px gray solid;
+$sub-navbar-color: #1d0e0e;
+
+$gloomhaven-gold: goldenrod;
 
 .element-tracker {
   padding: 4px 8px;
@@ -42,6 +45,10 @@ $navbar-item-border: 1px gray solid;
     // border-bottom: $navbar-item-border;
     height: $sub-navbar-height;
   }
+
+  .navbar {
+    box-shadow: 0px -32px 48px 0px rgb(15, 15, 15, 1);
+  }
 }
 
 .navbar {
@@ -60,11 +67,11 @@ $navbar-item-border: 1px gray solid;
 .main-navbar {
   background: url("/assets/backgrounds/card_bg.jpg");
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .sub-navbar {
-  background-color: #1d0e0e;
+  background-color: $sub-navbar-color;
   height: 0px;
   overflow: hidden;
   transition: height 0.2s ease-in-out;
@@ -86,7 +93,7 @@ $navbar-item-border: 1px gray solid;
   }
 
   .add-monsters {
-    color: goldenrod;
+    color: $gloomhaven-gold;
     font-family: "Pirata One";
     font-size: 50pt;
 
@@ -123,9 +130,9 @@ $navbar-item-border: 1px gray solid;
   padding: $main-vert-padding 0;
   min-width: $main-item-width;
 
-  &:not(:first-child) {
-    border-left: $navbar-item-border;
-  }
+  // &:not(:first-child) {
+  // border-left: $navbar-item-border;
+  // }
 
   img,
   app-enemy-image {
@@ -181,4 +188,24 @@ $navbar-item-border: 1px gray solid;
   margin: -4px;
   height: $main-contents-height + 8px;
   width: $main-contents-height + 8px;
+}
+
+.menu {
+  color: gray;
+  font-size: 20pt;
+
+  & > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: $main-contents-height;
+    width: $main-contents-height;
+
+    mat-icon {
+      font-size: 30px;
+      // Negative offset because the menu icon has a top padding.
+      margin-top: -6px;
+      margin-left: -3px;
+    }
+  }
 }
