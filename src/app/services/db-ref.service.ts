@@ -15,8 +15,9 @@ import {
   SCENARIOS_COLLECTION,
   MONSTER_ABILITY_DECK_COLLECTION,
   USERS_COLLECTION,
+  PARTY_CHARACTERS_COLLECTION,
 } from "../db/db-constants";
-import { ScenarioEnemyData } from "src/types/scenario";
+import { ScenarioFigureData } from "src/types/scenario";
 import { ScenarioInfo } from "../db/scenario";
 import { Party } from "src/types/party";
 import { AppBootstrap } from "./bootstrap";
@@ -34,7 +35,7 @@ export class DbRefService {
     return AppBootstrap.partyId;
   }
 
-  defaultPartyDoc(): DocumentReference<Party> {
+  partyDoc(): DocumentReference<Party> {
     return doc(
       this.firestore,
       `${PARTIES_COLLECTION}/${this.partyId()}`
@@ -57,12 +58,32 @@ export class DbRefService {
     ) as CollectionReference<ElementData>;
   }
 
-  /** Collection of all monsters active on the board for a party. */
-  partyMonstersCollection(): CollectionReference<ScenarioEnemyData> {
+  /** Collection of all monsters and bosses active on the board for a party. */
+  partyMonstersCollection(): CollectionReference<ScenarioFigureData> {
     return collection(
       this.firestore,
       `${PARTY_COLLECTION}/${this.partyId()}/${PARTY_MONSTERS_COLLECTION}`
-    ) as CollectionReference<ScenarioEnemyData>;
+    ) as CollectionReference<ScenarioFigureData>;
+  }
+
+  /**
+   * Collection of all characters in a party.
+   * Characters differ from all other figures in that they aren't cleared by scenario so they're stored separately.
+   */
+  partyCharactersCollection(): CollectionReference<ScenarioFigureData> {
+    return collection(
+      this.firestore,
+      `${PARTY_COLLECTION}/${this.partyId()}/${PARTY_CHARACTERS_COLLECTION}`
+    ) as CollectionReference<ScenarioFigureData>;
+  }
+
+  partyCharacterDoc(
+    characterId: string
+  ): DocumentReference<ScenarioFigureData> {
+    return doc(
+      this.firestore,
+      `${PARTY_COLLECTION}/${this.partyId()}/${PARTY_CHARACTERS_COLLECTION}/${characterId}`
+    ) as DocumentReference<ScenarioFigureData>;
   }
 
   scenarioDoc(scenarioId: string): DocumentReference<ScenarioInfo> {

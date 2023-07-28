@@ -1,27 +1,28 @@
-import { EnemyType } from "./enemy";
+import { FigureType } from "./figure";
 import { MonsterType } from "./monsters";
 
-/** Info about the given instance of an enemy in a round of gameplay.  */
-export interface ScenarioEnemyData {
-  /** Local ID of this monster, unique for both bosses and monsters within the current scenario. */
+/** Info about the given instance of a figure in a round of gameplay.  */
+export interface ScenarioFigureData {
+  /** Firestore ID of this specific figure, unique for all figures. */
   id: string;
 
   /**
    * ID number of the physical token used to represent the monster.
-   * Heard from friends (without spoilers) that this could apply to a boss too, so keeping for now.
+   * It's possible this could apply to other types in undiscovered ways
+   * (multiple summons, multiple bosses, etc) so this is kept even without a specific use case.
    */
   tokenNum: number;
 
-  /** Type of the enemy (ex: boss or monster). */
-  enemyType: EnemyType;
+  /** Type of the figure (ex: boss or monster). */
+  figureType: FigureType;
 
-  /** Type of monster, matching a monsterId from the monster DB for monsters or a bossId from the boss DB for bosses. */
+  /** DB ID for the figure (ex: "gh_black_imp"), matching a monsterId from the monster DB for monsters or a bossId from the boss DB for bosses. */
   classId: string;
 
-  /** Level of the monster. */
+  /** Level of the figure. */
   level: number;
 
-  /** Current health. If missing, uses monster default from the DB. */
+  /** Current health. If missing, uses figure default from the DB. */
   health?: number;
 
   /** Max health for the enemy, only set if it's overriding the DB default. */
@@ -32,17 +33,22 @@ export interface ScenarioEnemyData {
 
   /** Metadata specific to being a Monster. */
   monsterData?: ScenarioMonsterData;
+
+  /** Metadata specific to being a Character. */
+  characterData?: CharacterData;
 }
 
-/** Monster-specific metadata about an enemy. */
-// TODO: Rename once other usages are verified to be gone.
 export interface ScenarioMonsterData {
   type: MonsterType;
 }
 
+export interface CharacterData {
+  name: string;
+}
+
 /** Returns the name of the cards used. For monsters, this is usually their type (or a generic equivalent). For bosses, it's boss. */
-export function getClassCardId(enemy: ScenarioEnemyData) {
-  if (enemy.enemyType == EnemyType.BOSS) {
+export function getClassCardId(enemy: ScenarioFigureData) {
+  if (enemy.figureType == FigureType.BOSS) {
     return "boss";
   }
   switch (enemy.classId) {

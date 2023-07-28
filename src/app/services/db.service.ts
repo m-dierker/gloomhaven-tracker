@@ -33,19 +33,21 @@ import {
   Query,
   QueryDocumentSnapshot,
   onSnapshot,
+  runTransaction,
 } from "firebase/firestore";
 import { getBlob, getStorage, ref } from "firebase/storage";
 import { ElementData, ElementState, ElementType } from "../db/elements";
 import { DbRefService } from "./db-ref.service";
 import { authState } from "rxfire/auth";
 import { Auth } from "@angular/fire/auth";
-import { getClassCardId, ScenarioEnemyData } from "src/types/scenario";
-import { Enemy } from "../db/enemy";
-import { EnemyClassId, EnemyType } from "src/types/enemy";
+import { getClassCardId, ScenarioFigureData } from "src/types/scenario";
+import { Figure } from "../db/figure";
+import { FigureClassId, FigureType } from "src/types/figure";
 import { Boss } from "../db/boss";
 import { GameContext } from "src/types/game";
 import { ScenarioInfo } from "../db/scenario";
 import { GameBox } from "src/types/gamebox";
+import { Character } from "../db/character";
 
 /**
  * NOTE: AngularFire exports the API from RxFire and then doesn't really document it. -_-
@@ -68,10 +70,12 @@ export class DbService {
 
   /** Unsubscribe function for non-Angular Firebase listener while avoiding the AngularFire bug. */
   private partyMonsterUnsub: Function;
-  // Map of global ID --> enemy. This is basically the local database.
-  private enemyIdMapNew: Map<string, Enemy> = new Map();
+  // Map of global ID --> figure. This is basically the local database.
+  private figureIdMap: Map<string, Figure> = new Map();
   // Map of class --> array of enemies of that class. this is effectively a cached DB index.
-  private partyEnemySubjNew: ReplaySubject<Map<EnemyClassId, Enemy[]>>;
+  private partyEnemySubj: ReplaySubject<Map<FigureClassId, Figure[]>>;
+
+  private userCharacterSubj: ReplaySubject<Character>;
 
   private gameDataLoadedPromise = new Promise((resolve) => {
     this.gameDataLoadedResolve = resolve;
@@ -104,7 +108,7 @@ export class DbService {
     );
   }
 
-  async createPartyMonsters(newMonsters: ScenarioEnemyData[]): Promise<void> {
+  async createPartyMonsters(newMonsters: ScenarioFigureData[]): Promise<void> {
     const batch = writeBatch(this.firestore);
     for (const newMonster of newMonsters) {
       const newMonsterDoc = doc(this.dbRef.partyMonstersCollection());
@@ -124,15 +128,74 @@ export class DbService {
     return batch.commit();
   }
 
+  /** Creates a new character and returns the new ID once created. */
+  async createPartyCharacter(
+    newCharacter: ScenarioFigureData
+  ): Promise<string> {
+    // New ID is generated here.
+    const newCharacterDoc = doc(this.dbRef.partyCharactersCollection());
+    await setDoc(newCharacterDoc, newCharacter);
+    return newCharacterDoc.id;
+  }
+
+  getUserCharacter(): Observable<Character> {
+    if (!this.userCharacterSubj) {
+      this.userCharacterSubj = new ReplaySubject(1);
+      if (!this.auth.currentUser.uid) {
+        console.error("Cannot load user character, not logged in");
+        return;
+      }
+      // combineLatest may not be necessary yet, but it will be when class data is exposed.
+      combineLatest([this.getParty()]).subscribe(([party]) => {
+        const characterId: string =
+          party.members[this.auth.currentUser.uid].character;
+        const characterDoc = this.dbRef.partyCharacterDoc(characterId);
+
+        // This needs to be rethought if other characters are exposed.
+        onSnapshot(characterDoc, (snap) => {
+          const data = snap.data();
+          if (this.figureIdMap.get(characterId)) {
+            this.figureIdMap.get(characterId).onNewScenarioData(data, {
+              party,
+            });
+          } else {
+            const character = new Character(data, { party });
+            this.figureIdMap.set(characterId, character);
+            this.userCharacterSubj.next(character);
+          }
+        });
+      });
+    }
+    return this.userCharacterSubj.asObservable();
+  }
+
+  /** Sets the active character in the party for the given user. */
+  async setUserCharacter(id: string): Promise<void> {
+    if (!this.auth.currentUser.uid) {
+      console.warn("Unable to handle setting character for user not logged in");
+      return;
+    }
+    const partyDoc = this.dbRef.partyDoc();
+    return runTransaction(this.firestore, async (t) => {
+      const partySnap = await t.get(partyDoc);
+      const party = partySnap.data() as Party;
+      const newMembers = party.members || {};
+      newMembers[this.auth.currentUser.uid] = {
+        character: id,
+      };
+      await t.update(partyDoc, { members: newMembers });
+    });
+  }
+
   /**
    * Returns wrapper objects for Enemies in a given party.
    * The wrappers have both scenario-specific data and generic EnemyData.
    *
    * Results are grouped by class since every current usage requires this.
    */
-  getPartyEnemies(): Observable<Map<EnemyClassId, Enemy[]>> {
-    if (!this.partyEnemySubjNew) {
-      this.partyEnemySubjNew = new ReplaySubject(1);
+  getPartyEnemies(): Observable<Map<FigureClassId, Figure[]>> {
+    if (!this.partyEnemySubj) {
+      this.partyEnemySubj = new ReplaySubject(1);
       combineLatest([
         from(this.enemyDataLoadedPromise),
         this.getContext(),
@@ -150,13 +213,17 @@ export class DbService {
               .docChanges()
               .map((change) => this.processEnemyChange(change, context));
             Promise.all(updatePromises).then(() => {
-              // Recalculate the "index" of EnemyType --> Enemy[].
-              const map: Map<EnemyClassId, Enemy[]> = new Map();
-              for (const enemy of this.enemyIdMapNew.values()) {
-                if (map.has(enemy.classId)) {
-                  map.get(enemy.classId).push(enemy);
+              // Recalculate the "index" of FigureType --> Figure[].
+              const map: Map<FigureClassId, Figure[]> = new Map();
+              for (const figure of this.figureIdMap.values()) {
+                // Skip characters which shouldn't be exposed as party enemies.
+                if (figure.isCharacter()) {
+                  continue;
+                }
+                if (map.has(figure.classId)) {
+                  map.get(figure.classId).push(figure);
                 } else {
-                  map.set(enemy.classId, [enemy]);
+                  map.set(figure.classId, [figure]);
                 }
               }
               // Sort each class list by tokenNum.
@@ -165,19 +232,19 @@ export class DbService {
               );
               // Trigger in NgZone to get back in an Angular context.
               this.zone.run(() => {
-                this.partyEnemySubjNew.next(map);
+                this.partyEnemySubj.next(map);
               });
             });
           }
         );
       });
     }
-    return this.partyEnemySubjNew;
+    return this.partyEnemySubj;
   }
 
   /** Proceses new data for a single enemy. Returns a promise when that change is processed. */
   private async processEnemyChange(
-    change: DocumentChange<ScenarioEnemyData>,
+    change: DocumentChange<ScenarioFigureData>,
     context: GameContext
   ): Promise<void> {
     const enemyData = change.doc.data();
@@ -193,15 +260,15 @@ export class DbService {
         );
         return;
       }
-      this.enemyIdMapNew.set(id, enemy);
+      this.figureIdMap.set(id, enemy);
     } else if (change.type === "modified") {
-      if (!this.enemyIdMapNew.has(id)) {
+      if (!this.figureIdMap.has(id)) {
         console.error("Enemy that should exist is missing", id);
         return;
       }
-      this.enemyIdMapNew.get(id).onNewScenarioData(enemyData, context);
+      this.figureIdMap.get(id).onNewScenarioData(enemyData, context);
     } else if (change.type === "removed") {
-      this.enemyIdMapNew.delete(id);
+      this.figureIdMap.delete(id);
     }
   }
 
@@ -238,17 +305,17 @@ export class DbService {
   }
 
   private async createEnemyFromScenarioData(
-    scenarioData: ScenarioEnemyData,
+    scenarioData: ScenarioFigureData,
     context: GameContext
-  ): Promise<Enemy | undefined> {
-    if (scenarioData.enemyType == EnemyType.MONSTER) {
+  ): Promise<Figure | undefined> {
+    if (scenarioData.figureType == FigureType.MONSTER) {
       const classData = await this.monsterDataMap.get(scenarioData.classId);
       if (!classData) {
         return;
       }
       return new Monster(scenarioData, context, classData);
     }
-    if (scenarioData.enemyType == EnemyType.BOSS) {
+    if (scenarioData.figureType == FigureType.BOSS) {
       const classData = await this.bossDataMap.get(scenarioData.classId);
       if (!classData) {
         return;
@@ -257,7 +324,7 @@ export class DbService {
     }
   }
 
-  saveEnemy(enemy: Enemy) {
+  saveEnemy(enemy: Figure) {
     const saveData = enemy.getSaveData();
     const enemyDoc = doc(
       this.firestore,
@@ -281,7 +348,7 @@ export class DbService {
   getParty(): Observable<Party> {
     if (!this.partySubj) {
       this.partySubj = new ReplaySubject(1);
-      docSnapshots(this.dbRef.defaultPartyDoc()).subscribe((snap) =>
+      docSnapshots(this.dbRef.partyDoc()).subscribe((snap) =>
         this.partySubj.next(snap.data() as Party)
       );
     }
@@ -301,7 +368,7 @@ export class DbService {
     return new Promise((resolve) => {
       this.partySubj.pipe(first()).subscribe(async (party) => {
         console.log("party", party);
-        await updateDoc(this.dbRef.defaultPartyDoc(), {
+        await updateDoc(this.dbRef.partyDoc(), {
           // TODO: Matt........ make the same convention please.
           activeScenario:
             party.gamebox === GameBox.GLOOMHAVEN
@@ -314,7 +381,7 @@ export class DbService {
   }
 
   updateScenarioLevel(scenarioLevel: number): Promise<void> {
-    return updateDoc(this.dbRef.defaultPartyDoc(), {
+    return updateDoc(this.dbRef.partyDoc(), {
       scenarioLevel,
     });
   }

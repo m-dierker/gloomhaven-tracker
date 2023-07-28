@@ -8,7 +8,7 @@ export interface Party {
   activeScenario: string;
   id: string;
   numCharacters: number;
-  // format is: {uid: {class: className}, uid2: ...}
+  // format is: {uid: {character: characterId}, uid2: ...}
   // This is any because Partial<Party> doesn't seem to accept a complex type.
   members: any;
   partyName: string;

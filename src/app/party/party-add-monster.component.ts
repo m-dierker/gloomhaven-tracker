@@ -1,11 +1,11 @@
 import { ThisReceiver } from "@angular/compiler";
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { TypeaheadMatch } from "ngx-bootstrap/typeahead";
-import { EnemyClassId, EnemyType } from "src/types/enemy";
+import { FigureClassId, FigureType } from "src/types/figure";
 import { BossData, MonsterData, MonsterType } from "src/types/monsters";
 import { Party } from "src/types/party";
-import { ScenarioEnemyData } from "src/types/scenario";
-import { Enemy } from "../db/enemy";
+import { ScenarioFigureData } from "src/types/scenario";
+import { Figure } from "../db/figure";
 import { Monster } from "../db/monster";
 import { ScenarioInfo } from "../db/scenario";
 import { DbService } from "../services/db.service";
@@ -25,9 +25,9 @@ export class PartyAddMonsterComponent implements OnInit {
 
   scenarioInfo: ScenarioInfo;
 
-  EnemyType = EnemyType;
+  EnemyType = FigureType;
 
-  private partyEnemiesByClass: Map<EnemyClassId, Enemy[]> = new Map();
+  private partyEnemiesByClass: Map<FigureClassId, Figure[]> = new Map();
 
   private party: Party;
   private allMonsterData: MonsterData[];
@@ -97,15 +97,15 @@ export class PartyAddMonsterComponent implements OnInit {
         newIdsUsed
       );
       const enemyType = this.createMonsterData.autocompleteEntry.enemyType;
-      const scenarioData: ScenarioEnemyData = {
+      const scenarioData: ScenarioFigureData = {
         id: "", // Generated in the service
         tokenNum,
-        enemyType,
+        figureType: enemyType,
         classId: this.createMonsterData.autocompleteEntry.classId,
         level: this.party.scenarioLevel,
         statuses: [],
       };
-      if (enemyType == EnemyType.MONSTER) {
+      if (enemyType == FigureType.MONSTER) {
         scenarioData.monsterData = {
           type: isElite ? MonsterType.ELITE : MonsterType.NORMAL,
         };
@@ -123,7 +123,7 @@ export class PartyAddMonsterComponent implements OnInit {
     this.updateMonsterCount("elite", 0);
   }
 
-  selectEnemy(enemyType: EnemyType, classId: string) {
+  selectEnemy(enemyType: FigureType, classId: string) {
     this.createMonsterData.autocompleteEntry = {
       enemyType,
       classId,
@@ -211,7 +211,7 @@ export class PartyAddMonsterComponent implements OnInit {
         return {
           classId: monsterData.id,
           title: monsterData.displayName,
-          enemyType: EnemyType.MONSTER,
+          enemyType: FigureType.MONSTER,
         };
       }
     );
@@ -220,7 +220,7 @@ export class PartyAddMonsterComponent implements OnInit {
         return {
           classId: bossData.id,
           title: bossData.displayName + " (Boss)",
-          enemyType: EnemyType.BOSS,
+          enemyType: FigureType.BOSS,
         };
       }
     );
@@ -236,8 +236,8 @@ interface CreateMonsterData {
 }
 
 interface AutocompleteEntry {
-  enemyType: EnemyType;
-  classId: EnemyClassId;
+  enemyType: FigureType;
+  classId: FigureClassId;
 
   title: string;
 }

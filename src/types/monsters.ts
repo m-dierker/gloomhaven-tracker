@@ -1,7 +1,7 @@
 import { GameBox } from "./gamebox";
 
 /** Top level interface for any enemy (Monsters or Boss). */
-export interface EnemyStats {
+export interface FigureStats {
   displayName: string;
 
   health: number;
@@ -43,7 +43,7 @@ export interface MonsterLevelStats {
   elite: MonsterStats;
 }
 
-export interface MonsterStats extends EnemyStats {
+export interface MonsterStats extends FigureStats {
   attributes: string[];
 }
 

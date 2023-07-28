@@ -8,6 +8,7 @@ import { SelectPartyComponent } from "./select-party.component";
 import { AuthGuard } from "../auth/auth.guard";
 import { PartyAddMonsterComponent } from "./party-add-monster.component";
 import { PartyMenuComponent } from "./party-menu.component";
+import { PartyCreateCharacterComponent } from "./party-create-character.component";
 
 const routes: Routes = [
   {
@@ -18,6 +19,7 @@ const routes: Routes = [
       // TODO: Change this to be all monsters page.
       { path: "", redirectTo: "monsters", pathMatch: "prefix" },
       { path: "character", component: PartyCharacterComponent },
+      { path: "character/create", component: PartyCreateCharacterComponent },
       { path: "elements", component: PartyElementTrackerPageComponent },
       { path: "menu", component: PartyMenuComponent },
       {

@@ -1,0 +1,11 @@
+<app-party-header>Create a character</app-party-header>
+
+<div class="create-page">
+  <h4>Select a Class</h4>
+
+  <app-party-role-header
+    *ngFor="let role of roleClasses"
+    [roleClass]="role"
+    (click)="createCharacter(role)"
+  ></app-party-role-header>
+</div>

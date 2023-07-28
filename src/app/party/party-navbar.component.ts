@@ -3,7 +3,8 @@ import { DbService } from "../services/db.service";
 import { Party } from "src/types/party";
 import { Auth, User } from "@angular/fire/auth";
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from "@angular/router";
-import { EnemyClassId } from "src/types/enemy";
+import { FigureClassId } from "src/types/figure";
+import { Character } from "../db/character";
 
 @Component({
   selector: "app-party-navbar",
@@ -11,13 +12,12 @@ import { EnemyClassId } from "src/types/enemy";
   styleUrls: ["./party-navbar.component.scss"],
 })
 export class PartyNavbarComponent implements OnInit {
-  party: Party;
-  user: User;
-
   enemySubpanelOpen = false;
 
-  enemyClassIds: EnemyClassId[] = [];
-  lastSelectedClassId: EnemyClassId;
+  userChar: Character;
+
+  enemyClassIds: FigureClassId[] = [];
+  lastSelectedClassId: FigureClassId;
 
   constructor(
     private db: DbService,
@@ -26,11 +26,9 @@ export class PartyNavbarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.db.getParty().subscribe((party) => {
-      this.party = party;
-      // This is slightly sketchy... but also I'm pretty sure it works fine?
-      this.user = this.auth.currentUser;
-    });
+    this.db
+      .getUserCharacter()
+      .subscribe((userChar) => (this.userChar = userChar));
 
     this.db.getPartyEnemies().subscribe((enemyMap) => {
       this.enemyClassIds = Array.from(enemyMap.keys()).sort();
@@ -53,7 +51,7 @@ export class PartyNavbarComponent implements OnInit {
     } else {
       const existingClassMatch = newUrl.match(PARTY_MONSTER_CLASS_ID_REGEX);
       if (existingClassMatch) {
-        this.lastSelectedClassId = existingClassMatch[1] as EnemyClassId;
+        this.lastSelectedClassId = existingClassMatch[1] as FigureClassId;
       }
       if (this.lastSelectedClassId === null) {
         this.lastSelectedClassId = undefined;
@@ -61,7 +59,7 @@ export class PartyNavbarComponent implements OnInit {
     }
   }
 
-  setClassFilter(classId: EnemyClassId) {
+  setClassFilter(classId: FigureClassId) {
     // Actually changing the filter is done with routerLink.
     // This just updates internal state for highlighting.
     this.lastSelectedClassId = classId;

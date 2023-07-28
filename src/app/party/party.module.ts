@@ -21,6 +21,7 @@ import { PartyAddMonsterComponent } from "./party-add-monster.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatIconModule } from "@angular/material/icon";
 import { PartyMenuComponent } from './party-menu.component';
+import { PartyCreateCharacterComponent } from './party-create-character.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { PartyMenuComponent } from './party-menu.component';
     SelectPartyComponent,
     PartyAddMonsterComponent,
     PartyMenuComponent,
+    PartyCreateCharacterComponent,
   ],
   imports: [
     // Angular

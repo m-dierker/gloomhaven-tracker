@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
-import { EnemyClassId, EnemyType } from "src/types/enemy";
-import { Enemy } from "../db/enemy";
+import { FigureClassId, FigureType } from "src/types/figure";
+import { Figure } from "../db/figure";
 import { DbService } from "../services/db.service";
 import { ActivatedRoute } from "@angular/router";
 import { map } from "rxjs";
@@ -11,16 +11,16 @@ import { map } from "rxjs";
   styleUrls: ["./party-monsters-page.component.scss"],
 })
 export class PartyMonstersPageComponent implements OnInit {
-  public bossClassList: EnemyClassId[];
-  public monsterClassList: EnemyClassId[];
-  public enemiesByClass: Map<EnemyClassId, Enemy[]> = new Map();
+  public bossClassList: FigureClassId[];
+  public monsterClassList: FigureClassId[];
+  public enemiesByClass: Map<FigureClassId, Figure[]> = new Map();
 
-  _classIdFilter: EnemyClassId;
+  _classIdFilter: FigureClassId;
 
   @ViewChild("monstersContainer") monstersContainer: ElementRef;
 
   @Input()
-  set classIdFilter(value: EnemyClassId) {
+  set classIdFilter(value: FigureClassId) {
     this._classIdFilter = value;
     // Reset scroll position to the top when the class changes.
     if (this.monstersContainer) {
@@ -42,11 +42,11 @@ export class PartyMonstersPageComponent implements OnInit {
     this.monsterClassList = [];
 
     for (const [classId, enemyList] of this.enemiesByClass.entries()) {
-      switch (enemyList[0].enemyType) {
-        case EnemyType.BOSS:
+      switch (enemyList[0].figureType) {
+        case FigureType.BOSS:
           this.bossClassList.push(classId);
           break;
-        case EnemyType.MONSTER:
+        case FigureType.MONSTER:
           this.monsterClassList.push(classId);
           break;
       }

@@ -6,7 +6,7 @@ import {
   SimpleChanges,
 } from "@angular/core";
 import { Party } from "src/types/party";
-import { Enemy } from "../db/enemy";
+import { Figure } from "../db/figure";
 
 @Component({
   selector: "app-enemy-image",

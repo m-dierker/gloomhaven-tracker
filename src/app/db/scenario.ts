@@ -1,9 +1,9 @@
-import { EnemyClassId } from "src/types/enemy";
-import { Enemy } from "./enemy";
+import { FigureClassId } from "src/types/figure";
+import { Figure } from "./figure";
 
 export interface ScenarioInfo {
-  bossIds: EnemyClassId[];
-  monsterIds: EnemyClassId[];
+  bossIds: FigureClassId[];
+  monsterIds: FigureClassId[];
 
   /** ID of the scenario (ex: "1"), a string to handle special cases. */
   scenarioNum: string;

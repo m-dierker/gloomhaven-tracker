@@ -24,7 +24,7 @@ export class MonsterAttackDeckService {
         flipped: [],
       },
     };
-    return updateDoc(this.dbRef.defaultPartyDoc(), update);
+    return updateDoc(this.dbRef.partyDoc(), update);
   }
 
   getMonsterDeck(): Observable<MonsterDeck> {
@@ -35,7 +35,7 @@ export class MonsterAttackDeckService {
   flipAttackCard(): Promise<unknown> {
     // Latency notes: This transaction can take 250-750ms or so.
     return runTransaction(this.firestore, async (t) => {
-      const party = await (await t.get(this.dbRef.defaultPartyDoc())).data();
+      const party = await (await t.get(this.dbRef.partyDoc())).data();
       const oldDeck = party.monsterDeck;
       if (oldDeck.unflipped.length === 0) {
         // Shuffle deck
@@ -66,7 +66,7 @@ export class MonsterAttackDeckService {
       const { drawnCard, remainingCards } = drawCard(unflipped);
       // const drawnCard = AttackModifier.ZERO;
       // const remainingCards = unflipped;
-      t.update(this.dbRef.defaultPartyDoc(), {
+      t.update(this.dbRef.partyDoc(), {
         monsterDeck: {
           unflipped: remainingCards,
           flipped: [drawnCard].concat(oldFlipped),
@@ -77,7 +77,7 @@ export class MonsterAttackDeckService {
 
   async undoLastDraw(): Promise<void> {
     return runTransaction(this.firestore, async (t) => {
-      const party = await (await t.get(this.dbRef.defaultPartyDoc())).data();
+      const party = await (await t.get(this.dbRef.partyDoc())).data();
       const oldDeck = party.monsterDeck;
       const oldFlipped = oldDeck.flipped;
       if (oldDeck.flipped.length === 0) {
@@ -85,7 +85,7 @@ export class MonsterAttackDeckService {
         return;
       }
       const cardToUndo = oldFlipped.splice(0, 1)[0];
-      t.update(this.dbRef.defaultPartyDoc(), {
+      t.update(this.dbRef.partyDoc(), {
         monsterDeck: {
           unflipped: [cardToUndo].concat(oldDeck.unflipped),
           flipped: oldFlipped,
@@ -96,8 +96,8 @@ export class MonsterAttackDeckService {
 
   addCard(card: AttackModifier): Promise<void> {
     return runTransaction(this.firestore, async (t) => {
-      const party = await (await t.get(this.dbRef.defaultPartyDoc())).data();
-      t.update(this.dbRef.defaultPartyDoc(), {
+      const party = await (await t.get(this.dbRef.partyDoc())).data();
+      t.update(this.dbRef.partyDoc(), {
         monsterDeck: {
           unflipped: party.monsterDeck.unflipped.concat([card]),
           flipped: party.monsterDeck.flipped,

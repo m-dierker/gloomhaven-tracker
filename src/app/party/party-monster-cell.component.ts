@@ -10,8 +10,8 @@ import {
 import { Monster } from "../db/monster";
 import { DbService } from "../services/db.service";
 import { StatusEffect } from "../../types/status";
-import { Enemy } from "../db/enemy";
-import { EnemyType } from "src/types/enemy";
+import { Figure } from "../db/figure";
+import { FigureType } from "src/types/figure";
 import { Subscription } from "rxjs";
 
 @Component({
@@ -21,7 +21,7 @@ import { Subscription } from "rxjs";
 })
 export class PartyMonsterCellComponent implements OnInit, OnChanges {
   @Input()
-  public enemy: Enemy;
+  public enemy: Figure;
 
   /** Only applies if enemy.enemyType is MONSTER, else undefined. */
   public monster?: Monster;
@@ -54,13 +54,13 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     // TODO: Understand why this method runs 10x for every change. -_-
     if (changes.enemy) {
-      if (this.enemy.enemyType == EnemyType.MONSTER) {
+      if (this.enemy.figureType == FigureType.MONSTER) {
         this.monster = this.enemy as Monster;
         this.isBoss = false;
       } else {
         this.monster = undefined;
       }
-      if (this.enemy.enemyType == EnemyType.BOSS) {
+      if (this.enemy.figureType == FigureType.BOSS) {
         this.isBoss = true;
       }
       if (changes.enemy.currentValue !== changes.enemy.previousValue) {

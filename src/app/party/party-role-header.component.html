@@ -1,16 +1,17 @@
 <div class="role-panel">
   <div
     class="role-header"
-    *ngIf="user"
-    class="role-{{ (party | async)?.members[user.uid].class }}"
-    (click)="toggleMenuVisible()"
+    *ngIf="roleClass || userChar"
+    class="role-{{ roleClass ? roleClass : (userChar | async)?.classId }}"
   >
     <div class="role-inner-header">
       <div class="role-icon"></div>
       <span class="role-name"></span>
 
-      <!-- TODO: Refactor to include all icons. -->
-      <div
+      <div class="role-spacer"></div>
+
+      <!-- TODO: Figure out where else to show the game that is not this page. -->
+      <!-- <div
         class="role-spacer"
         *ngIf="(party | async)?.gamebox != 'jotl'; else jotl"
       ></div>
@@ -19,29 +20,7 @@
           <img src="/assets/icons/jotl.webp" />
         </div>
       </ng-template>
-    </div>
-  </div>
-  <div class="role-menu" *ngIf="menuVisible">
-    <div class="header">Party</div>
-    <div class="option" routerLink="/select_party">Select Party</div>
-    <div class="header">Scenario</div>
-    <div class="option" (click)="changeScenario()">
-      Change Scenario ({{ (party | async)?.activeScenario }})
-    </div>
-    <div class="option" (click)="changeScenarioLevel()">
-      Adjust Scenario Level ({{ (party | async)?.scenarioLevel }})
-    </div>
-    <div class="header">Game</div>
-    <div class="option" (click)="resetGameState()">Fully Reset Game</div>
-    <div class="header">Other Tools</div>
-    <div class="option" *ngIf="(party | async)?.gamebox == 'gh'">
-      <a href="https://tree.gloomhaven.muri.ca" target="_blank"
-        >Gloomhaven Tree</a
-      >
-    </div>
-    <div routerLink="/monsterattacks" class="option">Monster Attack Deck</div>
-    <div routerLink="/monsterabilities" class="option">
-      Monster Ability Decks
+    </div> -->
     </div>
   </div>
 </div>
