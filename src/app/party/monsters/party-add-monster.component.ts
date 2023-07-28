@@ -5,11 +5,10 @@ import { FigureClassId, FigureType } from "src/types/figure";
 import { BossData, MonsterData, MonsterType } from "src/types/monsters";
 import { Party } from "src/types/party";
 import { ScenarioFigureData } from "src/types/scenario";
-import { Figure } from "../db/figure";
-import { Monster } from "../db/monster";
-import { ScenarioInfo } from "../db/scenario";
-import { DbService } from "../services/db.service";
 import { Router } from "@angular/router";
+import { Figure } from "src/app/db/figure";
+import { ScenarioInfo } from "src/app/db/scenario";
+import { DbService } from "src/app/services/db.service";
 
 @Component({
   selector: "app-party-add-monster",
@@ -25,7 +24,7 @@ export class PartyAddMonsterComponent implements OnInit {
 
   scenarioInfo: ScenarioInfo;
 
-  EnemyType = FigureType;
+  FigureType = FigureType;
 
   private partyEnemiesByClass: Map<FigureClassId, Figure[]> = new Map();
 
@@ -96,16 +95,16 @@ export class PartyAddMonsterComponent implements OnInit {
         this.createMonsterData as CreateMonsterData,
         newIdsUsed
       );
-      const enemyType = this.createMonsterData.autocompleteEntry.enemyType;
+      const figureType = this.createMonsterData.autocompleteEntry.figureType;
       const scenarioData: ScenarioFigureData = {
         id: "", // Generated in the service
         tokenNum,
-        figureType: enemyType,
+        figureType: figureType,
         classId: this.createMonsterData.autocompleteEntry.classId,
         level: this.party.scenarioLevel,
         statuses: [],
       };
-      if (enemyType == FigureType.MONSTER) {
+      if (figureType == FigureType.MONSTER) {
         scenarioData.monsterData = {
           type: isElite ? MonsterType.ELITE : MonsterType.NORMAL,
         };
@@ -123,9 +122,9 @@ export class PartyAddMonsterComponent implements OnInit {
     this.updateMonsterCount("elite", 0);
   }
 
-  selectEnemy(enemyType: FigureType, classId: string) {
+  selectEnemy(figureType: FigureType, classId: string) {
     this.createMonsterData.autocompleteEntry = {
-      enemyType,
+      figureType: figureType,
       classId,
       title: classId,
     };
@@ -211,7 +210,7 @@ export class PartyAddMonsterComponent implements OnInit {
         return {
           classId: monsterData.id,
           title: monsterData.displayName,
-          enemyType: FigureType.MONSTER,
+          figureType: FigureType.MONSTER,
         };
       }
     );
@@ -220,7 +219,7 @@ export class PartyAddMonsterComponent implements OnInit {
         return {
           classId: bossData.id,
           title: bossData.displayName + " (Boss)",
-          enemyType: FigureType.BOSS,
+          figureType: FigureType.BOSS,
         };
       }
     );
@@ -236,7 +235,7 @@ interface CreateMonsterData {
 }
 
 interface AutocompleteEntry {
-  enemyType: FigureType;
+  figureType: FigureType;
   classId: FigureClassId;
 
   title: string;

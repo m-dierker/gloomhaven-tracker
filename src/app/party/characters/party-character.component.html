@@ -1,0 +1,9 @@
+<ng-container *ngIf="character; else loading">
+  <div class="character-page">
+    <app-party-header>{{ character.displayName }}</app-party-header>
+    <app-party-role-header></app-party-role-header>
+
+    <app-party-status-editor [figure]="character"></app-party-status-editor>
+  </div>
+</ng-container>
+<ng-template #loading>Loading...</ng-template>

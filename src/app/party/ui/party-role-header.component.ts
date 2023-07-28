@@ -2,11 +2,11 @@ import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { Auth } from "@angular/fire/auth";
 import { Unsubscribe, User } from "firebase/auth";
 import { Observable } from "rxjs";
+import { Character } from "src/app/db/character";
+import { RoleClass } from "src/app/db/classes";
+import { DbService } from "src/app/services/db.service";
+import { ResetService } from "src/app/services/reset.service";
 import { Party } from "src/types/party";
-import { DbService } from "../services/db.service";
-import { ResetService } from "../services/reset.service";
-import { RoleClass } from "../db/classes";
-import { Character } from "../db/character";
 
 // TODO: Update this for different GameBox values.
 const MAX_SCENARIO = 95;

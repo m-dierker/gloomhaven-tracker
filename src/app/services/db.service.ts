@@ -152,8 +152,9 @@ export class DbService {
         const characterDoc = this.dbRef.partyCharacterDoc(characterId);
 
         // This needs to be rethought if other characters are exposed.
-        onSnapshot(characterDoc, (snap) => {
+        docSnapshots(characterDoc).subscribe((snap) => {
           const data = snap.data();
+          data.id = snap.id;
           if (this.figureIdMap.get(characterId)) {
             this.figureIdMap.get(characterId).onNewScenarioData(data, {
               party,
@@ -161,8 +162,8 @@ export class DbService {
           } else {
             const character = new Character(data, { party });
             this.figureIdMap.set(characterId, character);
-            this.userCharacterSubj.next(character);
           }
+          this.userCharacterSubj.next(this.figureIdMap.get(characterId));
         });
       });
     }
@@ -324,24 +325,21 @@ export class DbService {
     }
   }
 
-  saveEnemy(enemy: Figure) {
-    const saveData = enemy.getSaveData();
-    const enemyDoc = doc(
-      this.firestore,
-      this.dbRef.partyMonstersCollection().path,
-      saveData.id
-    );
+  saveFigure(figure: Figure) {
+    const saveData = figure.getSaveData();
+    const figureDoc = this.dbRef.partyFigureDoc(figure);
     console.log(
-      "Sending a save for enemy ",
+      "Sending a save for figure ",
       saveData.id,
-      enemy.tokenNum,
-      enemy.classId
+      figure.tokenNum,
+      figure.scenarioId,
+      figure.classId
     );
-    // Remove dead enemies automatically.
-    if (enemy.isDead()) {
-      deleteDoc(enemyDoc);
+    // Remove dead non-characters automatically.
+    if (figure.isDead()) {
+      deleteDoc(figureDoc);
     } else {
-      updateDoc(enemyDoc, saveData as unknown);
+      updateDoc(figureDoc, saveData as unknown);
     }
   }
 

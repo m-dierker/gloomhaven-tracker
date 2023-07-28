@@ -7,19 +7,19 @@ import {
   ElementRef,
   ViewChild,
 } from "@angular/core";
-import { Monster } from "../db/monster";
-import { DbService } from "../services/db.service";
-import { StatusEffect } from "../../types/status";
-import { Figure } from "../db/figure";
 import { FigureType } from "src/types/figure";
 import { Subscription } from "rxjs";
+import { Figure } from "src/app/db/figure";
+import { Monster } from "src/app/db/monster";
+import { DbService } from "src/app/services/db.service";
+import { StatusEffect } from "src/types/status";
 
 @Component({
   selector: "party-monster-cell",
   templateUrl: "./party-monster-cell.component.html",
   styleUrls: ["./party-monster-cell.component.scss"],
 })
-export class PartyMonsterCellComponent implements OnInit, OnChanges {
+export class PartyMonsterCellComponent implements OnChanges {
   @Input()
   public enemy: Figure;
 
@@ -28,7 +28,6 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
 
   public isBoss: boolean;
 
-  public allStatuses: StatusEffect[];
   public cancelledStatuses: StatusEffect[] = [];
   public dropdownVisible = false;
   public editsVisible = false;
@@ -46,10 +45,6 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
   }
 
   constructor(private db: DbService) {}
-
-  ngOnInit() {
-    this.allStatuses = StatusEffect.getAllStatuses();
-  }
 
   ngOnChanges(changes: SimpleChanges): void {
     // TODO: Understand why this method runs 10x for every change. -_-
@@ -117,7 +112,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
         }
       }
     }
-    this.db.saveEnemy(this.enemy);
+    this.db.saveFigure(this.enemy);
 
     this.localHealth = undefined;
     this.recalculateCancelledStatuses();
@@ -152,14 +147,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
     this.setDropdown(!this.dropdownVisible);
   }
 
-  toggleStatus(status: StatusEffect) {
-    if (this.enemy.hasStatus(status)) {
-      this.enemy.setStatus(status, false);
-    } else {
-      this.enemy.setStatus(status, true);
-    }
-    this.db.saveEnemy(this.enemy);
-
+  statusChanged() {
     this.setDropdown(false);
   }
 
@@ -172,7 +160,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
       return;
     }
     this.monster.setElite(!this.monster.isElite());
-    this.db.saveEnemy(this.enemy);
+    this.db.saveFigure(this.enemy);
     this.setDropdown(false);
   }
 
@@ -184,7 +172,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
       return;
     }
     this.enemy.setTokenNum(newIdNum);
-    this.db.saveEnemy(this.enemy);
+    this.db.saveFigure(this.enemy);
     this.setDropdown(false);
   }
 
@@ -204,7 +192,7 @@ export class PartyMonsterCellComponent implements OnInit, OnChanges {
       // If the health is full, we assume the user wants to adjust the health as well.
       this.enemy.setHealth(newHealthNum);
     }
-    this.db.saveEnemy(this.enemy);
+    this.db.saveFigure(this.enemy);
 
     this.setDropdown(false);
   }

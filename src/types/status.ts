@@ -1,3 +1,5 @@
+import { GameBox } from "./gamebox";
+
 const effectIdMap: Map<string, StatusEffect> = new Map();
 
 export class StatusEffect {
@@ -43,8 +45,17 @@ export class StatusEffect {
   }
 
   // TODO: Make this per-game.
-  public static getAllStatuses(): StatusEffect[] {
-    return Array.from(effectIdMap.values());
+  public static getAllStatuses(gamebox: GameBox): StatusEffect[] {
+    switch (gamebox) {
+      case GameBox.GLOOMHAVEN:
+      case GameBox.JAWS_OF_THE_LION:
+        return GLOOMHAVEN_STATUS_EFFECTS;
+      case GameBox.FROSTHAVEN:
+        // TODO: Frosthaven implement.
+        return [];
+      default:
+        throw new Error(`Unknown gamebox ${gamebox}`);
+    }
   }
 
   public getImgPath(): string {
@@ -55,3 +66,14 @@ export class StatusEffect {
     return this.displayName.localeCompare(other.displayName);
   }
 }
+
+const GLOOMHAVEN_STATUS_EFFECTS = [
+  StatusEffect.DISARM,
+  StatusEffect.IMMOBILIZE,
+  StatusEffect.INVISIBLE,
+  StatusEffect.MUDDLE,
+  StatusEffect.POISON,
+  StatusEffect.STRENGTHEN,
+  StatusEffect.STUN,
+  StatusEffect.WOUND,
+];

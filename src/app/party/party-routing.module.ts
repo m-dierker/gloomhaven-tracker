@@ -2,13 +2,13 @@ import { RouterModule, Routes } from "@angular/router";
 import { NgModule } from "@angular/core";
 import { PartyLayoutComponent } from "./party-layout.component";
 import { PartyElementTrackerPageComponent } from "./elements/party-element-tracker-page.component";
-import { PartyCharacterComponent } from "./party-character.component";
-import { PartyMonstersPageComponent } from "./party-monsters-page.component";
 import { SelectPartyComponent } from "./select-party.component";
 import { AuthGuard } from "../auth/auth.guard";
-import { PartyAddMonsterComponent } from "./party-add-monster.component";
 import { PartyMenuComponent } from "./party-menu.component";
-import { PartyCreateCharacterComponent } from "./party-create-character.component";
+import { PartyCharacterComponent } from "./characters/party-character.component";
+import { PartyCreateCharacterComponent } from "./characters/party-create-character.component";
+import { PartyAddMonsterComponent } from "./monsters/party-add-monster.component";
+import { PartyMonstersPageComponent } from "./monsters/party-monsters-page.component";
 
 const routes: Routes = [
   {

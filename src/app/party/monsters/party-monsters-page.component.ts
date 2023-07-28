@@ -1,9 +1,9 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { FigureClassId, FigureType } from "src/types/figure";
-import { Figure } from "../db/figure";
-import { DbService } from "../services/db.service";
 import { ActivatedRoute } from "@angular/router";
 import { map } from "rxjs";
+import { Figure } from "src/app/db/figure";
+import { DbService } from "src/app/services/db.service";
 
 @Component({
   selector: "app-party-monsters-page",

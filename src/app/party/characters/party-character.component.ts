@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { DbService } from "../services/db.service";
-import { Unsubscribe } from "firebase/firestore";
-import { Character } from "../db/character";
 import { Subscription } from "rxjs";
+import { Character } from "src/app/db/character";
+import { DbService } from "src/app/services/db.service";
 
 @Component({
   selector: "app-party-character",

@@ -1,0 +1,37 @@
+.figure-statuses {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  height: 160px;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.figure-status {
+  // 4 per column.
+  // TODO: Will this work for Frosthaven?!
+  height: 25%;
+
+  // Actually centering is hard because of variable text width. This is close enough.
+  margin-left: 30px;
+
+  &:not(.active) {
+    color: gray;
+
+    .figure-status-icon {
+      opacity: 0.5;
+    }
+  }
+}
+
+.figure-status-text {
+  align-self: center;
+  font-size: 14pt;
+  margin-left: 5px;
+}
+
+.figure-status-icon {
+  height: 32px;
+  width: 32px;
+}

@@ -1,0 +1,11 @@
+<div class="figure-statuses">
+  <div
+    class="figure-status"
+    *ngFor="let status of allStatuses"
+    [class.active]="figure.hasStatus(status)"
+    (click)="toggleStatus(status)"
+  >
+    <img class="figure-status-icon" src="{{ status.getImgPath() }}" />
+    {{ status.displayName }}
+  </div>
+</div>

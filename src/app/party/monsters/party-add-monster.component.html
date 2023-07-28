@@ -4,14 +4,14 @@
     <div
       class="select-enemy-choice"
       *ngFor="let classId of scenarioInfo.monsterIds"
-      (click)="selectEnemy(EnemyType.MONSTER, classId)"
+      (click)="selectEnemy(FigureType.MONSTER, classId)"
     >
       <app-enemy-image [classId]="classId"></app-enemy-image>
     </div>
     <div
       class="select-enemy-choice boss"
       *ngFor="let classId of scenarioInfo.bossIds"
-      (click)="selectEnemy(EnemyType.BOSS, classId)"
+      (click)="selectEnemy(FigureType.BOSS, classId)"
     >
       <img src="/assets/bosses/{{ classId }}.webp" />
     </div>
@@ -67,7 +67,7 @@
         [classId]="createMonsterData.autocompleteEntry.classId"
         [tokenNum]="pending.tokenNum"
         [isBoss]="
-          createMonsterData.autocompleteEntry.enemyType == EnemyType.BOSS
+          createMonsterData.autocompleteEntry.figureType == FigureType.BOSS
         "
         [isElite]="pending.elite"
       ></app-party-monster-token>

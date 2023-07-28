@@ -23,6 +23,7 @@ import { Party } from "src/types/party";
 import { AppBootstrap } from "./bootstrap";
 import { MonsterAbilityDeckDocument } from "src/types/ability-cards";
 import { UserData } from "../db/user";
+import { Figure } from "../db/figure";
 
 @Injectable({
   providedIn: "root",
@@ -64,6 +65,21 @@ export class DbRefService {
       this.firestore,
       `${PARTY_COLLECTION}/${this.partyId()}/${PARTY_MONSTERS_COLLECTION}`
     ) as CollectionReference<ScenarioFigureData>;
+  }
+
+  partyMonsterDoc(monsterId: string): DocumentReference<ScenarioFigureData> {
+    return doc(
+      this.firestore,
+      `${PARTY_COLLECTION}/${this.partyId()}/${PARTY_MONSTERS_COLLECTION}/${monsterId}`
+    ) as DocumentReference<ScenarioFigureData>;
+  }
+
+  /** Finds the right doc for a Figure regardless of type. */
+  partyFigureDoc(figure: Figure): DocumentReference<ScenarioFigureData> {
+    if (figure.isCharacter()) {
+      return this.partyCharacterDoc(figure.scenarioId);
+    }
+    return this.partyMonsterDoc(figure.scenarioId);
   }
 
   /**

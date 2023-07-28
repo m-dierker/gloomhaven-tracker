@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { DbService } from "../services/db.service";
-import { RoleClass, allClassesForGame } from "../db/classes";
 import { ScenarioFigureData } from "src/types/scenario";
 import { FigureType } from "src/types/figure";
 import { Party } from "src/types/party";
+import { RoleClass, allClassesForGame } from "src/app/db/classes";
+import { DbService } from "src/app/services/db.service";
 
 @Component({
   selector: "app-party-create-character",

@@ -19,4 +19,10 @@ export class Character extends Figure {
   get displayName(): string {
     return this.scenarioData.characterData.name;
   }
+
+  isDead(): boolean {
+    // Characters never die since health isn't tracked now.
+    // If this ever changes, dbService needs to be updated to not delete the doc.
+    return false;
+  }
 }

@@ -190,6 +190,32 @@ $gloomhaven-gold: goldenrod;
   width: $main-contents-height + 8px;
 }
 
+.character-item-wrapper {
+  position: relative;
+}
+
+.character-status-effects {
+  pointer-events: none;
+
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  padding: 4px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex-wrap: wrap;
+
+  img {
+    width: 24px;
+    height: 24px;
+  }
+}
+
 .menu {
   color: gray;
   font-size: 20pt;

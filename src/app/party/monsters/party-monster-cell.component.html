@@ -43,17 +43,10 @@
     </div>
   </div>
   <div class="monster-dropdown" *ngIf="dropdownVisible" #dropdown>
-    <div class="monster-statuses">
-      <div
-        class="monster-status"
-        *ngFor="let status of allStatuses"
-        [class.active]="enemy.hasStatus(status)"
-        (click)="toggleStatus(status)"
-      >
-        <img class="monster-status-icon" src="{{ status.getImgPath() }}" />
-        {{ status.displayName }}
-      </div>
-    </div>
+    <app-party-status-editor
+      [figure]="enemy"
+      (statusChanged)="statusChanged()"
+    ></app-party-status-editor>
     <div class="edit-controls" *ngIf="!editsVisible">
       <app-button (click)="toggleEditsVisible()" *ngIf="!editsVisible"
         >Edit</app-button

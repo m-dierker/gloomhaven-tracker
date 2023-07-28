@@ -50,13 +50,21 @@
       >
         <img src="/assets/icons/skull.webp" />
       </div>
-      <div
-        class="nav-item"
-        routerLink="/party/character"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        <div class="character {{ userChar?.classId }}"></div>
+      <div class="character-item-wrapper">
+        <div
+          class="nav-item"
+          routerLink="/party/character"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <div class="character {{ userChar?.classId }}"></div>
+        </div>
+        <div class="character-status-effects">
+          <img
+            *ngFor="let status of userChar?.getStatuses()"
+            [src]="status.getImgPath()"
+          />
+        </div>
       </div>
       <div
         class="menu nav-item"

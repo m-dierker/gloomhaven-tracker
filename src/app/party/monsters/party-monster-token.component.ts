@@ -6,7 +6,6 @@ import {
   SimpleChanges,
 } from "@angular/core";
 import { GameBox, getGameBoxFromClassId } from "src/types/gamebox";
-import { Figure } from "../db/figure";
 
 @Component({
   selector: "app-party-monster-token",
