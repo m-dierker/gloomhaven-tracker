@@ -4,6 +4,7 @@ import { ActivatedRoute } from "@angular/router";
 import { map } from "rxjs";
 import { Figure } from "src/app/db/figure";
 import { DbService } from "src/app/services/db.service";
+import { GameService } from "src/app/services/game.service";
 
 @Component({
   selector: "app-party-monsters-page",
@@ -15,20 +16,24 @@ export class PartyMonstersPageComponent implements OnInit {
   public monsterClassList: FigureClassId[];
   public enemiesByClass: Map<FigureClassId, Figure[]> = new Map();
 
-  _classIdFilter: FigureClassId;
+  classIdFilter_: FigureClassId;
 
   @ViewChild("monstersContainer") monstersContainer: ElementRef;
 
   @Input()
   set classIdFilter(value: FigureClassId) {
-    this._classIdFilter = value;
+    this.classIdFilter_ = value;
     // Reset scroll position to the top when the class changes.
     if (this.monstersContainer) {
       this.monstersContainer.nativeElement.scrollTop = 0;
     }
   }
 
-  constructor(private db: DbService, private route: ActivatedRoute) {}
+  constructor(
+    private db: DbService,
+    private route: ActivatedRoute,
+    private game: GameService
+  ) {}
 
   ngOnInit(): void {
     this.db.getPartyEnemies().subscribe((enemyMap) => {
@@ -54,5 +59,16 @@ export class PartyMonstersPageComponent implements OnInit {
 
     this.bossClassList.sort();
     this.monsterClassList.sort();
+  }
+
+  async nextTurnClicked() {
+    if (!this.classIdFilter_) {
+      return;
+    }
+    await Promise.all(
+      this.enemiesByClass
+        .get(this.classIdFilter_)
+        .map((enemy) => this.game.nextTurnFigure(enemy))
+    );
   }
 }

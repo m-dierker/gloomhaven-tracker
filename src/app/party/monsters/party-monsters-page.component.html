@@ -1,12 +1,12 @@
 <div class="monsters-container" #monstersContainer>
-  <app-party-header *ngIf="!_classIdFilter">Monsters</app-party-header>
+  <app-party-header *ngIf="!classIdFilter_">Monsters</app-party-header>
 
   <div class="monsters-page">
     <app-party-monster-name *ngIf="bossClassList?.length > 0">
       Bosses
     </app-party-monster-name>
     <div class="monster-class" *ngFor="let bossClassId of bossClassList">
-      <ng-container *ngIf="!_classIdFilter || bossClassId === _classIdFilter">
+      <ng-container *ngIf="!classIdFilter_ || bossClassId === classIdFilter_">
         <ng-container *ngFor="let boss of enemiesByClass.get(bossClassId)">
           <party-monster-cell
             [enemy]="boss"
@@ -18,7 +18,7 @@
 
     <div class="monster-class" *ngFor="let monsterClassId of monsterClassList">
       <ng-container
-        *ngIf="!_classIdFilter || monsterClassId === _classIdFilter"
+        *ngIf="!classIdFilter_ || monsterClassId === classIdFilter_"
       >
         <app-party-monster-name>
           {{ enemiesByClass.get(monsterClassId)[0].displayName }}
@@ -33,5 +33,10 @@
         </ng-container>
       </ng-container>
     </div>
+
+    <app-next-turn-button
+      (nextTurn)="nextTurnClicked()"
+      *ngIf="classIdFilter_"
+    ></app-next-turn-button>
   </div>
 </div>

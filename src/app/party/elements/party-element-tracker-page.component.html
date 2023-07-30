@@ -8,8 +8,4 @@
 </div>
 
 <!-- TODO: Consider moving this elsewhere. -->
-<div class="turn-controls">
-  <app-button (click)="nextTurn()" [disabled]="disableNextTurn">
-    Next Turn
-  </app-button>
-</div>
+<app-next-turn-button (nextTurn)="nextTurn()"></app-next-turn-button>

@@ -1,3 +1,14 @@
 .character-page {
   padding: 0 8px;
 }
+
+.page-body {
+  /* Match elements for some consistency. */
+  display: flex;
+  flex-direction: column;
+  min-height: 480px;
+}
+
+.flex-spacer {
+  flex-grow: 1;
+}

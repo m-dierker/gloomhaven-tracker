@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Subscription } from "rxjs";
 import { Character } from "src/app/db/character";
 import { DbService } from "src/app/services/db.service";
+import { GameService } from "src/app/services/game.service";
 
 @Component({
   selector: "app-party-character",
@@ -12,7 +13,7 @@ export class PartyCharacterComponent implements OnInit, OnDestroy {
   character: Character;
   private character$: Subscription;
 
-  constructor(private db: DbService) {}
+  constructor(private db: DbService, private game: GameService) {}
 
   ngOnInit(): void {
     this.character$ = this.db
@@ -22,5 +23,9 @@ export class PartyCharacterComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.character$.unsubscribe();
+  }
+
+  async nextTurn() {
+    await this.game.nextTurnFigure(this.character);
   }
 }

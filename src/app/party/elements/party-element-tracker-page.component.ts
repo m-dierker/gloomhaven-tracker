@@ -5,7 +5,7 @@ import {
   ElementType,
 } from "src/app/db/elements";
 import { DbService } from "src/app/services/db.service";
-import { GloomhavenService } from "src/app/services/gloomhaven.service";
+import { GameService } from "src/app/services/game.service";
 
 @Component({
   selector: "app-party-element-tracker-page",
@@ -15,9 +15,7 @@ import { GloomhavenService } from "src/app/services/gloomhaven.service";
 export class PartyElementTrackerPageComponent implements OnInit {
   ALL_ELEMENT_TYPES = ALL_ELEMENT_TYPES;
 
-  disableNextTurn = false;
-
-  constructor(private db: DbService, private game: GloomhavenService) {}
+  constructor(private db: DbService, private game: GameService) {}
 
   ngOnInit(): void {}
 
@@ -26,13 +24,6 @@ export class PartyElementTrackerPageComponent implements OnInit {
   }
 
   async nextTurn() {
-    this.disableNextTurn = true;
-    await this.game.nextTurn();
-    // Intentionally keep the button off a little longer to avoid double clicks.
-    setTimeout(() => {
-      this.disableNextTurn = false;
-    }, NEXT_TURN_DISABLE_TIME_MS);
+    await this.game.nextTurnElements();
   }
 }
-
-const NEXT_TURN_DISABLE_TIME_MS = 2000;

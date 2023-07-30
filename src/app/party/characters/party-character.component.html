@@ -1,9 +1,13 @@
 <ng-container *ngIf="character; else loading">
   <div class="character-page">
     <app-party-header>{{ character.displayName }}</app-party-header>
-    <app-party-role-header></app-party-role-header>
+    <div class="page-body">
+      <div class="flex-spacer"></div>
+      <app-party-role-header></app-party-role-header>
 
-    <app-party-status-editor [figure]="character"></app-party-status-editor>
+      <app-party-status-editor [figure]="character"></app-party-status-editor>
+    </div>
+    <app-next-turn-button (nextTurn)="nextTurn()"></app-next-turn-button>
   </div>
 </ng-container>
 <ng-template #loading>Loading...</ng-template>

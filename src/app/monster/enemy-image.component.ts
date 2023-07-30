@@ -28,7 +28,6 @@ export class EnemyImageComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    // FIXME this is gonna break.
     if (changes.classId) {
       const split = this.classId.indexOf("_");
       if (split === -1) {

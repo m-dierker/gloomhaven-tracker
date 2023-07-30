@@ -4,14 +4,15 @@ import { writeBatch } from "firebase/firestore";
 import { first } from "rxjs";
 import { ElementState } from "../db/elements";
 import { DbService } from "./db.service";
+import { Figure } from "../db/figure";
 
 @Injectable({
   providedIn: "root",
 })
-export class GloomhavenService {
+export class GameService {
   constructor(private db: DbService, private firestore: Firestore) {}
 
-  async nextTurn(): Promise<void[]> {
+  async nextTurnElements(): Promise<void[]> {
     return Promise.all([this.decrementElements()]);
   }
 
@@ -36,5 +37,15 @@ export class GloomhavenService {
           resolve();
         });
     });
+  }
+
+  /** Next turn for the statuses on a figure. */
+  async nextTurnFigure(figure: Figure): Promise<void> {
+    for (const status of figure.getStatuses()) {
+      if (status.removedOnNextTurn) {
+        figure.setStatus(status, false);
+      }
+    }
+    return this.db.saveFigure(figure);
   }
 }

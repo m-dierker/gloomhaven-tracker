@@ -3,40 +3,55 @@ import { GameBox } from "./gamebox";
 const effectIdMap: Map<string, StatusEffect> = new Map();
 
 export class StatusEffect {
-  public static DISARM: StatusEffect = new StatusEffect("disarm", "Disarm");
+  public static DISARM: StatusEffect = new StatusEffect("disarm", "Disarm", {
+    removedOnNextTurn: true,
+  });
   public static IMMOBILIZE: StatusEffect = new StatusEffect(
     "immobilize",
-    "Immobilize"
+    "Immobilize",
+    { removedOnNextTurn: true }
   );
   public static INVISIBLE: StatusEffect = new StatusEffect(
     "invisible",
-    "Invisible"
+    "Invisible",
+    { removedOnNextTurn: true }
   );
-  public static MUDDLE: StatusEffect = new StatusEffect("muddle", "Muddle");
+  public static MUDDLE: StatusEffect = new StatusEffect("muddle", "Muddle", {
+    removedOnNextTurn: true,
+  });
   public static POISON: StatusEffect = new StatusEffect("poison", "Poison", {
     blocksHeal: true,
   });
   public static STRENGTHEN: StatusEffect = new StatusEffect(
     "strengthen",
-    "Strengthen"
+    "Strengthen",
+    { removedOnNextTurn: true }
   );
-  public static STUN: StatusEffect = new StatusEffect("stun", "Stun");
+  public static STUN: StatusEffect = new StatusEffect("stun", "Stun", {
+    removedOnNextTurn: true,
+  });
   public static WOUND: StatusEffect = new StatusEffect("wound", "Wound", {
     removedOnHeal: true,
   });
 
   public removedOnHeal = false;
   public blocksHeal = false;
+  public removedOnNextTurn = false;
 
   private constructor(
     public id: string,
     public displayName: string,
-    opts?: { removedOnHeal?: boolean; blocksHeal?: boolean }
+    opts?: {
+      removedOnHeal?: boolean;
+      blocksHeal?: boolean;
+      removedOnNextTurn?: boolean;
+    }
   ) {
     effectIdMap.set(id, this);
     if (opts) {
       this.blocksHeal = opts.blocksHeal || false;
       this.removedOnHeal = opts.removedOnHeal || false;
+      this.removedOnNextTurn = opts.removedOnNextTurn || false;
     }
   }
 

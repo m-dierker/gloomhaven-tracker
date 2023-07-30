@@ -23,6 +23,7 @@ import { PartyMonstersPageComponent } from "./monsters/party-monsters-page.compo
 import { PartyMonstersComponent } from "./monsters/party-monsters.component";
 import { PartyRoleHeaderComponent } from "./ui/party-role-header.component";
 import { PartyStatusEditorComponent } from './ui/party-status-editor.component';
+import { NextTurnButtonComponent } from './ui/next-turn-button.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { PartyStatusEditorComponent } from './ui/party-status-editor.component';
     PartyMenuComponent,
     PartyCreateCharacterComponent,
     PartyStatusEditorComponent,
+    NextTurnButtonComponent,
   ],
   imports: [
     // Angular
