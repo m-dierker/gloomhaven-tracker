@@ -43,19 +43,16 @@ export class PartyNavbarComponent implements OnInit {
   }
 
   private onUrlChange(newUrl: string) {
-    console.log("newUrl", newUrl);
     this.enemySubpanelOpen = newUrl.startsWith(PARTY_MONSTERS_URL);
     if (newUrl.startsWith(PARTY_ADD_MONSTERS_URL)) {
-      // Intentionally set null, which is not undefined (all).
-      this.lastSelectedClassId = null;
+      this.lastSelectedClassId = undefined;
+      return;
+    }
+    const existingClassMatch = newUrl.match(PARTY_MONSTER_CLASS_ID_REGEX);
+    if (existingClassMatch) {
+      this.lastSelectedClassId = existingClassMatch[1] as FigureClassId;
     } else {
-      const existingClassMatch = newUrl.match(PARTY_MONSTER_CLASS_ID_REGEX);
-      if (existingClassMatch) {
-        this.lastSelectedClassId = existingClassMatch[1] as FigureClassId;
-      }
-      if (this.lastSelectedClassId === null) {
-        this.lastSelectedClassId = undefined;
-      }
+      this.lastSelectedClassId = undefined;
     }
   }
 

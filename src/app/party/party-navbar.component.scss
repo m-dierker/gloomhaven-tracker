@@ -13,10 +13,7 @@ $main-item-width: 96px;
 
 $sub-vert-padding: 8px;
 $sub-contents-height: $sub-navbar-height - $sub-vert-padding * 2;
-$sub-item-width: 80px;
 $sub-contents-width: $sub-contents-height;
-$sub-horz-padding: $sub-item-width - $sub-contents-width;
-$sub-half-horz-padding: math.div($sub-horz-padding, 2);
 
 $navbar-item-border: 1px gray solid;
 $sub-navbar-color: #1d0e0e;
@@ -76,31 +73,23 @@ $gloomhaven-gold: goldenrod;
   overflow: hidden;
   transition: height 0.2s ease-in-out;
 
-  .all-link {
-    color: white;
-    font-family: "Nyala";
-    font-size: 20pt;
-
-    display: flex;
-    align-items: center;
-  }
-
   .monster-selectors {
     display: flex;
+    justify-content: space-between;
+    padding: 0 16px;
     flex-grow: 1;
     overflow-x: auto;
-    overflow-y: hidden;
   }
 
   .add-monsters {
     color: $gloomhaven-gold;
     font-family: "Pirata One";
     font-size: 50pt;
+    flex-shrink: 0;
 
     &.nav-item {
       // Match nav width.
-      min-width: $main-item-width;
-      width: $main-item-width;
+      width: 64px;
     }
     border: 2px rgb(73, 55, 11) outset;
 
@@ -143,10 +132,6 @@ $gloomhaven-gold: goldenrod;
 
 .sub-navbar .nav-item {
   padding: $sub-vert-padding 0;
-  min-width: $sub-item-width;
-
-  // Relative position for white underline when selected.
-  // position: relative;
 
   img,
   app-enemy-image {
@@ -163,9 +148,9 @@ $gloomhaven-gold: goldenrod;
       position: absolute;
       right: 0;
       bottom: 1px;
-      left: $sub-half-horz-padding;
+      left: 15%;
       height: 2px;
-      width: $sub-contents-width;
+      width: 70%;
     }
   }
 }

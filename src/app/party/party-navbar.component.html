@@ -10,14 +10,6 @@
     <div class="sub-navbar">
       <div class="monster-selectors">
         <div
-          [routerLink]="['/party/monsters']"
-          class="nav-item all-link"
-          (click)="setClassFilter(undefined)"
-          [class.selected]="lastSelectedClassId === undefined"
-        >
-          All
-        </div>
-        <div
           *ngFor="let classId of enemyClassIds"
           [routerLink]="['/party/monsters', { classIdFilter: classId }]"
           (click)="setClassFilter(classId)"
