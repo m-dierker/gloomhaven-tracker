@@ -89,15 +89,14 @@ export class StatusEffect {
         // Gloomhaven has no figureType filtering.
         return GLOOMHAVEN_STATUS_EFFECTS;
       case GameBox.FROSTHAVEN:
-        // TODO: Frosthaven implement.
-        return [];
+        return FROSTHAVEN_STATUS_EFFECTS;
       default:
         throw new Error(`Unknown gamebox ${gamebox}`);
     }
   }
 
   public getImgPath(): string {
-    return `assets/statuses/${this.id}.png`;
+    return `assets/statuses/${this.id}.svg`;
   }
 
   public compareTo(other: StatusEffect): number {
