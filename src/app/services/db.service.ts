@@ -312,6 +312,7 @@ export class DbService {
     if (scenarioData.figureType == FigureType.MONSTER) {
       const classData = await this.monsterDataMap.get(scenarioData.classId);
       if (!classData) {
+        console.error("Unable to find Monster class data for", scenarioData);
         return;
       }
       return new Monster(scenarioData, context, classData);
@@ -319,10 +320,12 @@ export class DbService {
     if (scenarioData.figureType == FigureType.BOSS) {
       const classData = await this.bossDataMap.get(scenarioData.classId);
       if (!classData) {
+        console.error("Unable to find Boss class data for", scenarioData);
         return;
       }
       return new Boss(scenarioData, context, classData);
     }
+    console.error("Unable to find FigureType for ", scenarioData);
   }
 
   saveFigure(figure: Figure) {

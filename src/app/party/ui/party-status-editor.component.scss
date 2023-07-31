@@ -1,17 +1,18 @@
+$status-height: 32px;
+$status-spacing: 8px;
+
 .figure-statuses {
+  // CSS grid layout can't be used here because we want top->down ordering
+  // of individual items and also don't want to specify the number of rows.
+
   color: white;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  height: 160px;
-  justify-content: space-between;
+  column-count: 2;
   margin-top: 16px;
 }
 
 .figure-status {
-  // 4 per column.
-  // TODO: Will this work for Frosthaven?!
-  height: 25%;
+  height: $status-height;
+  margin: 0 0 $status-spacing 30px;
 
   // Actually centering is hard because of variable text width. This is close enough.
   margin-left: 30px;
@@ -32,6 +33,6 @@
 }
 
 .figure-status-icon {
-  height: 32px;
-  width: 32px;
+  height: $status-height;
+  width: $status-height;
 }

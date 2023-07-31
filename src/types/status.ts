@@ -4,6 +4,9 @@ import { GameBox } from "./gamebox";
 const effectIdMap: Map<string, StatusEffect> = new Map();
 
 export class StatusEffect {
+  // Filtering note: figureTypes param is not fully implemented to keep precomputation easy.
+  // If it gets other use cases, the code at the bottom needs rewriting.
+
   // Bane is technically removed on next turn, but that's ignored for now. It's too severe to miss.
   public static BANE: StatusEffect = new StatusEffect("bane", "Bane", {
     removedOnHeal: true,
@@ -89,7 +92,10 @@ export class StatusEffect {
         // Gloomhaven has no figureType filtering.
         return GLOOMHAVEN_STATUS_EFFECTS;
       case GameBox.FROSTHAVEN:
-        return FROSTHAVEN_STATUS_EFFECTS;
+        if (figureType === FigureType.CHARACTER) {
+          return FROSTHAVEN_ALL_STATUS_EFFECTS;
+        }
+        return FROSTHAVEN_NONCHARACTER_STATUS_EFFECTS;
       default:
         throw new Error(`Unknown gamebox ${gamebox}`);
     }
@@ -115,7 +121,7 @@ const GLOOMHAVEN_STATUS_EFFECTS = [
   StatusEffect.WOUND,
 ];
 
-const FROSTHAVEN_STATUS_EFFECTS = [
+const FROSTHAVEN_ALL_STATUS_EFFECTS = [
   StatusEffect.BANE,
   StatusEffect.BRITTLE,
   StatusEffect.DISARM,
@@ -130,3 +136,10 @@ const FROSTHAVEN_STATUS_EFFECTS = [
   StatusEffect.WARD,
   StatusEffect.WOUND,
 ];
+
+// Precompute so this isn't done on every call.
+const FROSTHAVEN_NONCHARACTER_STATUS_EFFECTS =
+  FROSTHAVEN_ALL_STATUS_EFFECTS.filter(
+    // This isn't a real implementation -- Fix if FigureTypes expands.
+    (status) => status.figureTypes.indexOf(FigureType.CHARACTER) === -1
+  );

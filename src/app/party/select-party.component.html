@@ -1,7 +1,10 @@
 <app-party-header>Select a party</app-party-header>
 
 <div class="select-page">
-  <div class="game-logo">
+  <div
+    class="game-logo"
+    *ngIf="partiesByGame.get(GameBox.GLOOMHAVEN)?.length > 0"
+  >
     <img src="/assets/logos/gloomhaven_logo.webp" />
   </div>
   <div
@@ -10,7 +13,10 @@
   >
     <app-button (click)="changeParty(party)">{{ party.partyName }}</app-button>
   </div>
-  <div class="game-logo jotl">
+  <div
+    class="game-logo jotl"
+    *ngIf="partiesByGame.get(GameBox.JAWS_OF_THE_LION)?.length > 0"
+  >
     <img src="/assets/logos/jotl.png" />
   </div>
   <div
@@ -19,7 +25,10 @@
   >
     <app-button (click)="changeParty(party)">{{ party.partyName }}</app-button>
   </div>
-  <div class="game-logo frosthaven">
+  <div
+    class="game-logo frosthaven"
+    *ngIf="partiesByGame.get(GameBox.FROSTHAVEN)?.length > 0"
+  >
     <img src="/assets/logos/frosthaven.png" />
   </div>
   <div
