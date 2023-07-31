@@ -1,29 +1,51 @@
+// These color codes come from the icons on the bottom right of character cards.
 $all-roles: (
   // Gloomhaven
-  spellweaver: ("Spellweaver", #ab7fb8),
-  tinkerer: ("Tinkerer", #cdae91),
-  brute: ("Brute", #57a6ce),
-  mindthief: ("Mindthief", #8097c7),
   beast_tyrant: ("Beast Tyrant", #ab8470),
-  sunkeeper: ("Sunkeeper", #f6dc8b),
-  soothsinger: ("Soothsinger", #d9837a),
-  scoundrel: ("Scoundrel", #9ec85d),
+  berserker: ("Berserker", #cd6d57),
+  brute: ("Brute", #57a6ce),
+  cragheart: ("Cragheart", #a0aa4f),
+  doomstalker: ("Doomstalker", #76bed8),
+  elementalist: ("Elementalist", #bebebe),
+  mindthief: ("Mindthief", #8097c7),
   nightshroud: ("Nightshroud", #7d7db8),
   plagueherald: ("Plagueherald", #6aa69f),
-  cragheart: ("Cragheart", #a0aa4f),
+  quartermaster: ("Quartermaster", #db923f),
+  sawbones: ("Sawbones", #dfddc9),
+  scoundrel: ("Scoundrel", #9ec85d),
+  soothsinger: ("Soothsinger", #d9837a),
+  spellweaver: ("Spellweaver", #ab7fb8),
+  summoner: ("Summoner", #c2608a),
+  sunkeeper: ("Sunkeeper", #f6dc8b),
+  tinkerer: ("Tinkerer", #cdae91),
   // Jaws of the Lion
   demolitionist: ("Demolitionist", #d56e31),
   hatchet: ("Hatchet", #507fb5),
   red_guard: ("Red Guard", #d33c35),
-  voidwarden: ("Voidwarden", #b7b3b2)
+  voidwarden: ("Voidwarden", #b7b3b2),
+  // Frosthaven
+  banner_spear: ("Banner Spear", #e8c05d),
+  blinkblade: ("Blinkblade", #4faed4),
+  boneshaper: ("Boneshaper", #53ac63),
+  deathwalker: ("Deathwalker", #9ea6b4),
+  drifter: ("Drifter", #978376),
+  geminate: ("Geminate", #c14f72)
 );
 
 /** Allows local CSS for each role. 
 
 Sample usage:
-@include role-css() using ($role-id, $role-color, $role-name) {
-  color: $role-color;
+@import "src/app/css/roles.scss";
+
+.role-div {
+  @include role-css() using ($role-id, $role-color, $role-name) {
+    color: $role-color;
+  }
 }
+
+in HTML:
+<div class="role-div {{role_id}}">...</div>
+
 
 All the arguments must be included in the using clause, even if unused.
 

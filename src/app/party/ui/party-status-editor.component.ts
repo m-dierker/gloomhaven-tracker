@@ -18,7 +18,10 @@ export class PartyStatusEditorComponent {
 
   ngOnInit(): void {
     this.db.getParty().subscribe((party) => {
-      this.allStatuses = StatusEffect.getAllStatuses(party.gamebox);
+      this.allStatuses = StatusEffect.getAllStatuses(
+        party.gamebox,
+        this.figure.type
+      );
     });
   }
 

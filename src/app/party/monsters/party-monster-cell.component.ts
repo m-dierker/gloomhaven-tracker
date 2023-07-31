@@ -49,13 +49,13 @@ export class PartyMonsterCellComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     // TODO: Understand why this method runs 10x for every change. -_-
     if (changes.enemy) {
-      if (this.enemy.figureType == FigureType.MONSTER) {
+      if (this.enemy.type == FigureType.MONSTER) {
         this.monster = this.enemy as Monster;
         this.isBoss = false;
       } else {
         this.monster = undefined;
       }
-      if (this.enemy.figureType == FigureType.BOSS) {
+      if (this.enemy.type == FigureType.BOSS) {
         this.isBoss = true;
       }
       if (changes.enemy.currentValue !== changes.enemy.previousValue) {

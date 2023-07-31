@@ -40,7 +40,7 @@ export class DisplayComponent implements OnInit {
     this.monsterClassList = [];
 
     for (const [classId, enemyList] of this.enemiesByClass.entries()) {
-      switch (enemyList[0].figureType) {
+      switch (enemyList[0].type) {
         case FigureType.BOSS:
           this.bossClassList.push(classId);
           break;

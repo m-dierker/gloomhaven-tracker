@@ -49,8 +49,8 @@ export class Monster extends Figure {
     if (this.isDead() !== other.isDead()) {
       return this.isDead() ? 1 : -1;
     }
-    if (this.figureType !== other.figureType) {
-      return this.figureType - other.figureType;
+    if (this.type !== other.type) {
+      return this.type - other.type;
     }
     if (this.classId !== other.classId) {
       return this.classId.localeCompare(other.classId);

@@ -1,40 +1,42 @@
 @use "sass:color";
 
+@import "src/app/css/roles.scss";
+
+$header-box-shadow-size: 10px;
+
 .role-header {
   background: url("/assets/backgrounds/class_name_bg.png");
   background-size: cover;
-  // display: flex;
   height: 74px;
   padding: 8px;
-}
 
-$header-box-shadow-size: 10px;
-@mixin role-color($role-id, $role-name, $role-color) {
-  background-color: color.scale($role-color, $lightness: -90%);
-  background-blend-mode: screen;
+  @include role-css() using ($role-id, $role-color, $role-name) {
+    background-color: color.scale($role-color, $lightness: -90%);
+    background-blend-mode: screen;
 
-  .role-inner-header {
-    box-shadow: 0px 0px $header-box-shadow-size $role-color,
-      inset 0px 0px 8px $role-color;
-    border: 1px solid color.scale($role-color, $lightness: 80%);
-    color: $role-color;
-  }
+    .role-inner-header {
+      box-shadow: 0px 0px $header-box-shadow-size $role-color,
+        inset 0px 0px 8px $role-color;
+      border: 1px solid color.scale($role-color, $lightness: 80%);
+      color: $role-color;
+    }
 
-  .role-icon {
-    background-color: $role-color;
-    mask-image: url("/assets/classes/" + $role-id + ".svg");
-  }
+    .role-icon {
+      background-color: $role-color;
+      mask-image: url("/assets/classes/" + $role-id + ".svg");
+    }
 
-  .role-name {
-    background-image: linear-gradient(
-      180deg,
-      color.scale($role-color, $lightness: -30%) 0%,
-      color.scale($role-color, $lightness: 40%) 60%,
-      white 100%
-    );
+    .role-name {
+      background-image: linear-gradient(
+        180deg,
+        color.scale($role-color, $lightness: -30%) 0%,
+        color.scale($role-color, $lightness: 40%) 60%,
+        white 100%
+      );
 
-    &::after {
-      content: $role-name;
+      &::after {
+        content: $role-name;
+      }
     }
   }
 }
@@ -74,99 +76,38 @@ $header-box-shadow-size: 10px;
   }
 }
 
-.role-spellweaver {
-  @include role-color("spellweaver", "Spellweaver", #ab7fb8);
-}
+// /** Dropdown panel -- FIXME move this to the new menu? */
 
-.role-tinkerer {
-  @include role-color("tinkerer", "Tinkerer", #cdae91);
-}
+// .role-menu {
+//   background-color: rgb(57, 57, 57);
+//   padding: 10px 0 20px 0;
 
-.role-brute {
-  @include role-color("brute", "Brute", #57a6ce);
-}
+//   & > div {
+//     color: white;
+//     text-align: center;
+//   }
 
-.role-mindthief {
-  @include role-color("mindthief", "Mindthief", #8097c7);
-}
+//   .header {
+//     color: gold;
+//     font-family: "Nyala";
+//     font-size: 14pt;
+//     height: 25px;
+//     text-decoration: underline dashed;
+//     text-transform: uppercase;
 
-.role-beast_tyrant {
-  @include role-color("beast_tyrant", "Beast Tyrant", #ab8470);
-}
+//     &:not(:first-child) {
+//       margin-top: 25px;
+//     }
+//   }
 
-.role-sunkeeper {
-  @include role-color("sunkeeper", "Sunkeeper", #f6dc8b);
-}
+//   .option {
+//     font-family: "Pirata One";
+//     font-size: 18pt;
+//     height: 40px;
 
-.role-soothsinger {
-  @include role-color("soothsinger", "Soothsinger", #d9837a);
-}
-
-.role-scoundrel {
-  @include role-color("scoundrel", "Scoundrel", #9ec85d);
-}
-
-.role-nightshroud {
-  @include role-color("nightshroud", "Nightshroud", #7d7db8);
-}
-
-.role-plagueherald {
-  @include role-color("plagueherald", "Plagueherald", #6aa69f);
-}
-
-.role-cragheart {
-  @include role-color("cragheart", "Cragheart", #a0aa4f);
-}
-
-/** Jaws of the Lion */
-.role-demolitionist {
-  @include role-color("demolitionist", "Demolitionist", #d56e31);
-}
-
-.role-hatchet {
-  @include role-color("hatchet", "Hatchet", #507fb5);
-}
-
-.role-red_guard {
-  @include role-color("red_guard", "Red Guard", #d33c35);
-}
-
-.role-voidwarden {
-  @include role-color("voidwarden", "Voidwarden", #b7b3b2);
-}
-
-/** Dropdown panel */
-
-.role-menu {
-  background-color: rgb(57, 57, 57);
-  padding: 10px 0 20px 0;
-
-  & > div {
-    color: white;
-    text-align: center;
-  }
-
-  .header {
-    color: gold;
-    font-family: "Nyala";
-    font-size: 14pt;
-    height: 25px;
-    text-decoration: underline dashed;
-    text-transform: uppercase;
-
-    &:not(:first-child) {
-      margin-top: 25px;
-    }
-  }
-
-  .option {
-    font-family: "Pirata One";
-    font-size: 18pt;
-    height: 40px;
-
-    a {
-      color: white;
-      text-decoration: none;
-    }
-  }
-}
+//     a {
+//       color: white;
+//       text-decoration: none;
+//     }
+//   }
+// }

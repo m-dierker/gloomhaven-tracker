@@ -1,26 +1,15 @@
 <div class="role-panel">
   <div
-    class="role-header"
+    class="role-header {{
+      roleClass ? roleClass : (userChar | async)?.classId
+    }}"
     *ngIf="roleClass || userChar"
-    class="role-{{ roleClass ? roleClass : (userChar | async)?.classId }}"
   >
     <div class="role-inner-header">
       <div class="role-icon"></div>
       <span class="role-name"></span>
 
       <div class="role-spacer"></div>
-
-      <!-- TODO: Figure out where else to show the game that is not this page. -->
-      <!-- <div
-        class="role-spacer"
-        *ngIf="(party | async)?.gamebox != 'jotl'; else jotl"
-      ></div>
-      <ng-template #jotl>
-        <div class="game-icon">
-          <img src="/assets/icons/jotl.webp" />
-        </div>
-      </ng-template>
-    </div> -->
     </div>
   </div>
 </div>

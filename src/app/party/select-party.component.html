@@ -8,9 +8,7 @@
     class="select-party"
     *ngFor="let party of partiesByGame.get(GameBox.GLOOMHAVEN) || []"
   >
-    <app-button (click)="changeParty(party)"
-      >{{ party.partyName }} ({{ party.members[user.uid].class }})</app-button
-    >
+    <app-button (click)="changeParty(party)">{{ party.partyName }}</app-button>
   </div>
   <div class="game-logo jotl">
     <img src="/assets/logos/jotl.png" />
@@ -19,8 +17,15 @@
     class="select-party"
     *ngFor="let party of partiesByGame.get(GameBox.JAWS_OF_THE_LION) || []"
   >
-    <app-button (click)="changeParty(party)"
-      >{{ party.partyName }} ({{ party.members[user.uid].class }})</app-button
-    >
+    <app-button (click)="changeParty(party)">{{ party.partyName }}</app-button>
+  </div>
+  <div class="game-logo frosthaven">
+    <img src="/assets/logos/frosthaven.png" />
+  </div>
+  <div
+    class="select-party"
+    *ngFor="let party of partiesByGame.get(GameBox.FROSTHAVEN) || []"
+  >
+    <app-button (click)="changeParty(party)">{{ party.partyName }}</app-button>
   </div>
 </div>

@@ -25,6 +25,14 @@ export enum RoleClass {
   HATCHET = "hatchet",
   RED_GUARD = "red_guard",
   VOIDWARDEN = "voidwarden",
+
+  // Frosthaven
+  BANNER_SPEAR = "banner_spear",
+  DRIFTER = "drifter",
+  BONESHAPER = "boneshaper",
+  DEATHWALKER = "deathwalker",
+  BLINKBLADE = "blinkblade",
+  GEMINATE = "geminate",
 }
 
 export function allClassesForGame(game: GameBox): RoleClass[] {
@@ -33,13 +41,15 @@ export function allClassesForGame(game: GameBox): RoleClass[] {
       return GLOOMHAVEN_CLASSES;
     case GameBox.JAWS_OF_THE_LION:
       return JOTL_CLASSES;
+    case GameBox.FROSTHAVEN:
+      return FROSTHAVEN_CLASSES;
     default:
       console.error("Unable to load classes for game: " + game);
       return [];
   }
 }
 
-// TODO: This needs to change if this system ever goes to multiple people.
+// TODO: This needs to handle unlockable classes.
 const GLOOMHAVEN_CLASSES = [
   RoleClass.BEAST_TYRANT,
   RoleClass.BERSERKER,
@@ -67,4 +77,11 @@ const JOTL_CLASSES = [
   RoleClass.VOIDWARDEN,
 ];
 
-// TODO: Frosthaven.
+const FROSTHAVEN_CLASSES = [
+  RoleClass.BANNER_SPEAR,
+  RoleClass.DRIFTER,
+  RoleClass.BONESHAPER,
+  RoleClass.DEATHWALKER,
+  RoleClass.BLINKBLADE,
+  RoleClass.GEMINATE,
+];
