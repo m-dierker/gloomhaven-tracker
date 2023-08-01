@@ -1,6 +1,7 @@
 img {
   // Only show a border for JotL where the monster images don't have borders.
-  &.jotl {
+  &.prefix-jotl,
+  &.prefix-fh {
     // TODO: Make more interesting.
     border-radius: 50%;
     border: 2px brown solid;

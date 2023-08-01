@@ -20,6 +20,8 @@ export class EnemyImageComponent implements OnInit, OnChanges {
   @Input()
   isBoss: boolean;
 
+  imageClassId: string;
+
   /** For valid IDs, this will be the GameBox. */
   prefix: string;
 
@@ -29,6 +31,15 @@ export class EnemyImageComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.classId) {
+      // Frosthaven has scenario-specific monsters, ex: fh_found_scenario_0.
+      // This is a hacky way to handle it, but it's wrapped in a component and not toooo bad.
+      const fhMatch = this.classId.match(SCENARIO_ID_REGEX);
+      if (fhMatch) {
+        this.imageClassId = fhMatch[1];
+      } else {
+        this.imageClassId = this.classId;
+      }
+
       const split = this.classId.indexOf("_");
       if (split === -1) {
         this.prefix = this.classId;
@@ -38,3 +49,5 @@ export class EnemyImageComponent implements OnInit, OnChanges {
     }
   }
 }
+
+const SCENARIO_ID_REGEX = /^(fh_[a-zA-Z\s]+)_scenario_\d+$/;

@@ -38,10 +38,18 @@ export class Boss extends Figure {
     // Unlike monsters, boss health is in the form of "9xC" in the database as a string.
     // Intentionally do an unsafe typecast to avoid having to replicate every property here from BossStats manually.
     // The proper way to do this would be for the boss data string in the DB to have a different name than "health".
-    enemyStats.health = getBossHealth(
-      enemyStats.health as unknown as string,
-      context.party
-    );
+
+    if (!enemyStats.health || typeof enemyStats.health !== "number") {
+      // Pull this out separately to keep it boss-specific.
+      const levelStats = this.bossData.levelStats[data.level];
+      // Frosthaven introduced healthStr in the database, fixing the problem above.
+      if (levelStats.healthStr) {
+        enemyStats.health = getBossHealth(levelStats.healthStr, context.party);
+      } else if (typeof enemyStats.health === "string") {
+        // This is a legacy boss that doesn't have a healthStr.
+        enemyStats.health = getBossHealth(enemyStats.health, context.party);
+      }
+    }
     this.figureStats = enemyStats;
   }
 

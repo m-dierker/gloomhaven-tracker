@@ -1,7 +1,8 @@
 <div class="monster-id" [class.elite]="isElite">
+  <!-- I don't remember why this ngIf hack is necessary. What's spe-->
   <img
     src="/assets/bosses/{{ classId }}.webp"
-    *ngIf="isBoss && gameBox == GameBox.GLOOMHAVEN; else enemyImage"
+    *ngIf="isBoss && gameBox != GameBox.JAWS_OF_THE_LION; else enemyImage"
     else
     #enemyImage
     class="boss-img"
