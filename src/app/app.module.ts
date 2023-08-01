@@ -36,6 +36,8 @@ import { MonsterAbilityDeckComponent } from "./monster/ability-deck/monster-abil
 import { PartyModule } from "./party/party.module";
 import { ElementTrackerModule } from "./elements/element-tracker.module";
 import { UiModule } from "./ui/ui.module";
+import { MapViewComponent } from './mapviewdemo/map-view.component';
+import { MapTileComponent } from './mapviewdemo/map-tile.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +53,8 @@ import { UiModule } from "./ui/ui.module";
     AdminComponent,
     MonsterAbilityDisplayComponent,
     MonsterAbilityDeckComponent,
+    MapViewComponent,
+    MapTileComponent,
   ],
   imports: [
     BrowserAnimationsModule,

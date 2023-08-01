@@ -7,6 +7,7 @@ import { MonsterAttackDeckDisplayComponent } from "./monster/attack-deck/monster
 import { PartyManagerComponent } from "./party/party-manager.component";
 import { SelectPartyComponent } from "./party/select-party.component";
 import { LoginComponent } from "./ui/login.component";
+import { MapViewComponent } from "./mapviewdemo/map-view.component";
 
 const routes: Routes = [
   {
@@ -39,6 +40,10 @@ const routes: Routes = [
     path: "party",
     loadChildren: () =>
       import("./party/party.module").then((m) => m.PartyModule),
+  },
+  {
+    path: "mapview",
+    component: MapViewComponent,
   },
 ];
 

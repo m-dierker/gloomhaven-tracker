@@ -1,0 +1,32 @@
+$tile-size: 200px;
+
+.tile {
+  position: absolute;
+
+  min-width: 100px;
+  min-height: 100px;
+}
+
+img {
+  // Can only enforce the smaller of max width or height or the dimensions become unbalanced.
+  // &.vert-larger {
+  //   max-width: $tile-size;
+  // }
+  // &.horz-larger {
+  //   max-height: $tile-size;
+  // }
+}
+
+.overlay {
+  background: rgba(255, 215, 0, 0.8);
+  border: 2px black solid;
+  border-radius: 50%;
+  position: absolute;
+  top: 40%;
+  height: 20%;
+  text-align: center;
+
+  left: 40%;
+  padding: 8px;
+  font-size: 14pt;
+}
