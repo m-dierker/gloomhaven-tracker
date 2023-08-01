@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ScenarioFigureData } from "src/types/scenario";
+import { ScenarioFigureData } from "src/types/scenario-figure-data";
 import { FigureType } from "src/types/figure";
 import { Party } from "src/types/party";
 import { RoleClass, allClassesForGame } from "src/app/db/classes";

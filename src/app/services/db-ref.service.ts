@@ -17,8 +17,8 @@ import {
   USERS_COLLECTION,
   PARTY_CHARACTERS_COLLECTION,
 } from "../db/db-constants";
-import { ScenarioFigureData } from "src/types/scenario";
-import { ScenarioInfo } from "../db/scenario";
+import { ScenarioFigureData } from "src/types/scenario-figure-data";
+import { ScenarioInfo } from "../db/scenario-info";
 import { Party } from "src/types/party";
 import { AppBootstrap } from "./bootstrap";
 import { MonsterAbilityDeckDocument } from "src/types/ability-cards";

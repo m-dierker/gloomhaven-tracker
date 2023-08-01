@@ -7,7 +7,7 @@ import {
   MonsterType,
 } from "src/types/monsters";
 import { Party } from "src/types/party";
-import { ScenarioFigureData } from "src/types/scenario";
+import { ScenarioFigureData } from "src/types/scenario-figure-data";
 import { Figure } from "./figure";
 
 export class Boss extends Figure {
@@ -20,7 +20,14 @@ export class Boss extends Figure {
     this.onNewScenarioData(scenarioData, context);
   }
 
-  onNewScenarioData(data: ScenarioFigureData, context: GameContext): void {
+  override get displayName(): string {
+    return this.bossData.displayName;
+  }
+
+  override onNewScenarioData(
+    data: ScenarioFigureData,
+    context: GameContext
+  ): void {
     super.onNewScenarioData(data, context);
 
     // TODO: It isn't necessary for this to run as much as it does.
@@ -35,11 +42,10 @@ export class Boss extends Figure {
       enemyStats.health as unknown as string,
       context.party
     );
-    enemyStats.displayName = this.bossData.displayName;
     this.figureStats = enemyStats;
   }
 
-  isBoss(): boolean {
+  override isBoss(): boolean {
     return true;
   }
 }

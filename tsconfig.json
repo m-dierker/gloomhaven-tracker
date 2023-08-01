@@ -11,18 +11,16 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2018",
-      "dom"
-    ],
-    "useDefineForClassFields": false
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2021", "dom"],
+    "useDefineForClassFields": false,
+    "paths": {
+      "src/*": ["src/*"]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true
   },
-  "ts-node": {"esm": true}
+  "ts-node": { "esm": true }
 }

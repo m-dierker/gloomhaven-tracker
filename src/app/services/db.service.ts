@@ -40,12 +40,15 @@ import { ElementData, ElementState, ElementType } from "../db/elements";
 import { DbRefService } from "./db-ref.service";
 import { authState } from "rxfire/auth";
 import { Auth } from "@angular/fire/auth";
-import { getClassCardId, ScenarioFigureData } from "src/types/scenario";
+import {
+  getClassCardId,
+  ScenarioFigureData,
+} from "src/types/scenario-figure-data";
 import { Figure } from "../db/figure";
 import { FigureClassId, FigureType } from "src/types/figure";
 import { Boss } from "../db/boss";
 import { GameContext } from "src/types/game";
-import { ScenarioInfo } from "../db/scenario";
+import { ScenarioInfo } from "../db/scenario-info";
 import { GameBox } from "src/types/gamebox";
 import { Character } from "../db/character";
 

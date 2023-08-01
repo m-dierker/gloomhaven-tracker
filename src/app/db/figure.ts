@@ -1,6 +1,6 @@
 import { EventEmitter } from "@angular/core";
 import { GameContext } from "src/types/game";
-import { ScenarioFigureData } from "src/types/scenario";
+import { ScenarioFigureData } from "src/types/scenario-figure-data";
 import { FigureStats } from "../../types/monsters";
 import { StatusEffect } from "../../types/status";
 
@@ -77,10 +77,6 @@ export abstract class Figure {
     this.scenarioData_.maxHealth = health;
   }
 
-  get displayName() {
-    return this.figureStats_.displayName;
-  }
-
   getStatuses(): StatusEffect[] {
     return this.scenarioData_.statuses
       .map((statusId) => StatusEffect.getEffectById(statusId))
@@ -101,6 +97,8 @@ export abstract class Figure {
       );
     }
   }
+
+  abstract get displayName(): string;
 
   isDead(): boolean {
     return this.getHealth() <= 0;

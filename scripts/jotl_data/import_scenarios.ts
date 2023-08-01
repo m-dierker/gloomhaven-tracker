@@ -2,7 +2,7 @@ import { BossData, MonsterData } from "../../src/types/monsters";
 
 import { promises as fs } from "fs";
 import { Firestore } from "@google-cloud/firestore";
-import { ScenarioInfo } from "src/app/db/scenario";
+import { ScenarioInfo } from "src/app/db/scenario-info";
 
 const firestore = new Firestore({
   keyFilename: "keys/glo2mhaven-tracker-firebase-adminsdk.json",

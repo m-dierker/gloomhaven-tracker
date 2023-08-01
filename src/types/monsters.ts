@@ -2,8 +2,6 @@ import { GameBox } from "./gamebox";
 
 /** Top level interface for any enemy (Monsters or Boss). */
 export interface FigureStats {
-  displayName: string;
-
   health: number;
   move: number;
   attack: number;
@@ -25,6 +23,11 @@ export interface MonsterData {
 
   /** Level --> stats for a monster. */
   levelStats: { [level: number]: MonsterLevelStats };
+
+  // New data from Frosthaven.
+
+  /** Max number of monsters that can exist. */
+  maxTokens: number;
 }
 
 /** Compare function for sorting monster classes by display name. */
@@ -82,7 +85,9 @@ export interface BossData {
 
 export interface BossStats {
   /** Health is in the form "##xC", where C is average character level. */
-  health: string;
+  health: number | string;
+  // For Frosthaven: Formulas are here instead.
+  healthStr: string;
   move: number;
   // Note... this can be different for some bosses.
   attack: number;

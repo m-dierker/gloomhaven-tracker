@@ -4,7 +4,7 @@ import {
   MonsterData,
   MonsterType,
 } from "src/types/monsters";
-import { ScenarioFigureData } from "src/types/scenario";
+import { ScenarioFigureData } from "src/types/scenario-figure-data";
 import { Figure } from "./figure";
 
 /** Subclass responsibility: Translate MonsterData into EnemyStats + expose any monster-specific methods. */
@@ -18,14 +18,20 @@ export class Monster extends Figure {
     this.onNewScenarioData(scenarioData, context);
   }
 
-  onNewScenarioData(data: ScenarioFigureData, context: GameContext): void {
+  override onNewScenarioData(
+    data: ScenarioFigureData,
+    context: GameContext
+  ): void {
     super.onNewScenarioData(data, context);
     this.figureStats = {
       ...this.monsterData.levelStats[data.level][
         getMonsterTypeDbString(data.monsterData.type)
       ],
     };
-    this.figureStats.displayName = this.monsterData.displayName;
+  }
+
+  override get displayName(): string {
+    return this.monsterData.displayName;
   }
 
   setElite(isElite: boolean) {
@@ -38,14 +44,14 @@ export class Monster extends Figure {
     return this.scenarioData.monsterData.type == MonsterType.ELITE;
   }
 
-  isMonster(): boolean {
+  override isMonster(): boolean {
     return true;
   }
 
   /**
    * @override to include Elite logic in compareTo. Annoying to replicate this but it needs to go in the middle.
    */
-  compareTo(other: Monster) {
+  override compareTo(other: Monster) {
     if (this.isDead() !== other.isDead()) {
       return this.isDead() ? 1 : -1;
     }

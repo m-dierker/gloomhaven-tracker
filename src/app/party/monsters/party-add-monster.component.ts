@@ -4,10 +4,10 @@ import { TypeaheadMatch } from "ngx-bootstrap/typeahead";
 import { FigureClassId, FigureType } from "src/types/figure";
 import { BossData, MonsterData, MonsterType } from "src/types/monsters";
 import { Party } from "src/types/party";
-import { ScenarioFigureData } from "src/types/scenario";
+import { ScenarioFigureData } from "src/types/scenario-figure-data";
 import { Router } from "@angular/router";
 import { Figure } from "src/app/db/figure";
-import { ScenarioInfo } from "src/app/db/scenario";
+import { ScenarioInfo } from "src/app/db/scenario-info";
 import { DbService } from "src/app/services/db.service";
 
 @Component({
