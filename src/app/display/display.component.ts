@@ -5,6 +5,7 @@ import { Observable } from "rxjs";
 import { FigureClassId, FigureType } from "src/types/figure";
 import { Figure } from "../db/figure";
 import { ScenarioInfo } from "../db/scenario-info";
+import { Character } from "../db/character";
 
 @Component({
   selector: "app-display",
@@ -18,6 +19,8 @@ export class DisplayComponent implements OnInit {
   public monsterClassList: FigureClassId[];
   public bossClassList: FigureClassId[];
   public enemiesByClass: Map<FigureClassId, Figure[]> = new Map();
+
+  public partyCharacters: Character[] = [];
 
   private party_: Observable<Party>;
 
@@ -33,6 +36,9 @@ export class DisplayComponent implements OnInit {
     this.db
       .getActiveScenarioInfo()
       .subscribe((scenarioInfo) => (this.scenarioInfo = scenarioInfo));
+    this.db.getPartyCharacters().subscribe((characters) => {
+      this.partyCharacters = characters;
+    });
   }
 
   private onPartyEnemiesUpdate() {

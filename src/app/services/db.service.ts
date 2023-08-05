@@ -37,7 +37,7 @@ import {
   onSnapshot,
   runTransaction,
 } from "firebase/firestore";
-import { getBlob, getStorage, ref } from "firebase/storage";
+import { getBlob, getStorage, list, ref } from "firebase/storage";
 import { ElementData, ElementState, ElementType } from "../db/elements";
 import { DbRefService } from "./db-ref.service";
 import { authState } from "rxfire/auth";
@@ -76,12 +76,14 @@ export class DbService {
 
   /** Unsubscribe function for non-Angular Firebase listener while avoiding the AngularFire bug. */
   private partyMonsterUnsub: Function;
+  private partyCharacterUnsub: Function;
   // Map of global ID --> figure. This is basically the local database.
   private figureIdMap: Map<string, Figure> = new Map();
   // Map of class --> array of enemies of that class. this is effectively a cached DB index.
   private partyEnemySubj: ReplaySubject<Map<FigureClassId, Figure[]>>;
 
   private userCharacterSubj: ReplaySubject<Character>;
+  private partyCharactersSubj: ReplaySubject<Character[]>;
 
   private gameDataLoadedPromise = new Promise((resolve) => {
     this.gameDataLoadedResolve = resolve;
@@ -200,6 +202,64 @@ export class DbService {
       };
       await t.update(partyDoc, { members: newMembers });
     });
+  }
+
+  getPartyCharacters(): Observable<Character[]> {
+    if (!this.partyCharactersSubj) {
+      this.partyCharactersSubj = new ReplaySubject(1);
+      combineLatest([
+        from(this.enemyDataLoadedPromise),
+        this.getContext(),
+      ]).subscribe(([_, context]) => {
+        if (this.partyCharacterUnsub) {
+          this.partyCharacterUnsub();
+        }
+        // This is bypassing AngularFire because there's a bug where collectionSnapshots is including extra data unnecessarily.
+        // https://github.com/FirebaseExtended/rxfire/issues/75
+        // Instead, this uses the Firebase API directly.
+        this.partyCharacterUnsub = onSnapshot(
+          this.dbRef.partyCharactersCollection(),
+          (snapshot) => {
+            let listRefreshNeeded = false;
+            for (const update of snapshot.docChanges()) {
+              if (update.type === "added") {
+                const character = new Character(
+                  update.doc.data(),
+                  context,
+                  this.characterDataMap.get(update.doc.data().classId)
+                );
+                this.figureIdMap.set(update.doc.id, character);
+                listRefreshNeeded = true;
+              } else if (update.type === "modified") {
+                if (!this.figureIdMap.has(update.doc.id)) {
+                  console.error("Update received for missing character.");
+                  continue;
+                }
+                this.zone.run(() => {
+                  this.figureIdMap
+                    .get(update.doc.id)
+                    .onNewScenarioData(update.doc.data(), context);
+                });
+              } else if (update.type === "removed") {
+                this.figureIdMap.delete(update.doc.id);
+                listRefreshNeeded = true;
+              }
+            }
+            if (listRefreshNeeded) {
+              // This could be more efficient, but will generally only run once.
+              const characters: Figure[] = Array.from(
+                this.figureIdMap.values()
+              ).filter((figure) => figure.isCharacter());
+              // Trigger in NgZone to get back in an Angular context.
+              this.zone.run(() => {
+                this.partyCharactersSubj.next(characters as Character[]);
+              });
+            }
+          }
+        );
+      });
+    }
+    return this.partyCharactersSubj.asObservable();
   }
 
   /**

@@ -1,5 +1,5 @@
 <main role="main" class="container">
-  <div class="display-wrapper">
+  <div class="display-wrapper gamebox-{{ party?.gamebox }}">
     <div class="name-content" *ngIf="scenarioInfo">
       # {{ scenarioInfo.scenarioNum }} — {{ scenarioInfo.scenarioTitle }}
     </div>
@@ -10,13 +10,20 @@
     />
     <div class="display-content">
       <div class="row">
+        <div class="col" *ngIf="partyCharacters.length > 0">
+          <div class="characters-header">Characters</div>
+          <monster-cell
+            *ngFor="let character of partyCharacters"
+            [figure]="character"
+          ></monster-cell>
+        </div>
         <div class="col" *ngFor="let monsterClassId of monsterClassList">
           <monster-name
             [monster]="enemiesByClass.get(monsterClassId)[0]"
           ></monster-name>
           <monster-cell
             *ngFor="let monster of enemiesByClass.get(monsterClassId)"
-            [monster]="monster"
+            [figure]="monster"
           >
           </monster-cell>
         </div>
