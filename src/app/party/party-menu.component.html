@@ -1,17 +1,18 @@
 <app-party-header>Menu</app-party-header>
 
-<app-button routerLink="/party/select">Select a party</app-button>
-<app-button routerLink="/party/character/create">Create character</app-button>
+<!-- <app-button routerLink="/party/select">Select a party</app-button>
+<app-button routerLink="/party/character/create">Create character</app-button> -->
 
 <!-- TODO: Port from PartyRoleHeader. CSS is still there.-->
-<!-- <div class="role-menu" *ngIf="menuVisible">
+<div class="role-menu">
   <div class="header">Party</div>
-  <div class="option" routerLink="/select_party">Select Party</div>
+  <div class="option" routerLink="/party/select">Select Party</div>
   <div class="header">Scenario</div>
   <div class="option" (click)="changeScenario()">
     Change Scenario ({{ (party | async)?.activeScenario }})
   </div>
-  <div class="option" (click)="changeScenarioLevel()">
+</div>
+<!-- <div class="option" (click)="changeScenarioLevel()">
     Adjust Scenario Level ({{ (party | async)?.scenarioLevel }})
   </div>
   <div class="header">Game</div>

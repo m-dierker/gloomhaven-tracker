@@ -13,7 +13,7 @@
       *ngFor="let classId of scenarioInfo.bossIds"
       (click)="selectEnemy(FigureType.BOSS, classId)"
     >
-      <img src="/assets/bosses/{{ classId }}.webp" />
+      <img src="/assets/monsters/{{ classId }}.webp" />
     </div>
     <app-button class="select-enemy-choice" (click)="showAutocomplete()">
       +

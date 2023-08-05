@@ -17,9 +17,6 @@ export class EnemyImageComponent implements OnInit, OnChanges {
   @Input()
   classId: string;
 
-  @Input()
-  isBoss: boolean;
-
   imageClassId: string;
 
   /** For valid IDs, this will be the GameBox. */

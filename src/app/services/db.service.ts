@@ -368,20 +368,44 @@ export class DbService {
     );
   }
 
-  updateScenarioNumber(newLevel: number): Promise<void> {
-    return new Promise((resolve) => {
+  updateScenarioNumber(newLevel: string): Promise<void> {
+    return new Promise((resolve, reject) => {
       this.partySubj.pipe(first()).subscribe(async (party) => {
-        console.log("party", party);
+        const fullScenarioId = this.scenarioIdForGame(party.gamebox, newLevel);
+        const scenarioDoc = this.dbRef.scenarioDoc(fullScenarioId);
+
+        let scenarioFound = false;
+        try {
+          const cachedDoc = await getDocFromCache(scenarioDoc);
+          scenarioFound = cachedDoc.exists();
+        } catch (e) {
+          // Firebase seems to throw an error rather than return a doc.exists = false.
+          scenarioFound = false;
+        }
+
+        if (!scenarioFound) {
+          return reject("Scenario not found: " + fullScenarioId);
+        }
         await updateDoc(this.dbRef.partyDoc(), {
-          // TODO: Matt........ make the same convention please.
-          activeScenario:
-            party.gamebox === GameBox.GLOOMHAVEN
-              ? `gh-${newLevel}`
-              : `jotl_${newLevel}`,
+          activeScenario: fullScenarioId,
         });
         resolve();
       });
     });
+  }
+
+  private scenarioIdForGame(game: GameBox, scenarioNum: string): string {
+    switch (game) {
+      case GameBox.GLOOMHAVEN:
+        return `gh-${scenarioNum}`;
+      case GameBox.JAWS_OF_THE_LION:
+        return `jotl_${scenarioNum}`;
+      case GameBox.FROSTHAVEN:
+        return `fh_${scenarioNum}`;
+      default:
+        console.error("Cannot make scenario for unknown GameBox", game);
+        return scenarioNum;
+    }
   }
 
   updateScenarioLevel(scenarioLevel: number): Promise<void> {

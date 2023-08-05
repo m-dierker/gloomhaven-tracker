@@ -9,4 +9,11 @@ export interface ScenarioInfo {
   scenarioNum: string;
   /** Title of the scenario (ex: "Black Barrow"). */
   scenarioTitle: string;
+
+  errata: string;
+  /** Frosthaven difficulty, 1-3. */
+  difficulty: number;
+  /** Frosthaven section references. */
+  sections: string[];
+  allMapTiles: string[];
 }

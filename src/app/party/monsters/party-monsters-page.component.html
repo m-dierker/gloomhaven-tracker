@@ -2,7 +2,9 @@
   <app-party-header *ngIf="!classIdFilter_">Monsters</app-party-header>
 
   <div class="monsters-page">
-    <app-party-monster-name *ngIf="bossClassList?.length > 0">
+    <app-party-monster-name
+      *ngIf="bossClassList?.length > 0 && !classIdFilter_"
+    >
       Bosses
     </app-party-monster-name>
     <div class="monster-class" *ngFor="let bossClassId of bossClassList">

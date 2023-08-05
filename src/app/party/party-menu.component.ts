@@ -1,32 +1,35 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
+import { DbService } from "../services/db.service";
+import { Observable } from "rxjs";
+import { Party } from "src/types/party";
 
 @Component({
   selector: "app-party-menu",
   templateUrl: "./party-menu.component.html",
   styleUrls: ["./party-menu.component.scss"],
 })
-export class PartyMenuComponent {
+export class PartyMenuComponent implements OnInit {
+  party: Observable<Party>;
+
+  constructor(private db: DbService) {}
+
+  ngOnInit() {
+    this.party = this.db.getParty();
+  }
+
   // TODO: Port this from PartyRoleHeader
   // toggleMenuVisible() {
   //   this.menuVisible = !this.menuVisible;
   // }
-  // async changeScenario() {
-  //   const newScenario = prompt("Enter a scenario number:");
-  //   const scenarioNum = parseInt(newScenario.trim());
-  //   if (
-  //     scenarioNum < MIN_SCENARIO ||
-  //     scenarioNum > MAX_SCENARIO ||
-  //     isNaN(scenarioNum)
-  //   ) {
-  //     alert(
-  //       `Invalid scenario. Enter just a number ${MIN_SCENARIO}-${MAX_SCENARIO}.`
-  //     );
-  //     return;
-  //   }
-  //   this.menuVisible = false;
-  //   await this.db.updateScenarioNumber(scenarioNum);
-  //   alert("Scenario updated!");
-  // }
+  async changeScenario() {
+    // Uppercase is picked because A and B are uppercase in the scenario DB.
+    const newScenario = prompt("Enter a scenario number:").trim().toUpperCase();
+    try {
+      await this.db.updateScenarioNumber(newScenario);
+    } catch (e) {
+      alert("Scenario update failed: " + e);
+    }
+  }
   // async changeScenarioLevel() {
   //   const newLevel = prompt("Enter new scenario level: ");
   //   const scenarioLevel = parseInt(newLevel);
