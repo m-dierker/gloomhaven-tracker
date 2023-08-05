@@ -5,7 +5,7 @@ import { PartyElementTrackerPageComponent } from "./elements/party-element-track
 import { SelectPartyComponent } from "./select-party.component";
 import { AuthGuard } from "../auth/auth.guard";
 import { PartyMenuComponent } from "./party-menu.component";
-import { PartyCharacterComponent } from "./characters/party-character.component";
+import { PartyCharacterComponent } from "./characters/party-character-page.component";
 import { PartyCreateCharacterComponent } from "./characters/party-create-character.component";
 import { PartyAddMonsterComponent } from "./monsters/party-add-monster.component";
 import { PartyMonstersPageComponent } from "./monsters/party-monsters-page.component";

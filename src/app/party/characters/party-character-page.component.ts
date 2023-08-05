@@ -6,8 +6,8 @@ import { GameService } from "src/app/services/game.service";
 
 @Component({
   selector: "app-party-character",
-  templateUrl: "./party-character.component.html",
-  styleUrls: ["./party-character.component.scss"],
+  templateUrl: "./party-character-page.component.html",
+  styleUrls: ["./party-character-page.component.scss"],
 })
 export class PartyCharacterComponent implements OnInit, OnDestroy {
   character: Character;

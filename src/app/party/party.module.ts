@@ -13,7 +13,7 @@ import { SelectPartyComponent } from "./select-party.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatIconModule } from "@angular/material/icon";
 import { PartyMenuComponent } from "./party-menu.component";
-import { PartyCharacterComponent } from "./characters/party-character.component";
+import { PartyCharacterComponent } from "./characters/party-character-page.component";
 import { PartyCreateCharacterComponent } from "./characters/party-create-character.component";
 import { PartyAddMonsterComponent } from "./monsters/party-add-monster.component";
 import { PartyMonsterCellComponent } from "./monsters/party-monster-cell.component";
@@ -22,8 +22,8 @@ import { PartyMonsterTokenComponent } from "./monsters/party-monster-token.compo
 import { PartyMonstersPageComponent } from "./monsters/party-monsters-page.component";
 import { PartyMonstersComponent } from "./monsters/party-monsters.component";
 import { PartyRoleHeaderComponent } from "./ui/party-role-header.component";
-import { PartyStatusEditorComponent } from './ui/party-status-editor.component';
-import { NextTurnButtonComponent } from './ui/next-turn-button.component';
+import { PartyStatusEditorComponent } from "./ui/party-status-editor.component";
+import { NextTurnButtonComponent } from "./ui/next-turn-button.component";
 
 @NgModule({
   declarations: [

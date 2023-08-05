@@ -7,9 +7,20 @@
   /* Match elements for some consistency. */
   display: flex;
   flex-direction: column;
-  min-height: 420px;
+  // min-height: 420px;
 }
 
 .flex-spacer {
   flex-grow: 1;
+}
+
+app-party-monster-cell {
+  // Oops.
+  margin-top: -15px;
+}
+
+app-next-turn-button {
+  // Matt plz.
+  display: block;
+  margin-top: -32px;
 }

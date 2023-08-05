@@ -11,6 +11,109 @@
   flex-grow: 1;
 }
 
+$border-radius-width: 32px;
+$health-bg: #c75b46;
+$xp-bg: #3d45aa;
+$spinner-height: 72px;
+.character-health-controls {
+  // border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  margin: 0 16px 16px 16px;
+
+  font-family: "Nyala";
+
+  .stat-controls {
+    display: flex;
+    font-size: 30pt;
+    flex-grow: 1;
+    height: $spinner-height;
+    padding: 0 16px;
+    text-align: center;
+
+    &.health {
+      background-color: $health-bg;
+      border-radius: $border-radius-width 0 0 $border-radius-width;
+      // Add extra side padding so it looks more centered with the border-radius.
+      padding-left: 20px;
+    }
+
+    &.xp {
+      background-color: $xp-bg;
+      border-radius: 0 $border-radius-width $border-radius-width 0;
+      // Add extra side padding so it looks more centered with the border-radius.
+      padding-right: 20px;
+    }
+  }
+
+  .stat-button {
+    align-self: center;
+    cursor: pointer;
+
+    &.disabled {
+      opacity: 0.5;
+    }
+
+    mat-icon {
+      font-size: 50px;
+      height: 40px;
+      width: 50px;
+    }
+  }
+
+  .stat-num-label {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    margin-top: -4px;
+    padding: 0 8px;
+    position: relative;
+  }
+
+  .stat-label {
+    font-size: 12pt;
+  }
+
+  .stat-num {
+    // Override funky font height.
+    height: 45px;
+    flex-grow: 1;
+    overflow-y: hidden;
+  }
+
+  .stat-menu {
+    height: 0px;
+    overflow-y: hidden;
+    transition: height 0.2s ease-in-out;
+    &.menu-unfolded {
+      height: 74px;
+    }
+
+    padding: 8px 16px 0 16px;
+    display: flex;
+
+    .stat-menu-cell {
+      align-items: center;
+      background-color: rgb(57, 57, 57, 0.3);
+      border: 2px dashed rgb(57, 57, 57);
+      color: rgb(230, 230, 230);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      flex: 50%;
+      margin: 0 4px;
+      padding: 4px;
+    }
+
+    mat-icon {
+      color: gray;
+      font-size: 30px;
+      height: 30px;
+      width: 30px;
+    }
+  }
+}
+
 .health-controls-wrapper {
   align-self: flex-start;
   display: flex;

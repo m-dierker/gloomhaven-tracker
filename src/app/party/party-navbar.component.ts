@@ -1,20 +1,32 @@
-import { Component, OnInit } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { DbService } from "../services/db.service";
 import { Party } from "src/types/party";
 import { Auth, User } from "@angular/fire/auth";
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from "@angular/router";
 import { FigureClassId } from "src/types/figure";
 import { Character } from "../db/character";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-party-navbar",
   templateUrl: "./party-navbar.component.html",
   styleUrls: ["./party-navbar.component.scss"],
 })
-export class PartyNavbarComponent implements OnInit {
+export class PartyNavbarComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild("characterWrapper")
+  characterWrapper: ElementRef;
+
   enemySubpanelOpen = false;
 
   userChar: Character;
+  private userChar$: Subscription;
 
   enemyClassIds: FigureClassId[] = [];
   lastSelectedClassId: FigureClassId;
@@ -26,12 +38,18 @@ export class PartyNavbarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.db
-      .getUserCharacter()
-      .subscribe((userChar) => (this.userChar = userChar));
-
     this.db.getPartyEnemies().subscribe((enemyMap) => {
       this.enemyClassIds = Array.from(enemyMap.keys()).sort();
+    });
+    this.db.getUserCharacter().subscribe((userChar) => {
+      this.userChar = userChar;
+      if (this.userChar$) {
+        this.userChar$.unsubscribe();
+      }
+      this.updateCharHpBorder();
+      this.userChar$ = this.userChar.onScenarioDataUpdate.subscribe(() => {
+        this.updateCharHpBorder();
+      });
     });
 
     this.onUrlChange(this.router.url);
@@ -40,6 +58,28 @@ export class PartyNavbarComponent implements OnInit {
         this.onUrlChange(evt.url);
       }
     });
+  }
+
+  ngAfterViewInit() {
+    this.updateCharHpBorder();
+  }
+
+  ngOnDestroy() {
+    if (this.userChar$) {
+      this.userChar$.unsubscribe();
+    }
+  }
+
+  private updateCharHpBorder() {
+    if (this.characterWrapper && this.userChar) {
+      const hpPercent = Math.round(
+        (100.0 * this.userChar.getHealth()) / this.userChar.getMaxHealth()
+      );
+      this.characterWrapper.nativeElement.style.setProperty(
+        "--char-health-percent",
+        `${hpPercent}%`
+      );
+    }
   }
 
   private onUrlChange(newUrl: string) {

@@ -1,4 +1,83 @@
 <div class="monster-cell-wrapper" [class.elite]="monster && monster.isElite()">
+  <!-- Character variant. -->
+  <!-- Meh. This could be better. -->
+  <div class="character-health-controls" *ngIf="character">
+    <div class="stat-section">
+      <div class="health stat-controls">
+        <div class="stat-button" (click)="changeLocalHealth(-1)">
+          <mat-icon>navigate_before</mat-icon>
+        </div>
+        <div class="stat-num-label">
+          <div class="stat-num">
+            {{ localHealth !== undefined ? localHealth : figure.getHealth() }}
+          </div>
+          <div class="stat-label">HP</div>
+        </div>
+        <div
+          class="stat-button"
+          (click)="changeLocalHealth(1)"
+          [class.disabled]="statusesBlockingHeal.length > 0"
+        >
+          <mat-icon>navigate_next</mat-icon>
+        </div>
+      </div>
+      <div class="stat-menu" [class.menu-unfolded]="localHealth !== undefined">
+        <div class="stat-menu-cell" (click)="setLocalHealth(undefined)">
+          <mat-icon>close</mat-icon>
+          <div>Cancel</div>
+        </div>
+        <div class="stat-menu-cell" (click)="applyLocalHealth()">
+          <mat-icon>done</mat-icon>
+          <div>{{ condensedLocalHealthDeltaStr() }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="stat-section">
+      <div class="xp stat-controls">
+        <div class="stat-button" (click)="changeLocalXp(-1)">
+          <mat-icon>navigate_before</mat-icon>
+        </div>
+        <div class="stat-num-label">
+          <div class="stat-num">
+            {{ localXp !== undefined ? localXp : character.xp }}
+          </div>
+          <div class="stat-label">XP</div>
+        </div>
+        <div class="stat-button" (click)="changeLocalXp(1)">
+          <mat-icon>navigate_next</mat-icon>
+        </div>
+      </div>
+      <div class="stat-menu" [class.menu-unfolded]="localXp !== undefined">
+        <div class="stat-menu-cell" (click)="setLocalXp(undefined)">
+          <mat-icon>close</mat-icon>
+          <div>Cancel</div>
+        </div>
+        <div class="stat-menu-cell" (click)="applyLocalXp()">
+          <mat-icon>done</mat-icon>
+          <div>{{ localXpDeltaStr() }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- TODO: Merge these buttons? -->
+  <!-- <div
+    class="health-buttons"
+    *ngIf="figure.isCharacter() && localHealth !== undefined"
+  >
+    <app-button
+      (click)="setLocalHealth(0)"
+      *ngIf="localHealth !== 0; else cancel"
+      >Kill</app-button
+    >
+    <ng-template #cancel>
+      <app-button (click)="setLocalHealth(undefined)">Cancel</app-button>
+    </ng-template>
+    <app-button (click)="applyLocalHealth()">{{
+      localHealthDeltaStr()
+    }}</app-button>
+  </div> -->
+
+  <!-- Non-character variant. -->
   <div class="monster-cell">
     <app-party-monster-token
       [classId]="figure.classId"
@@ -8,7 +87,7 @@
       (click)="toggleStatusesVisible()"
       *ngIf="!figure.isCharacter()"
     ></app-party-monster-token>
-    <div class="health-controls-wrapper">
+    <div class="health-controls-wrapper" *ngIf="!figure.isCharacter()">
       <div class="health-controls">
         <img src="/assets/icons/minus_1.png" (click)="changeLocalHealth(-1)" />
         <div class="health-display flex-space">

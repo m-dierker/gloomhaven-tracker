@@ -35,15 +35,16 @@ export interface ScenarioFigureData {
   monsterData?: ScenarioMonsterData;
 
   /** Metadata specific to being a Character. */
-  characterData?: CharacterData;
+  characterData?: ScenarioCharacterData;
 }
 
 export interface ScenarioMonsterData {
   type: MonsterType;
 }
 
-export interface CharacterData {
+export interface ScenarioCharacterData {
   name: string;
+  xp: number;
 }
 
 /** Returns the name of the cards used. For monsters, this is usually their type (or a generic equivalent). For bosses, it's boss. */

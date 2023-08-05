@@ -14,6 +14,7 @@ import { Figure } from "src/app/db/figure";
 import { Monster } from "src/app/db/monster";
 import { DbService } from "src/app/services/db.service";
 import { StatusEffect } from "src/types/status";
+import { Character } from "src/app/db/character";
 
 @Component({
   selector: "app-party-monster-cell",
@@ -30,6 +31,8 @@ export class PartyMonsterCellComponent implements OnChanges, OnDestroy {
 
   /** Only applies if figure.type is MONSTER, else undefined. */
   public monster?: Monster;
+  /** Only applies for figure.type = CHARACTER, else undefined. */
+  public character?: Character;
 
   public isBoss: boolean;
 
@@ -38,6 +41,7 @@ export class PartyMonsterCellComponent implements OnChanges, OnDestroy {
   public editsVisible = false;
 
   public localHealth?: number = undefined;
+  public localXp?: number = undefined;
   public statusesBlockingHeal: StatusEffect[] = [];
 
   private figure$: Subscription;
@@ -53,17 +57,23 @@ export class PartyMonsterCellComponent implements OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     // TODO: Understand why this method runs 10x for every change. -_-
-    if (changes.enemy) {
+    if (changes.figure) {
       if (this.figure.type == FigureType.MONSTER) {
         this.monster = this.figure as Monster;
-        this.isBoss = false;
       } else {
         this.monster = undefined;
       }
       if (this.figure.type == FigureType.BOSS) {
         this.isBoss = true;
+      } else {
+        this.isBoss = false;
       }
-      if (changes.enemy.currentValue !== changes.enemy.previousValue) {
+      if (this.figure.type == FigureType.CHARACTER) {
+        this.character = this.figure as Character;
+      } else {
+        this.character = undefined;
+      }
+      if (changes.figure.currentValue !== changes.figure.previousValue) {
         if (this.figure$) {
           this.figure$.unsubscribe();
         }
@@ -95,11 +105,22 @@ export class PartyMonsterCellComponent implements OnChanges, OnDestroy {
     if (this.localHealth < 0) {
       this.localHealth = 0;
     }
+
+    // TODO: Apply this to more than Character after testing.
+    // If the health is back to normal, just close the menu.
+    if (
+      this.figure.isCharacter() &&
+      this.localHealth === this.figure.getHealth()
+    ) {
+      this.localHealth = undefined;
+    }
+
     this.recalculateCancelledStatuses();
   }
 
   setLocalHealth(newLocalHealth: number) {
     this.localHealth = newLocalHealth;
+
     this.recalculateCancelledStatuses();
   }
 
@@ -152,6 +173,58 @@ export class PartyMonsterCellComponent implements OnChanges, OnDestroy {
     } else {
       return `Do ${-1 * diff} dmg`;
     }
+  }
+
+  /** TODO: Merge this pllllzzzz. */
+  condensedLocalHealthDeltaStr(): string {
+    if (this.localHealth === undefined) {
+      return "";
+    }
+    if (this.statusesBlockingHeal.length > 0) {
+      return (
+        "Heal " + this.statusesBlockingHeal.map((s) => s.displayName).join(", ")
+      );
+    }
+    const diff = this.localHealthAdded();
+    return `${diff < 0 ? "- " : "+ "} ${Math.abs(diff)} HP`;
+  }
+
+  changeLocalXp(amount: number) {
+    if (!this.character) {
+      return;
+    }
+    if (this.localXp === undefined) {
+      this.localXp = this.character.xp;
+    }
+    this.localXp += amount;
+    if (this.localXp < 0) {
+      this.localXp = 0;
+    }
+    if (this.localXp === this.character.xp) {
+      this.localXp = undefined;
+    }
+  }
+
+  setLocalXp(xp: number) {
+    this.localXp = xp;
+  }
+
+  applyLocalXp() {
+    if (!this.character) {
+      return;
+    }
+    this.character.setXp(this.localXp);
+    this.db.saveFigure(this.character);
+    this.localXp = undefined;
+  }
+
+  /** TODO: Merge this pllllzzzz. */
+  localXpDeltaStr(): string {
+    if (this.localXp === undefined || !this.character) {
+      return "";
+    }
+    const diff = this.localXp - this.character.xp;
+    return `${diff < 0 ? "- " : "+ "} ${Math.abs(diff)} XP`;
   }
 
   toggleStatusesVisible() {

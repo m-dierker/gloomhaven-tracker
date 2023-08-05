@@ -38,6 +38,14 @@ export class Character extends Figure {
     return this.scenarioData.level;
   }
 
+  get xp(): number {
+    return this.scenarioData.characterData.xp || 0;
+  }
+
+  setXp(xp: number): void {
+    this.scenarioData.characterData.xp = xp;
+  }
+
   setLevel(level: number): void {
     this.scenarioData.level = level;
     // Health from charData will update after the save.

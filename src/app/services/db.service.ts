@@ -295,6 +295,7 @@ export class DbService {
   async resetGameStateFromResetService() {
     await this.deleteAllMonsters();
     await this.resetAllElements();
+    await this.resetAllCharacters();
   }
 
   /** Deletes all monsters. */
@@ -319,12 +320,31 @@ export class DbService {
     return batch.commit();
   }
 
+  /** Resets all characters to full HP and no XP. */
+  private async resetAllCharacters() {
+    const characterCol = await getDocs(this.dbRef.partyCharactersCollection());
+    const batch = writeBatch(this.firestore);
+    for (const characterDoc of characterCol.docs) {
+      // This should technically be a transaction, but whatever, it doesn't matter now.
+      const data: ScenarioFigureData = characterDoc.data();
+      const newCharData = data.characterData;
+      newCharData.xp = 0;
+      batch.update(characterDoc.ref, {
+        characterData: newCharData,
+        health: null,
+        // Max health overrides shouldn't persist between games.
+        maxHealth: null,
+      });
+    }
+    await batch.commit();
+  }
+
   private async createEnemyFromScenarioData(
     scenarioData: ScenarioFigureData,
     context: GameContext
   ): Promise<Figure | undefined> {
     if (scenarioData.figureType == FigureType.MONSTER) {
-      const classData = await this.monsterDataMap.get(scenarioData.classId);
+      const classData = this.monsterDataMap.get(scenarioData.classId);
       if (!classData) {
         console.error("Unable to find Monster class data for", scenarioData);
         return;
@@ -332,7 +352,7 @@ export class DbService {
       return new Monster(scenarioData, context, classData);
     }
     if (scenarioData.figureType == FigureType.BOSS) {
-      const classData = await this.bossDataMap.get(scenarioData.classId);
+      const classData = this.bossDataMap.get(scenarioData.classId);
       if (!classData) {
         console.error("Unable to find Boss class data for", scenarioData);
         return;

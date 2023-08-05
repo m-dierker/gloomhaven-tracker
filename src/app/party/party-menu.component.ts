@@ -85,6 +85,7 @@ export class PartyMenuComponent implements OnInit, OnDestroy {
         )
       ) {
         this.reset.resetGameState();
+        alert("Game reset complete");
       }
     }
   }

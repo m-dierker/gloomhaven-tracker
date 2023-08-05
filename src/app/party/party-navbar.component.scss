@@ -177,6 +177,18 @@ $gloomhaven-gold: goldenrod;
 
 .character-item-wrapper {
   position: relative;
+
+  &::after {
+    border-color: #c75b46;
+    border-style: solid;
+    border-width: 1px;
+    bottom: 1px;
+    content: "";
+    left: 0;
+    position: absolute;
+
+    width: var(--char-health-percent);
+  }
 }
 
 .character-status-effects {

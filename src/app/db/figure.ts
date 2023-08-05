@@ -47,7 +47,10 @@ export abstract class Figure {
   }
 
   getHealth() {
-    if (this.scenarioData_.health !== undefined) {
+    if (
+      this.scenarioData_.health !== undefined &&
+      this.scenarioData_.health !== null
+    ) {
       return this.scenarioData_.health;
     }
     return this.figureStats_.health;
