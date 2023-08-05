@@ -1,18 +1,19 @@
 <div class="monster-cell-wrapper" [class.elite]="monster && monster.isElite()">
   <div class="monster-cell">
     <app-party-monster-token
-      [classId]="enemy.classId"
-      [tokenNum]="enemy.tokenNum"
-      [isBoss]="enemy.isBoss()"
+      [classId]="figure.classId"
+      [tokenNum]="figure.tokenNum"
+      [isBoss]="figure.isBoss()"
       [isElite]="monster && monster.isElite()"
       (click)="toggleStatusesVisible()"
+      *ngIf="!figure.isCharacter()"
     ></app-party-monster-token>
     <div class="health-controls-wrapper">
       <div class="health-controls">
         <img src="/assets/icons/minus_1.png" (click)="changeLocalHealth(-1)" />
         <div class="health-display flex-space">
-          {{ localHealth !== undefined ? localHealth : enemy.getHealth() }} /
-          {{ enemy.getMaxHealth() }}
+          {{ localHealth !== undefined ? localHealth : figure.getHealth() }} /
+          {{ figure.getMaxHealth() }}
         </div>
         <img
           src="/assets/icons/plus_1.png"
@@ -22,8 +23,8 @@
       </div>
       <progressbar
         [animate]="true"
-        [value]="localHealth !== undefined ? localHealth : enemy.getHealth()"
-        [max]="enemy.getMaxHealth()"
+        [value]="localHealth !== undefined ? localHealth : figure.getHealth()"
+        [max]="figure.getMaxHealth()"
         type="danger"
       >
       </progressbar>
@@ -42,29 +43,34 @@
       </div>
     </div>
   </div>
-  <div class="monster-dropdown" *ngIf="dropdownVisible" #dropdown>
+  <div
+    class="monster-dropdown"
+    *ngIf="alwaysShowDropdown || dropdownVisible"
+    #dropdown
+  >
     <app-party-status-editor
-      [figure]="enemy"
+      [figure]="figure"
       (statusChanged)="statusChanged()"
     ></app-party-status-editor>
-    <div class="edit-controls" *ngIf="!editsVisible">
+    <!-- TODO: Consider how to make this more general. -->
+    <div class="edit-controls" *ngIf="!editsVisible && !figure.isCharacter()">
       <app-button (click)="toggleEditsVisible()" *ngIf="!editsVisible"
         >Edit</app-button
       >
     </div>
     <div class="edit-controls" *ngIf="editsVisible">
       <app-button (click)="changeToken()">Token</app-button>
-      <app-button *ngIf="enemy.isMonster()" (click)="toggleElite()"
+      <app-button *ngIf="figure.isMonster()" (click)="toggleElite()"
         >Make {{ monster.isElite() ? "Normal" : "Elite" }}
       </app-button>
       <app-button (click)="changeMaxHealth()">Max HP</app-button>
     </div>
   </div>
-  <ng-container *ngIf="!dropdownVisible">
+  <ng-container *ngIf="!alwaysShowDropdown && !dropdownVisible">
     <div
       class="monster-active-statuses"
       [class.monster-cancelled-statuses]="cancelledStatuses.includes(status)"
-      *ngFor="let status of enemy.getStatuses()"
+      *ngFor="let status of figure.getStatuses()"
     >
       <!-- There are more efficient ways to do this, but whatever.-->
       <img src="{{ status.getImgPath() }}" class="monster-status-icon" />

@@ -3,7 +3,7 @@ import { Auth } from "@angular/fire/auth";
 import { Unsubscribe, User } from "firebase/auth";
 import { Observable } from "rxjs";
 import { Character } from "src/app/db/character";
-import { RoleClass } from "src/app/db/classes";
+import { RoleClass } from "src/app/db/role-class";
 import { DbService } from "src/app/services/db.service";
 import { ResetService } from "src/app/services/reset.service";
 import { Party } from "src/types/party";

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { GameBox } from "src/types/gamebox";
 import { Party } from "src/types/party";
-import { RoleClass } from "../db/classes";
+import { RoleClass } from "../db/role-class";
 import { AdminService } from "./admin.service";
 
 @Component({

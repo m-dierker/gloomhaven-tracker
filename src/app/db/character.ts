@@ -1,23 +1,46 @@
 import { GameContext } from "src/types/game";
 import { Figure } from "./figure";
 import { ScenarioFigureData } from "src/types/scenario-figure-data";
+import { CharacterData } from "src/types/monsters";
 
 export class Character extends Figure {
   constructor(
     scenarioData: ScenarioFigureData,
-    context: GameContext
-    // TODO: Add CharacterData here once they're in the database.
+    context: GameContext,
+    private charData: CharacterData
   ) {
     super();
     this.onNewScenarioData(scenarioData, context);
+  }
+
+  override onNewScenarioData(
+    data: ScenarioFigureData,
+    context: GameContext
+  ): void {
+    super.onNewScenarioData(data, context);
+    this.figureStats = this.charData.levelStats[data.level];
   }
 
   isCharacter(): boolean {
     return true;
   }
 
+  get className(): string {
+    return this.charData.displayName;
+  }
+
   get displayName(): string {
+    // Display name for characters is the actual character's name, not the class name.
     return this.scenarioData.characterData.name;
+  }
+
+  get level(): number {
+    return this.scenarioData.level;
+  }
+
+  setLevel(level: number): void {
+    this.scenarioData.level = level;
+    // Health from charData will update after the save.
   }
 
   isDead(): boolean {

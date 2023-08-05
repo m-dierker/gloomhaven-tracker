@@ -97,3 +97,19 @@ export interface BossStats {
   immunities: string[];
   notes: "";
 }
+
+export interface CharacterData {
+  /** lowercase_underscore ID. Generally doesn't need to be in the database and can be filled on the client. */
+  id: string;
+
+  /** Display name of the character. */
+  displayName: string;
+
+  /** Which game the character comes from. */
+  gamebox: GameBox;
+
+  /** Per-level stats. */
+  levelStats: { number: CharacterLevelStats };
+}
+
+export interface CharacterLevelStats extends FigureStats {}

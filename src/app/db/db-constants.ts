@@ -1,5 +1,7 @@
 export const BOSSES_COLLECTION = "bosses";
 
+export const CHARACTERS_COLLECTION = "characters";
+
 export const MONSTERS_COLLECTION = "monsters";
 
 export const MONSTER_ABILITY_DECK_COLLECTION = "monster_ability_decks";

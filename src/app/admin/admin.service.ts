@@ -4,7 +4,7 @@ import { runTransaction, setDoc, updateDoc } from "firebase/firestore";
 import { AttackModifierUtil } from "src/types/attack-modifiers";
 import { Party } from "src/types/party";
 import { PARTY_COLLECTION, USERS_COLLECTION } from "../db/db-constants";
-import { RoleClass } from "../db/classes";
+import { RoleClass } from "../db/role-class";
 import { ALL_ELEMENT_TYPES } from "../db/elements";
 import { GameBox } from "src/types/gamebox";
 

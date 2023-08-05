@@ -6,6 +6,7 @@ import {
   SimpleChanges,
   ElementRef,
   ViewChild,
+  OnDestroy,
 } from "@angular/core";
 import { FigureType } from "src/types/figure";
 import { Subscription } from "rxjs";
@@ -15,15 +16,19 @@ import { DbService } from "src/app/services/db.service";
 import { StatusEffect } from "src/types/status";
 
 @Component({
-  selector: "party-monster-cell",
+  selector: "app-party-monster-cell",
   templateUrl: "./party-monster-cell.component.html",
   styleUrls: ["./party-monster-cell.component.scss"],
 })
-export class PartyMonsterCellComponent implements OnChanges {
+export class PartyMonsterCellComponent implements OnChanges, OnDestroy {
   @Input()
-  public enemy: Figure;
+  public figure: Figure;
 
-  /** Only applies if enemy.enemyType is MONSTER, else undefined. */
+  /** If the status dropdown should always be visible. */
+  @Input()
+  public alwaysShowDropdown: boolean;
+
+  /** Only applies if figure.type is MONSTER, else undefined. */
   public monster?: Monster;
 
   public isBoss: boolean;
@@ -35,7 +40,7 @@ export class PartyMonsterCellComponent implements OnChanges {
   public localHealth?: number = undefined;
   public statusesBlockingHeal: StatusEffect[] = [];
 
-  private enemy$: Subscription;
+  private figure$: Subscription;
 
   private dropdownRef: ElementRef<HTMLElement>;
   @ViewChild("dropdown", { static: false }) set content(content: ElementRef) {
@@ -49,22 +54,22 @@ export class PartyMonsterCellComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     // TODO: Understand why this method runs 10x for every change. -_-
     if (changes.enemy) {
-      if (this.enemy.type == FigureType.MONSTER) {
-        this.monster = this.enemy as Monster;
+      if (this.figure.type == FigureType.MONSTER) {
+        this.monster = this.figure as Monster;
         this.isBoss = false;
       } else {
         this.monster = undefined;
       }
-      if (this.enemy.type == FigureType.BOSS) {
+      if (this.figure.type == FigureType.BOSS) {
         this.isBoss = true;
       }
       if (changes.enemy.currentValue !== changes.enemy.previousValue) {
-        if (this.enemy$) {
-          this.enemy$.unsubscribe();
+        if (this.figure$) {
+          this.figure$.unsubscribe();
         }
-        this.enemy$ = this.enemy.onScenarioDataUpdate.subscribe(() => {
+        this.figure$ = this.figure.onScenarioDataUpdate.subscribe(() => {
           // Network changes blow away local changes.
-          if (this.enemy.getHealth() !== this.localHealth) {
+          if (this.figure.getHealth() !== this.localHealth) {
             this.localHealth = undefined;
             this.recalculateCancelledStatuses();
           }
@@ -73,12 +78,18 @@ export class PartyMonsterCellComponent implements OnChanges {
     }
   }
 
+  ngOnDestroy() {
+    if (this.figure$) {
+      this.figure$.unsubscribe();
+    }
+  }
+
   changeLocalHealth(amount: number) {
     if (this.statusesBlockingHeal.length > 0 && amount > 0) {
       return;
     }
     if (this.localHealth === undefined) {
-      this.localHealth = this.enemy.getHealth();
+      this.localHealth = this.figure.getHealth();
     }
     this.localHealth += amount;
     if (this.localHealth < 0) {
@@ -99,20 +110,20 @@ export class PartyMonsterCellComponent implements OnChanges {
     if (isHeal && this.statusesBlockingHeal.length) {
       // Statuses blocking heal are removed instead of healing.
       for (const status of this.statusesBlockingHeal) {
-        this.enemy.setStatus(status, false);
+        this.figure.setStatus(status, false);
       }
     } else {
-      this.enemy.setHealth(this.localHealth);
+      this.figure.setHealth(this.localHealth);
     }
     // On any heal, statuses removed on heal are removed.
     if (isHeal) {
-      for (const status of this.enemy.getStatuses()) {
+      for (const status of this.figure.getStatuses()) {
         if (status.removedOnHeal) {
-          this.enemy.setStatus(status, false);
+          this.figure.setStatus(status, false);
         }
       }
     }
-    this.db.saveFigure(this.enemy);
+    this.db.saveFigure(this.figure);
 
     this.localHealth = undefined;
     this.recalculateCancelledStatuses();
@@ -160,7 +171,7 @@ export class PartyMonsterCellComponent implements OnChanges {
       return;
     }
     this.monster.setElite(!this.monster.isElite());
-    this.db.saveFigure(this.enemy);
+    this.db.saveFigure(this.figure);
     this.setDropdown(false);
   }
 
@@ -171,8 +182,8 @@ export class PartyMonsterCellComponent implements OnChanges {
       alert("Invalid, enter just a token number");
       return;
     }
-    this.enemy.setTokenNum(newIdNum);
-    this.db.saveFigure(this.enemy);
+    this.figure.setTokenNum(newIdNum);
+    this.db.saveFigure(this.figure);
     this.setDropdown(false);
   }
 
@@ -183,16 +194,16 @@ export class PartyMonsterCellComponent implements OnChanges {
       alert("Invalid, enter just a number");
       return;
     }
-    const isFull = this.enemy.getHealth() === this.enemy.getMaxHealth();
-    this.enemy.setMaxHealth(newHealthNum);
-    if (this.enemy.getHealth() > newHealthNum) {
+    const isFull = this.figure.getHealth() === this.figure.getMaxHealth();
+    this.figure.setMaxHealth(newHealthNum);
+    if (this.figure.getHealth() > newHealthNum) {
       // If the health is over the new max, reset to just full health.
-      this.enemy.setHealth(newHealthNum);
+      this.figure.setHealth(newHealthNum);
     } else if (isFull) {
       // If the health is full, we assume the user wants to adjust the health as well.
-      this.enemy.setHealth(newHealthNum);
+      this.figure.setHealth(newHealthNum);
     }
-    this.db.saveFigure(this.enemy);
+    this.db.saveFigure(this.figure);
 
     this.setDropdown(false);
   }
@@ -204,13 +215,13 @@ export class PartyMonsterCellComponent implements OnChanges {
       return;
     }
     const newCancelledStatuses: StatusEffect[] = [];
-    for (const effect of this.enemy.getStatuses()) {
+    for (const effect of this.figure.getStatuses()) {
       if (effect.blocksHeal || effect.removedOnHeal) {
         newCancelledStatuses.push(effect);
       }
       if (effect.blocksHeal) {
         this.statusesBlockingHeal.push(effect);
-        this.localHealth = this.enemy.getHealth();
+        this.localHealth = this.figure.getHealth();
       }
     }
     this.cancelledStatuses = newCancelledStatuses;
@@ -224,7 +235,7 @@ export class PartyMonsterCellComponent implements OnChanges {
     if (this.localHealth === undefined) {
       return 0;
     }
-    return this.localHealth - this.enemy.getHealth();
+    return this.localHealth - this.figure.getHealth();
   }
 
   private setDropdown(visible: boolean) {

@@ -7,13 +7,19 @@
     >
       Bosses
     </app-party-monster-name>
+    <!-- Weird workaround for bosses. Usually they're grouped, but in this they're separated by class. -->
+    <app-party-monster-name
+      *ngIf="classIdFilter_ && bossClassList.includes(classIdFilter_)"
+    >
+      {{ enemiesByClass.get(classIdFilter_)[0].displayName }} (Boss)
+    </app-party-monster-name>
     <div class="monster-class" *ngFor="let bossClassId of bossClassList">
       <ng-container *ngIf="!classIdFilter_ || bossClassId === classIdFilter_">
         <ng-container *ngFor="let boss of enemiesByClass.get(bossClassId)">
-          <party-monster-cell
-            [enemy]="boss"
+          <app-party-monster-cell
+            [figure]="boss"
             *ngIf="!boss.isDead()"
-          ></party-monster-cell>
+          ></app-party-monster-cell>
         </ng-container>
       </ng-container>
     </div>
@@ -28,10 +34,10 @@
         <ng-container
           *ngFor="let monster of enemiesByClass.get(monsterClassId)"
         >
-          <party-monster-cell
-            [enemy]="monster"
+          <app-party-monster-cell
+            [figure]="monster"
             *ngIf="!monster.isDead()"
-          ></party-monster-cell>
+          ></app-party-monster-cell>
         </ng-container>
       </ng-container>
     </div>

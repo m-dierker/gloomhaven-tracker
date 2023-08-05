@@ -6,9 +6,11 @@ import {
   MONSTERS_COLLECTION,
   BOSSES_COLLECTION,
   GAME_BUNDLE_NAME,
+  CHARACTERS_COLLECTION,
 } from "../db/db-constants";
 import { Party } from "../../types/party";
 import { Monster } from "../db/monster";
+import { CharacterData } from "src/types/monsters";
 import {
   collection,
   CollectionReference,
@@ -66,6 +68,7 @@ export class DbService {
   /** Calling these maps needs to check enemyDataLoadedPromise first. */
   private monsterDataMap: Map<string, MonsterData>;
   private bossDataMap: Map<string, BossData>;
+  private characterDataMap: Map<string, CharacterData>;
   private enemyDataLoadedPromise = new Promise((resolve) => {
     this.enemyDataLoadedResolve = resolve;
   });
@@ -148,8 +151,10 @@ export class DbService {
         console.error("Cannot load user character, not logged in");
         return;
       }
-      // combineLatest may not be necessary yet, but it will be when class data is exposed.
-      combineLatest([this.getParty()]).subscribe(([party]) => {
+      combineLatest([
+        this.getParty(),
+        from(this.enemyDataLoadedPromise),
+      ]).subscribe(([party, _]) => {
         const characterId: string =
           party.members[this.auth.currentUser.uid].character;
         const characterDoc = this.dbRef.partyCharacterDoc(characterId);
@@ -163,10 +168,16 @@ export class DbService {
               party,
             });
           } else {
-            const character = new Character(data, { party });
+            const characterData = this.characterDataMap.get(data.classId);
+            if (!characterData) {
+              console.error("Unable to find data for character", data.classId);
+            }
+            const character = new Character(data, { party }, characterData);
             this.figureIdMap.set(characterId, character);
           }
-          this.userCharacterSubj.next(this.figureIdMap.get(characterId));
+          this.userCharacterSubj.next(
+            this.figureIdMap.get(characterId) as Character
+          );
         });
       });
     }
@@ -517,7 +528,11 @@ export class DbService {
   /** Reads bundle and initializes static storage. */
   private async initLocalStorage() {
     await this.loadGameBundle();
-    await Promise.all([this.initMonsterMap(), this.initBossMap()]);
+    await Promise.all([
+      this.initMonsterMap(),
+      this.initBossMap(),
+      this.initCharacterMap(),
+    ]);
     this.enemyDataLoadedResolve();
   }
 
@@ -574,6 +589,24 @@ export class DbService {
           )
         );
         this.bossDataMap = map;
+        resolve();
+      });
+    });
+  }
+
+  private async initCharacterMap() {
+    return new Promise<void>((resolve) => {
+      this.getParty().subscribe(async (party) => {
+        const map = await getCollectionMapById(
+          query(
+            collection(
+              this.firestore,
+              CHARACTERS_COLLECTION
+            ) as CollectionReference<CharacterData>,
+            where("gamebox", "==", party.gamebox)
+          )
+        );
+        this.characterDataMap = map;
         resolve();
       });
     });

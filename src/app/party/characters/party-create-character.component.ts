@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ScenarioFigureData } from "src/types/scenario-figure-data";
 import { FigureType } from "src/types/figure";
 import { Party } from "src/types/party";
-import { RoleClass, allClassesForGame } from "src/app/db/classes";
+import { RoleClass, allClassesForGame } from "src/app/db/role-class";
 import { DbService } from "src/app/services/db.service";
 
 @Component({

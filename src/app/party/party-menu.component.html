@@ -3,14 +3,29 @@
 <!-- <app-button routerLink="/party/select">Select a party</app-button>
 <app-button routerLink="/party/character/create">Create character</app-button> -->
 
-<!-- TODO: Port from PartyRoleHeader. CSS is still there.-->
 <div class="role-menu">
   <div class="header">Party</div>
   <div class="option" routerLink="/party/select">Select Party</div>
+
   <div class="header">Scenario</div>
   <div class="option" (click)="changeScenario()">
     Change Scenario ({{ (party | async)?.activeScenario }})
   </div>
+  <div class="option" (click)="changeScenarioLevel()">
+    Adjust Scenario Level ({{ (party | async)?.scenarioLevel }})
+  </div>
+
+  <div class="header">Character ({{ character.className }})</div>
+  <div class="option" routerLink="/party/character/create">
+    Create Character
+  </div>
+  <div class="option">Select Character ({{ character.displayName }})</div>
+  <div class="option" (click)="setCharacterLevel()">
+    Change Level ( {{ character.level }} )
+  </div>
+
+  <div class="header">Game</div>
+  <div class="option" (click)="resetGameState()">Fully Reset Game</div>
 </div>
 <!-- <div class="option" (click)="changeScenarioLevel()">
     Adjust Scenario Level ({{ (party | async)?.scenarioLevel }})

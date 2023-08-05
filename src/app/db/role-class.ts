@@ -27,12 +27,12 @@ export enum RoleClass {
   VOIDWARDEN = "voidwarden",
 
   // Frosthaven
-  BANNER_SPEAR = "banner_spear",
-  DRIFTER = "drifter",
-  BONESHAPER = "boneshaper",
-  DEATHWALKER = "deathwalker",
-  BLINKBLADE = "blinkblade",
-  GEMINATE = "geminate",
+  BANNER_SPEAR = "fh_banner_spear",
+  DRIFTER = "fh_drifter",
+  BONESHAPER = "fh_boneshaper",
+  DEATHWALKER = "fh_deathwalker",
+  BLINKBLADE = "fh_blinkblade",
+  GEMINATE = "fh_geminate",
 }
 
 export function allClassesForGame(game: GameBox): RoleClass[] {
