@@ -1,21 +1,29 @@
 import { ThisReceiver } from "@angular/compiler";
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { TypeaheadMatch } from "ngx-bootstrap/typeahead";
 import { FigureClassId, FigureType } from "src/types/figure";
-import { BossData, MonsterData, MonsterType } from "src/types/monsters";
+import { BossData, MonsterData, MonsterType } from "src/types/monster-data";
 import { Party } from "src/types/party";
 import { ScenarioFigureData } from "src/types/scenario-figure-data";
 import { Router } from "@angular/router";
 import { Figure } from "src/app/db/figure";
 import { ScenarioInfo } from "src/app/db/scenario-info";
 import { DbService } from "src/app/services/db.service";
+import { RoleClass } from "src/app/db/role-class";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-party-add-monster",
   templateUrl: "./party-add-monster.component.html",
   styleUrls: ["./party-add-monster.component.scss"],
 })
-export class PartyAddMonsterComponent implements OnInit {
+export class PartyAddMonsterComponent implements OnInit, OnDestroy {
   public allAutocompleteData: AutocompleteEntry[];
 
   public createMonsterData: Partial<CreateMonsterData> = {};
@@ -23,6 +31,7 @@ export class PartyAddMonsterComponent implements OnInit {
   public autocompleteVisible = false;
 
   scenarioInfo: ScenarioInfo;
+  eligibleSummonIds: Map<RoleClass, string[]> = new Map();
 
   FigureType = FigureType;
 
@@ -31,6 +40,8 @@ export class PartyAddMonsterComponent implements OnInit {
   private party: Party;
   private allMonsterData: MonsterData[];
   private allBossData: BossData[];
+
+  private unsub: Subscription[] = [];
 
   @ViewChild("monsterPanel")
   monsterPanel: ElementRef;
@@ -42,23 +53,33 @@ export class PartyAddMonsterComponent implements OnInit {
 
   ngOnInit(): void {
     this.resetForm();
-    this.db.getAllMonsters().subscribe((monsters) => {
-      this.allMonsterData = monsters;
-      this.regenAutocompleteData();
-    });
-    this.db.getAllBosses().subscribe((bosses) => {
-      this.allBossData = bosses;
-      this.regenAutocompleteData();
-    });
-    this.db.getParty().subscribe((party) => {
-      this.party = party;
-    });
-    this.db.getActiveScenarioInfo().subscribe((scenarioInfo) => {
-      this.scenarioInfo = scenarioInfo;
-    });
-    this.db
-      .getPartyEnemies()
-      .subscribe((enemies) => (this.partyEnemiesByClass = enemies));
+    this.unsub.concat([
+      this.db.getAllMonsters().subscribe((monsters) => {
+        this.allMonsterData = monsters;
+        this.regenAutocompleteData();
+      }),
+      this.db.getAllBosses().subscribe((bosses) => {
+        this.allBossData = bosses;
+        this.regenAutocompleteData();
+      }),
+      this.db.getParty().subscribe((party) => {
+        this.party = party;
+      }),
+      this.db.getActiveScenarioInfo().subscribe((scenarioInfo) => {
+        this.scenarioInfo = scenarioInfo;
+      }),
+      this.db
+        .getPartyEnemies()
+        .subscribe((enemies) => (this.partyEnemiesByClass = enemies)),
+      this.db.getEligibleSummonIds().subscribe((summons) => {
+        this.eligibleSummonIds = summons;
+        console.log("summons", this.eligibleSummonIds);
+      }),
+    ]);
+  }
+
+  ngOnDestroy(): void {
+    this.unsub.forEach((sub) => sub.unsubscribe());
   }
 
   private resetForm() {

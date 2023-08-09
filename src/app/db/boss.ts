@@ -5,7 +5,7 @@ import {
   FigureStats,
   MonsterData,
   MonsterType,
-} from "src/types/monsters";
+} from "src/types/monster-data";
 import { Party } from "src/types/party";
 import { ScenarioFigureData } from "src/types/scenario-figure-data";
 import { Figure } from "./figure";

@@ -1,7 +1,7 @@
 import { GameContext } from "src/types/game";
 import { Figure } from "./figure";
 import { ScenarioFigureData } from "src/types/scenario-figure-data";
-import { CharacterData } from "src/types/monsters";
+import { CharacterData } from "src/types/monster-data";
 
 export class Character extends Figure {
   constructor(

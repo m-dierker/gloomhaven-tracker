@@ -1,5 +1,5 @@
 import { FigureType } from "./figure";
-import { MonsterType } from "./monsters";
+import { MonsterType } from "./monster-data";
 
 /** Info about the given instance of a figure in a round of gameplay.  */
 export interface ScenarioFigureData {

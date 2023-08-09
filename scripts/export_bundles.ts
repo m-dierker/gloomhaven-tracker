@@ -24,11 +24,13 @@ async function saveBundles() {
   const characterDocs = await db.collection("characters").get();
   const monsterDocs = await db.collection("monsters").get();
   const scenarioDocs = await db.collection("scenarios").get();
+  const summonDocs = await db.collection("summons").get();
 
   dataBundle.add("boss-docs", bossDocs);
   dataBundle.add("character-docs", characterDocs);
   dataBundle.add("monster-docs", monsterDocs);
   dataBundle.add("scenario-docs", scenarioDocs);
+  dataBundle.add("summon-docs", summonDocs);
   const bundleBuffer = dataBundle.build();
 
   const bucket = getStorage().bucket();

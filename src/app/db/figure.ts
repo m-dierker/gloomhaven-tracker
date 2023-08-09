@@ -1,7 +1,7 @@
 import { EventEmitter } from "@angular/core";
 import { GameContext } from "src/types/game";
 import { ScenarioFigureData } from "src/types/scenario-figure-data";
-import { FigureStats } from "../../types/monsters";
+import { FigureStats } from "../../types/monster-data";
 import { StatusEffect } from "../../types/status";
 
 /**
@@ -116,6 +116,10 @@ export abstract class Figure {
   }
 
   isCharacter(): boolean {
+    return false;
+  }
+
+  isSummon(): boolean {
     return false;
   }
 

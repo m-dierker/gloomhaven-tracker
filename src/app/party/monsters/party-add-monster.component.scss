@@ -81,3 +81,18 @@ app-party-monster-name {
 .elite {
   color: gold;
 }
+
+.summons {
+  margin-top: 80px;
+
+  .summons-list {
+    display: flex;
+    gap: 32px;
+  }
+
+  app-enemy-image {
+    display: block;
+    height: $select-enemy-height;
+    width: $select-enemy-height;
+  }
+}

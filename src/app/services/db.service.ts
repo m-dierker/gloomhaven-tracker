@@ -1,16 +1,17 @@
 import { Injectable, NgZone } from "@angular/core";
 import { Observable, ReplaySubject, from, combineLatest } from "rxjs";
 import { map, first, mergeMap, combineLatestWith } from "rxjs/operators";
-import { MonsterData, BossData } from "../../types/monsters";
+import { MonsterData, BossData, SummonData } from "../../types/monster-data";
 import {
   MONSTERS_COLLECTION,
   BOSSES_COLLECTION,
   GAME_BUNDLE_NAME,
   CHARACTERS_COLLECTION,
+  SUMMONS_COLLECTION,
 } from "../db/db-constants";
 import { Party } from "../../types/party";
 import { Monster } from "../db/monster";
-import { CharacterData } from "src/types/monsters";
+import { CharacterData } from "src/types/monster-data";
 import {
   collection,
   CollectionReference,
@@ -53,6 +54,8 @@ import { GameContext } from "src/types/game";
 import { ScenarioInfo } from "../db/scenario-info";
 import { GameBox } from "src/types/gamebox";
 import { Character } from "../db/character";
+import { RoleClass } from "../db/role-class";
+import { Summon } from "../db/summon";
 
 /**
  * NOTE: AngularFire exports the API from RxFire and then doesn't really document it. -_-
@@ -69,6 +72,8 @@ export class DbService {
   private monsterDataMap: Map<string, MonsterData>;
   private bossDataMap: Map<string, BossData>;
   private characterDataMap: Map<string, CharacterData>;
+  private summonDataMap: Map<string, SummonData>;
+
   private enemyDataLoadedPromise = new Promise((resolve) => {
     this.enemyDataLoadedResolve = resolve;
   });
@@ -77,13 +82,18 @@ export class DbService {
   /** Unsubscribe function for non-Angular Firebase listener while avoiding the AngularFire bug. */
   private partyMonsterUnsub: Function;
   private partyCharacterUnsub: Function;
-  // Map of global ID --> figure. This is basically the local database.
+  private partySummonsUnsub: Function;
+  /** Map of global ID --> figure. This is basically the local database. */
   private figureIdMap: Map<string, Figure> = new Map();
-  // Map of class --> array of enemies of that class. this is effectively a cached DB index.
+  /** Map of class --> array of enemies of that class. this is effectively a cached DB index. */
   private partyEnemySubj: ReplaySubject<Map<FigureClassId, Figure[]>>;
 
   private userCharacterSubj: ReplaySubject<Character>;
   private partyCharactersSubj: ReplaySubject<Character[]>;
+  /** Cached copy of eligible summons. */
+  private eligibleSummonsSubj: ReplaySubject<Map<RoleClass, string[]>>;
+  /** Cached copy of actual party summons. */
+  private partySummonsSubj: ReplaySubject<Map<RoleClass, Summon[]>>;
 
   private gameDataLoadedPromise = new Promise((resolve) => {
     this.gameDataLoadedResolve = resolve;
@@ -260,6 +270,107 @@ export class DbService {
       });
     }
     return this.partyCharactersSubj.asObservable();
+  }
+
+  /** Returns a list of character class --> summon class IDs available to characters at their current level. */
+  getEligibleSummonIds(): Observable<Map<RoleClass, string[]>> {
+    if (!this.eligibleSummonsSubj) {
+      this.eligibleSummonsSubj = new ReplaySubject(1);
+      combineLatest([
+        from(this.enemyDataLoadedPromise),
+        this.getPartyCharacters(),
+      ]).subscribe(([_, characters]) => {
+        const charactersByClass: Map<string, Character> = new Map(
+          characters.map((char) => {
+            return [char.classId, char];
+          })
+        );
+        const mapByClass: Map<RoleClass, string[]> = new Map();
+        for (const [id, summon] of this.summonDataMap.entries()) {
+          const characterId = summon.characterId as RoleClass;
+          // Check if the summon is on a character in the party + if that character is a high enough level.
+          if (
+            charactersByClass.has(characterId) &&
+            summon.unlockedLevel <= charactersByClass.get(characterId).level
+          ) {
+            if (mapByClass.has(characterId)) {
+              mapByClass.get(characterId).push(id);
+            } else {
+              mapByClass.set(characterId, [id]);
+            }
+          }
+        }
+        this.eligibleSummonsSubj.next(mapByClass);
+      });
+    }
+    return this.eligibleSummonsSubj.asObservable();
+  }
+
+  getPartySummons(): Observable<Map<RoleClass, Summon[]>> {
+    if (!this.partySummonsSubj) {
+      this.partySummonsSubj = new ReplaySubject(1);
+      combineLatest([
+        from(this.enemyDataLoadedPromise),
+        this.getContext(),
+      ]).subscribe(([_, context]) => {
+        if (this.partySummonsUnsub) {
+          this.partySummonsUnsub();
+        }
+        // This is bypassing AngularFire because there's a bug where collectionSnapshots is including extra data unnecessarily.
+        // https://github.com/FirebaseExtended/rxfire/issues/75
+        // Instead, this uses the Firebase API directly.
+        this.partySummonsUnsub = onSnapshot(
+          this.dbRef.partySummonsCollection(),
+          (snapshot) => {
+            let listRefreshNeeded = false;
+            for (const update of snapshot.docChanges()) {
+              if (update.type === "added") {
+                const summon = new Summon(
+                  update.doc.data(),
+                  context,
+                  this.summonDataMap.get(update.doc.data().classId)
+                );
+                this.figureIdMap.set(update.doc.id, summon);
+                listRefreshNeeded = true;
+              } else if (update.type === "modified") {
+                if (!this.figureIdMap.has(update.doc.id)) {
+                  console.error("Update received for missing summon.");
+                  continue;
+                }
+                // Trigger update in an Angular context.
+                this.zone.run(() => {
+                  this.figureIdMap
+                    .get(update.doc.id)
+                    .onNewScenarioData(update.doc.data(), context);
+                });
+              } else if (update.type === "removed") {
+                this.figureIdMap.delete(update.doc.id);
+                listRefreshNeeded = true;
+              }
+            }
+            if (listRefreshNeeded) {
+              // Could be more efficient since it filters the entire figureIdMap but whatever.
+              const summons: Map<RoleClass, Summon[]> = new Map();
+              for (const figure of this.figureIdMap.values()) {
+                if (figure.isSummon()) {
+                  const summon = figure as Summon;
+                  if (summons.has(summon.ownerCharacterClass)) {
+                    summons.get(summon.ownerCharacterClass).push(summon);
+                  } else {
+                    summons.set(summon.ownerCharacterClass, [summon]);
+                  }
+                }
+              }
+              // Trigger in NgZone to get back in an Angular context.
+              this.zone.run(() => {
+                this.partySummonsSubj.next(summons);
+              });
+            }
+          }
+        );
+      });
+    }
+    return this.partySummonsSubj.asObservable();
   }
 
   /**
@@ -612,6 +723,7 @@ export class DbService {
       this.initMonsterMap(),
       this.initBossMap(),
       this.initCharacterMap(),
+      this.initSummonMap(),
     ]);
     this.enemyDataLoadedResolve();
   }
@@ -641,7 +753,7 @@ export class DbService {
   private async initMonsterMap() {
     return new Promise<void>((resolve) => {
       this.getParty().subscribe(async (party) => {
-        const map = await getCollectionMapById(
+        const map = await getCachedCollectionMapById(
           query(
             collection(
               this.firestore,
@@ -659,7 +771,7 @@ export class DbService {
   private async initBossMap() {
     return new Promise<void>((resolve) => {
       this.getParty().subscribe(async (party) => {
-        const map = await getCollectionMapById(
+        const map = await getCachedCollectionMapById(
           query(
             collection(
               this.firestore,
@@ -677,7 +789,7 @@ export class DbService {
   private async initCharacterMap() {
     return new Promise<void>((resolve) => {
       this.getParty().subscribe(async (party) => {
-        const map = await getCollectionMapById(
+        const map = await getCachedCollectionMapById(
           query(
             collection(
               this.firestore,
@@ -691,10 +803,30 @@ export class DbService {
       });
     });
   }
+
+  private async initSummonMap() {
+    return new Promise<void>((resolve) => {
+      this.getParty().subscribe(async (party) => {
+        const map = await getCachedCollectionMapById(
+          query(
+            collection(
+              this.firestore,
+              SUMMONS_COLLECTION
+            ) as CollectionReference<SummonData>,
+            where("gamebox", "==", party.gamebox)
+          )
+        );
+        this.summonDataMap = map;
+        resolve();
+      });
+    });
+  }
 }
 
 /** Returns a map of all docs in a collection by {id, all data}. Fires on update. */
-async function getCollectionMapById<T>(ref: Query<T>): Promise<Map<string, T>> {
+async function getCachedCollectionMapById<T>(
+  ref: Query<T>
+): Promise<Map<string, T>> {
   const querySnap = await getDocsFromCache(ref);
   return new Map<string, T>(
     querySnap.docs.map((doc) => [doc.id, doc.data() as T])

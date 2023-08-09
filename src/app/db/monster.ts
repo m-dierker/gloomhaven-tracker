@@ -3,7 +3,7 @@ import {
   getMonsterTypeDbString,
   MonsterData,
   MonsterType,
-} from "src/types/monsters";
+} from "src/types/monster-data";
 import { ScenarioFigureData } from "src/types/scenario-figure-data";
 import { Figure } from "./figure";
 

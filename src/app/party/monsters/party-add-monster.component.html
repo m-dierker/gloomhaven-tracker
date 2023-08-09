@@ -76,4 +76,17 @@
 
     <app-button (click)="createMonsters()">Create</app-button>
   </div>
+
+  <div class="summons" *ngIf="eligibleSummonIds?.size > 0">
+    <app-party-monster-name>Summons</app-party-monster-name>
+    <!-- TODO: Improve plz. -->
+    <div class="summons-list">
+      <ng-container *ngFor="let roleArray of eligibleSummonIds.values()">
+        <app-enemy-image
+          [classId]="summonClassId"
+          *ngFor="let summonClassId of roleArray"
+        ></app-enemy-image>
+      </ng-container>
+    </div>
+  </div>
 </div>

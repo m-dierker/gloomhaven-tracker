@@ -3,7 +3,7 @@ import { Firestore, getFirestore } from "firebase-admin/firestore";
 import * as fs from "fs/promises";
 import { Boss } from "src/app/db/boss";
 // Importing actual types is broken.
-import { BossData, MonsterData } from "src/types/monsters";
+import { BossData, MonsterData } from "src/types/monster-data";
 
 const MONSTER_DATA_DIR = "./scripts/frosthaven_data/gh-secretariat/monster";
 

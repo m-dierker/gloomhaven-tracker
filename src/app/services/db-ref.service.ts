@@ -16,6 +16,7 @@ import {
   MONSTER_ABILITY_DECK_COLLECTION,
   USERS_COLLECTION,
   PARTY_CHARACTERS_COLLECTION,
+  PARTY_SUMMONS_COLLECTION,
 } from "../db/db-constants";
 import { ScenarioFigureData } from "src/types/scenario-figure-data";
 import { ScenarioInfo } from "../db/scenario-info";
@@ -100,6 +101,16 @@ export class DbRefService {
       this.firestore,
       `${PARTY_COLLECTION}/${this.partyId()}/${PARTY_CHARACTERS_COLLECTION}/${characterId}`
     ) as DocumentReference<ScenarioFigureData>;
+  }
+
+  /**
+   * Collection of all summons in a party.
+   */
+  partySummonsCollection(): CollectionReference<ScenarioFigureData> {
+    return collection(
+      this.firestore,
+      `${PARTY_COLLECTION}/${this.partyId()}/${PARTY_SUMMONS_COLLECTION}`
+    ) as CollectionReference<ScenarioFigureData>;
   }
 
   scenarioDoc(scenarioId: string): DocumentReference<ScenarioInfo> {

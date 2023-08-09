@@ -1,4 +1,4 @@
-import { BossData, MonsterData } from "../../src/types/monsters";
+import { BossData, MonsterData } from "../../src/types/monster-data";
 
 import { promises as fs } from "fs";
 import { Firestore } from "@google-cloud/firestore";

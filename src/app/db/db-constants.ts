@@ -10,11 +10,15 @@ export const PARTY_COLLECTION = "parties";
 
 export const PARTY_BOSSES_COLLECTION = "bosses";
 
-export const PARTY_MONSTERS_COLLECTION = "monsters";
-
 export const PARTY_CHARACTERS_COLLECTION = "characters";
 
+export const PARTY_MONSTERS_COLLECTION = "monsters";
+
+export const PARTY_SUMMONS_COLLECTION = "summons";
+
 export const SCENARIOS_COLLECTION = "scenarios";
+
+export const SUMMONS_COLLECTION = "summons";
 
 export const USERS_COLLECTION = "users";
 

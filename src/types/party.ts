@@ -1,7 +1,7 @@
 import { Monster } from "src/app/db/monster";
 import { AttackModifier } from "./attack-modifiers";
 import { GameBox } from "./gamebox";
-import { MonsterType } from "./monsters";
+import { MonsterType } from "./monster-data";
 
 export interface Party {
   averageCharacterLevel: number;

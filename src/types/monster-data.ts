@@ -3,9 +3,9 @@ import { GameBox } from "./gamebox";
 /** Top level interface for any enemy (Monsters or Boss). */
 export interface FigureStats {
   health: number;
-  move: number;
-  attack: number;
-  range: number;
+  move?: number;
+  attack?: number;
+  range?: number;
 }
 
 /**
@@ -113,3 +113,27 @@ export interface CharacterData {
 }
 
 export interface CharacterLevelStats extends FigureStats {}
+
+export interface SummonData {
+  /** lowercase_underscore ID. Generally doesn't need to be in the database and can be filled on the client. */
+  id: string;
+
+  /** Display name of the summon. */
+  displayName: string;
+
+  /** Which game the summon comes from. */
+  gamebox: GameBox;
+
+  /** Which character can make the summon. This might null in some cases (ex: GH item can create summons). */
+  characterId: string;
+
+  /** The level at which the summon card is unlocked by the character. */
+  unlockedLevel: number;
+
+  /**
+   * Summons _generally_ don't have per-level stats.
+   *
+   * Special cases (FH Shambling Skeleton, GH Bear) aren't currently handled.
+   */
+  stats: FigureStats;
+}

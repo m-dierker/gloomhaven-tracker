@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
-import { MonsterData } from "../../types/monsters";
+import { MonsterData } from "../../types/monster-data";
 import { Monster } from "../db/monster";
 
 @Component({
