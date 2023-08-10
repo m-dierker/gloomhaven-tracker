@@ -7,6 +7,7 @@ import { MonsterAttackDeckDisplayComponent } from "./monster/attack-deck/monster
 import { PartyManagerComponent } from "./party/party-manager.component";
 import { SelectPartyComponent } from "./party/select-party.component";
 import { LoginComponent } from "./ui/login.component";
+import { AuthGuard } from "./auth/auth.guard";
 
 const routes: Routes = [
   {
@@ -16,6 +17,7 @@ const routes: Routes = [
   {
     path: "monsterattacks",
     component: MonsterAttackDeckDisplayComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: "monsterabilities",
