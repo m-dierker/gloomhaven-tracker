@@ -3,7 +3,7 @@
 <!-- <app-button routerLink="/party/select">Select a party</app-button>
 <app-button routerLink="/party/character/create">Create character</app-button> -->
 
-<div class="role-menu">
+<div class="role-menu" *ngIf="party | async">
   <div class="header">Party</div>
   <div class="option" routerLink="/party/select">Select Party</div>
 
@@ -15,13 +15,15 @@
     Adjust Scenario Level ({{ (party | async)?.scenarioLevel }})
   </div>
 
-  <div class="header">Character ({{ character.className }})</div>
+  <div class="header">Character ({{ character?.className }})</div>
   <div class="option" routerLink="/party/character/create">
     Create Character
   </div>
-  <div class="option">Select Character ({{ character.displayName }})</div>
+  <div class="option" *ngIf="">
+    Select Character ({{ character?.displayName }})
+  </div>
   <div class="option" (click)="setCharacterLevel()">
-    Change Level ( {{ character.level }} )
+    Change Level ( {{ character?.level }} )
   </div>
 
   <div class="header">Game</div>

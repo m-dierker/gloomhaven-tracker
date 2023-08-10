@@ -474,6 +474,7 @@ export class DbService {
     await this.deleteAllMonsters();
     await this.resetAllElements();
     await this.resetAllCharacters();
+    await this.deleteAllSummons();
   }
 
   /** Deletes all monsters. */
@@ -482,6 +483,16 @@ export class DbService {
     const batch = writeBatch(this.firestore);
     for (const monsterDoc of monsterCol.docs) {
       batch.delete(monsterDoc.ref);
+    }
+    return batch.commit();
+  }
+
+  /** Deletes all summons. */
+  private async deleteAllSummons() {
+    const summonCol = await getDocs(this.dbRef.partySummonsCollection());
+    const batch = writeBatch(this.firestore);
+    for (const summonDoc of summonCol.docs) {
+      batch.delete(summonDoc.ref);
     }
     return batch.commit();
   }
