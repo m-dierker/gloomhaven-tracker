@@ -79,8 +79,13 @@ export class DbRefService {
   partyFigureDoc(figure: Figure): DocumentReference<ScenarioFigureData> {
     if (figure.isCharacter()) {
       return this.partyCharacterDoc(figure.scenarioId);
+    } else if (figure.isSummon()) {
+      return this.partySummonDoc(figure.scenarioId);
+    } else if (figure.isBoss() || figure.isMonster()) {
+      return this.partyMonsterDoc(figure.scenarioId);
+    } else {
+      console.error("Cannot save unknown figure", figure);
     }
-    return this.partyMonsterDoc(figure.scenarioId);
   }
 
   /**
@@ -111,6 +116,13 @@ export class DbRefService {
       this.firestore,
       `${PARTY_COLLECTION}/${this.partyId()}/${PARTY_SUMMONS_COLLECTION}`
     ) as CollectionReference<ScenarioFigureData>;
+  }
+
+  partySummonDoc(summonId: string): DocumentReference<ScenarioFigureData> {
+    return doc(
+      this.firestore,
+      `${PARTY_COLLECTION}/${this.partyId()}/${PARTY_SUMMONS_COLLECTION}/${summonId}`
+    ) as DocumentReference<ScenarioFigureData>;
   }
 
   scenarioDoc(scenarioId: string): DocumentReference<ScenarioInfo> {

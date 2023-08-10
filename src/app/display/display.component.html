@@ -17,6 +17,13 @@
             [figure]="character"
           ></monster-cell>
         </div>
+        <div class="col" *ngIf="summons.length > 0">
+          <div class="characters-header">Summons</div>
+          <monster-cell
+            *ngFor="let summon of summons"
+            [figure]="summon"
+          ></monster-cell>
+        </div>
         <div class="col" *ngFor="let monsterClassId of monsterClassList">
           <monster-name
             [monster]="enemiesByClass.get(monsterClassId)[0]"

@@ -319,6 +319,12 @@ export class PartyMonsterCellComponent implements OnChanges, OnDestroy {
     if (this.dropdownVisible) {
       // Once the element is visible, make the dropdown scroll into view.
       setTimeout(() => {
+        if (!this.dropdownRef) {
+          console.warn(
+            "Dropdown element is missing in monster cell. Check HTML template."
+          );
+          return;
+        }
         // Add an extra padding so it's above the elements.
         this.dropdownRef.nativeElement.style.paddingBottom = "32px";
         this.dropdownRef.nativeElement.scrollIntoView({

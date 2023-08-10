@@ -73,7 +73,6 @@ export class PartyAddMonsterComponent implements OnInit, OnDestroy {
         .subscribe((enemies) => (this.partyEnemiesByClass = enemies)),
       this.db.getEligibleSummonIds().subscribe((summons) => {
         this.eligibleSummonIds = summons;
-        console.log("summons", this.eligibleSummonIds);
       }),
     ]);
   }
@@ -245,6 +244,18 @@ export class PartyAddMonsterComponent implements OnInit, OnDestroy {
       }
     );
     this.allAutocompleteData = monsterAutocomplete.concat(bossAutocomplete);
+  }
+
+  async createSummon(summonId: string) {
+    if (!confirm(`Are you sure you wish to create ${summonId}?`)) {
+      return;
+    }
+    const figure: Partial<ScenarioFigureData> = {
+      figureType: FigureType.SUMMON,
+      classId: summonId,
+    };
+    await this.db.createPartySummon(figure as ScenarioFigureData);
+    this.router.navigate(["/party/monsters"]);
   }
 }
 

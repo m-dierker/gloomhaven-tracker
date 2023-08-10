@@ -6,6 +6,8 @@ import { FigureClassId, FigureType } from "src/types/figure";
 import { Figure } from "../db/figure";
 import { ScenarioInfo } from "../db/scenario-info";
 import { Character } from "../db/character";
+import { RoleClass } from "../db/role-class";
+import { Summon } from "../db/summon";
 
 @Component({
   selector: "app-display",
@@ -19,6 +21,7 @@ export class DisplayComponent implements OnInit {
   public monsterClassList: FigureClassId[];
   public bossClassList: FigureClassId[];
   public enemiesByClass: Map<FigureClassId, Figure[]> = new Map();
+  public summons: Summon[] = [];
 
   public partyCharacters: Character[] = [];
 
@@ -38,6 +41,14 @@ export class DisplayComponent implements OnInit {
       .subscribe((scenarioInfo) => (this.scenarioInfo = scenarioInfo));
     this.db.getPartyCharacters().subscribe((characters) => {
       this.partyCharacters = characters;
+    });
+    this.db.getPartySummons().subscribe((summons) => {
+      // TODO: Fix or change db method.
+      const summonsList: Summon[] = [];
+      for (const summonSubarr of summons.values()) {
+        summonsList.push(...summonSubarr);
+      }
+      this.summons = summonsList;
     });
   }
 

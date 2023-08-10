@@ -81,16 +81,25 @@ export abstract class Figure {
   }
 
   getStatuses(): StatusEffect[] {
+    if (!this.scenarioData_.statuses) {
+      return [];
+    }
     return this.scenarioData_.statuses
       .map((statusId) => StatusEffect.getEffectById(statusId))
       .sort((a, b) => a.compareTo(b));
   }
 
   hasStatus(status: StatusEffect): boolean {
+    if (!this.scenarioData_.statuses) {
+      return false;
+    }
     return this.scenarioData_.statuses.includes(status.id);
   }
 
   setStatus(status: StatusEffect, active: boolean) {
+    if (!this.scenarioData_.statuses) {
+      this.scenarioData_.statuses = [];
+    }
     if (active && !this.scenarioData_.statuses.includes(status.id)) {
       this.scenarioData_.statuses.push(status.id);
     } else if (!active && this.scenarioData_.statuses.includes(status.id)) {
@@ -165,6 +174,13 @@ export abstract class Figure {
   /** Called when new data from the database comes in. context is used in the Boss override. */
   onNewScenarioData(data: ScenarioFigureData, context: GameContext) {
     this.scenarioData = data;
+    if (!data.id) {
+      console.warn(
+        "Figure was created without an ID. This should be set in db.service.",
+        data
+      );
+    }
+
     // Emit an update so controllers know there is one.
     this.onScenarioDataUpdate.emit();
   }

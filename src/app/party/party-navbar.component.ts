@@ -31,6 +31,8 @@ export class PartyNavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   enemyClassIds: FigureClassId[] = [];
   lastSelectedClassId: FigureClassId;
 
+  hasSummons = false;
+
   constructor(
     private db: DbService,
     private auth: Auth,
@@ -50,6 +52,10 @@ export class PartyNavbarComponent implements OnInit, AfterViewInit, OnDestroy {
       this.userChar$ = this.userChar.onScenarioDataUpdate.subscribe(() => {
         this.updateCharHpBorder();
       });
+    });
+    this.db.getPartySummons().subscribe((summons) => {
+      // TODO: Reconsider.
+      this.hasSummons = summons.size > 0;
     });
 
     this.onUrlChange(this.router.url);

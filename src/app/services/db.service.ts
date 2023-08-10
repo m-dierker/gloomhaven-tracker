@@ -37,6 +37,7 @@ import {
   QueryDocumentSnapshot,
   onSnapshot,
   runTransaction,
+  addDoc,
 } from "firebase/firestore";
 import { getBlob, getStorage, list, ref } from "firebase/storage";
 import { ElementData, ElementState, ElementType } from "../db/elements";
@@ -144,6 +145,10 @@ export class DbService {
       }
     }
     return batch.commit();
+  }
+
+  async createPartySummon(newSummon: ScenarioFigureData): Promise<void> {
+    await addDoc(this.dbRef.partySummonsCollection(), newSummon);
   }
 
   /** Creates a new character and returns the new ID once created. */
@@ -324,9 +329,11 @@ export class DbService {
           (snapshot) => {
             let listRefreshNeeded = false;
             for (const update of snapshot.docChanges()) {
+              const data = update.doc.data();
+              data.id = update.doc.id;
               if (update.type === "added") {
                 const summon = new Summon(
-                  update.doc.data(),
+                  data,
                   context,
                   this.summonDataMap.get(update.doc.data().classId)
                 );
@@ -341,7 +348,7 @@ export class DbService {
                 this.zone.run(() => {
                   this.figureIdMap
                     .get(update.doc.id)
-                    .onNewScenarioData(update.doc.data(), context);
+                    .onNewScenarioData(data, context);
                 });
               } else if (update.type === "removed") {
                 this.figureIdMap.delete(update.doc.id);

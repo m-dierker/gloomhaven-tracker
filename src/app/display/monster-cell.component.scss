@@ -1,5 +1,10 @@
 @import "src/app/css/roles.scss";
 
+$monster-number-width: 70px;
+$monster-number-margin-right: 5px;
+$monster-number-font-size: 53pt;
+$monster-number-color: white;
+
 .monster-cell-wrapper {
   border-radius: 16px;
   display: flex;
@@ -16,21 +21,21 @@
   // TODO(mdierker): Figure out why background-size and height are different.
   background-size: 64px;
   // border: 2px red solid;
-  color: white;
+  color: $monster-number-color;
   display: flex;
-  font-size: 53pt;
+  font-size: $monster-number-font-size;
   font-weight: bold;
-  height: 70px;
+  height: $monster-number-width;
   justify-content: center;
-  line-height: 70px;
-  margin-right: 5px;
+  line-height: $monster-number-width;
+  margin-right: $monster-number-margin-right;
   text-align: center;
-  width: 70px;
+  width: $monster-number-width;
 }
 
 .character-icon {
-  height: 70px;
-  width: 70px;
+  height: $monster-number-width;
+  width: $monster-number-width;
   @include role-css() using ($role-id, $role-color, $role-name) {
     background-color: $role-color;
     mask-image: url("/assets/classes/" + $role-id + ".svg");
@@ -88,4 +93,32 @@ progressbar {
   font-size: 30pt;
   opacity: 0.5;
   margin: 8px;
+}
+
+app-enemy-image {
+  display: block;
+  height: $monster-number-width;
+  width: $monster-number-width;
+
+  margin-right: 8px;
+}
+
+.summon-name {
+  position: relative;
+
+  .summon-token {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: darkblue;
+    font-size: $monster-number-font-size;
+    font-weight: bold;
+  }
 }

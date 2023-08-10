@@ -5,6 +5,7 @@ import { map } from "rxjs";
 import { Figure } from "src/app/db/figure";
 import { DbService } from "src/app/services/db.service";
 import { GameService } from "src/app/services/game.service";
+import { Summon } from "src/app/db/summon";
 
 @Component({
   selector: "app-party-monsters-page",
@@ -15,6 +16,7 @@ export class PartyMonstersPageComponent implements OnInit {
   public bossClassList: FigureClassId[];
   public monsterClassList: FigureClassId[];
   public enemiesByClass: Map<FigureClassId, Figure[]> = new Map();
+  public summons: Summon[] = [];
 
   classIdFilter_: FigureClassId;
 
@@ -39,6 +41,14 @@ export class PartyMonstersPageComponent implements OnInit {
     this.db.getPartyEnemies().subscribe((enemyMap) => {
       this.enemiesByClass = enemyMap;
       this.onPartyMonstersUpdate();
+    });
+    this.db.getPartySummons().subscribe((summons) => {
+      // TODO: Keep this by class?
+      const summonsList: Summon[] = [];
+      for (const summonArr of summons.values()) {
+        summonsList.push(...summonArr);
+      }
+      this.summons = summonsList;
     });
   }
 

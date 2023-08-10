@@ -84,6 +84,7 @@
       <ng-container *ngFor="let roleArray of eligibleSummonIds.values()">
         <app-enemy-image
           [classId]="summonClassId"
+          (click)="createSummon(summonClassId)"
           *ngFor="let summonClassId of roleArray"
         ></app-enemy-image>
       </ng-container>

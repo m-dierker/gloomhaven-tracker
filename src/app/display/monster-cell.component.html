@@ -7,6 +7,12 @@
     <div class="monster-number" *ngIf="monster">
       <span>{{ figure.tokenNum }}</span>
     </div>
+    <div class="summon-name" *ngIf="figure.isSummon()">
+      <app-enemy-image [classId]="figure.classId"></app-enemy-image>
+      <div class="summon-token" *ngIf="figure.tokenNum > 1">
+        {{ figure.tokenNum }}
+      </div>
+    </div>
     <div
       class="character-icon {{ figure.classId }}"
       *ngIf="figure.isCharacter()"

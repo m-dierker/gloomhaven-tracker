@@ -42,6 +42,17 @@
       </ng-container>
     </div>
 
+    <app-party-monster-name *ngIf="summons?.length > 0 && !classIdFilter_">
+      Summons
+    </app-party-monster-name>
+
+    <ng-container *ngFor="let summon of summons">
+      <app-party-monster-cell
+        [figure]="summon"
+        *ngIf="!summon.isDead()"
+      ></app-party-monster-cell>
+    </ng-container>
+
     <app-next-turn-button
       (nextTurn)="nextTurnClicked()"
       *ngIf="classIdFilter_"
