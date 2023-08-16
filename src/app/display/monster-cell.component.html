@@ -9,7 +9,7 @@
     </div>
     <div class="summon-name" *ngIf="figure.isSummon()">
       <app-enemy-image [classId]="figure.classId"></app-enemy-image>
-      <div class="summon-token" *ngIf="figure.tokenNum > 1">
+      <div class="summon-token" *ngIf="figure.tokenNum">
         {{ figure.tokenNum }}
       </div>
     </div>
@@ -20,13 +20,7 @@
   </div>
   <div class="monster-info" *ngIf="!figure.isDead()">
     <div class="monster-health">
-      <progressbar
-        [value]="figure.getHealth()"
-        [max]="figure.getMaxHealth()"
-        type="danger"
-      >
-        {{ figure.getHealth() }} / {{ figure.getMaxHealth() }}
-      </progressbar>
+      <app-progress-bar [figure]="figure"></app-progress-bar>
     </div>
     <div class="monster-status" *ngFor="let status of figure.getStatuses()">
       <img src="{{ status.getImgPath() }}" class="monster-status-icon" />

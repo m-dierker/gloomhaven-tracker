@@ -54,7 +54,9 @@ $monster-number-color: white;
 }
 
 .monster-health {
-  progressbar {
+  // Explicitly override progressbar font size.
+  // I think this is necessary for bootstrap.
+  app-progress-bar ::ng-deep progressbar {
     font-size: 20pt;
     font-weight: bold;
     height: 30px;
@@ -104,21 +106,16 @@ app-enemy-image {
 }
 
 .summon-name {
-  position: relative;
-
+  display: flex;
   .summon-token {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
     display: flex;
     align-items: center;
     justify-content: center;
+    height: $monster-number-width;
+    margin-right: 16px;
 
-    color: darkblue;
-    font-size: $monster-number-font-size;
+    color: white;
+    font-size: 35pt;
     font-weight: bold;
   }
 }

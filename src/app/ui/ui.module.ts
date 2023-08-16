@@ -4,9 +4,10 @@ import { ButtonComponent } from "./button.component";
 import { EnemyImageComponent } from "../monster/enemy-image.component";
 import { ProgressbarModule } from "ngx-bootstrap/progressbar";
 import { TypeaheadModule } from "ngx-bootstrap/typeahead";
+import { ProgressBarComponent } from "./progress-bar.component";
 
 @NgModule({
-  declarations: [ButtonComponent, EnemyImageComponent],
+  declarations: [ButtonComponent, EnemyImageComponent, ProgressBarComponent],
   imports: [
     CommonModule,
 
@@ -17,6 +18,7 @@ import { TypeaheadModule } from "ngx-bootstrap/typeahead";
   exports: [
     ButtonComponent,
     EnemyImageComponent,
+    ProgressBarComponent,
     ProgressbarModule,
     TypeaheadModule,
   ],

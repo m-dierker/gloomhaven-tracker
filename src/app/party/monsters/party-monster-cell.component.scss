@@ -135,7 +135,7 @@ $spinner-height: 72px;
   }
 }
 
-progressbar {
+app-progress-bar ::ng-deep progressbar {
   height: 5px;
   margin-top: 4px;
 }

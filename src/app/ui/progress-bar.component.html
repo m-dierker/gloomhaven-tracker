@@ -1,0 +1,11 @@
+<progressbar
+  [value]="figure.getHealth()"
+  [max]="figure.getMaxHealth()"
+  [type]="
+    figure.isSummon() ? 'info' : figure.isCharacter() ? 'success' : 'danger'
+  "
+>
+  <ng-container *ngIf="showHealth">
+    {{ figure.getHealth() }} / {{ figure.getMaxHealth() }}
+  </ng-container>
+</progressbar>
