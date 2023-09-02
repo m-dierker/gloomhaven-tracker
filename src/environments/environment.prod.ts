@@ -7,7 +7,7 @@ export const environment = {
     storageBucket: "glo2mhaven-tracker.appspot.com",
     locationId: "us-central",
     apiKey: "AIzaSyChJ0kL_gSZmimsTpJFDZfhlns1K_rX5OI",
-    authDomain: "gloomhaven.muri.ca",
+    authDomain: "haven.simba.dog",
     messagingSenderId: "45893613327",
     measurementId: "G-9MHPF6EEGR",
   },
