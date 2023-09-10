@@ -15,7 +15,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { PartyMenuComponent } from "./party-menu.component";
 import { PartyCharacterComponent } from "./characters/party-character-page.component";
 import { PartyCreateCharacterComponent } from "./characters/party-create-character.component";
-import { PartyAddMonsterComponent } from "./monsters/party-add-monster.component";
+import { PartyAddMonsterComponent } from "./monsters/add/party-add-monster.component";
 import { PartyMonsterCellComponent } from "./monsters/party-monster-cell.component";
 import { PartyMonsterNameComponent } from "./monsters/party-monster-name.component";
 import { PartyMonsterTokenComponent } from "./monsters/party-monster-token.component";

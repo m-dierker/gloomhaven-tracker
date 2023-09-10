@@ -1,4 +1,4 @@
-import { FigureType } from "./figure";
+import { FigureType } from "./figure-type";
 import { GameBox } from "./gamebox";
 
 const effectIdMap: Map<string, StatusEffect> = new Map();

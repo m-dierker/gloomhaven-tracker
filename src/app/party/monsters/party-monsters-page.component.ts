@@ -1,11 +1,12 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
-import { FigureClassId, FigureType } from "src/types/figure";
+import { FigureClassId, FigureType } from "src/types/figure-type";
 import { ActivatedRoute } from "@angular/router";
 import { map } from "rxjs";
 import { Figure } from "src/app/db/figure";
 import { DbService } from "src/app/services/db.service";
 import { GameService } from "src/app/services/game.service";
 import { Summon } from "src/app/db/summon";
+import { ScenarioObjective } from "src/app/db/scenario-objective";
 
 @Component({
   selector: "app-party-monsters-page",
@@ -17,6 +18,7 @@ export class PartyMonstersPageComponent implements OnInit {
   public monsterClassList: FigureClassId[];
   public enemiesByClass: Map<FigureClassId, Figure[]> = new Map();
   public summons: Summon[] = [];
+  public objectives: ScenarioObjective[] = [];
 
   classIdFilter_: FigureClassId;
 

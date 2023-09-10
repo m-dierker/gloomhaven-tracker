@@ -7,7 +7,7 @@ import {
 } from "@angular/core";
 import { Monster } from "../db/monster";
 import { Figure } from "../db/figure";
-import { FigureType } from "src/types/figure";
+import { FigureType } from "src/types/figure-type";
 
 @Component({
   selector: "monster-cell",

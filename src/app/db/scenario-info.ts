@@ -1,4 +1,4 @@
-import { FigureClassId } from "src/types/figure";
+import { FigureClassId } from "src/types/figure-type";
 import { Figure } from "./figure";
 
 export interface ScenarioInfo {

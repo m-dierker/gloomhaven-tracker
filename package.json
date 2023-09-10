@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "dev": "ng serve",
     "start": "ng serve --ssl --ssl-key=tailscale.key --ssl-cert=tailscale.crt --host mattcaron.heron-pineapplefish.ts.net",
     "build": "ng build",
     "prodbuild": "ng build --configuration production",

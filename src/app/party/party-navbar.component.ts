@@ -10,7 +10,7 @@ import { DbService } from "../services/db.service";
 import { Party } from "src/types/party";
 import { Auth, User } from "@angular/fire/auth";
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from "@angular/router";
-import { FigureClassId } from "src/types/figure";
+import { FigureClassId } from "src/types/figure-type";
 import { Character } from "../db/character";
 import { Subscription } from "rxjs";
 

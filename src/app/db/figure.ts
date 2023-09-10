@@ -132,6 +132,10 @@ export abstract class Figure {
     return false;
   }
 
+  isScenarioObjective(): boolean {
+    return false;
+  }
+
   compareTo(other: Figure) {
     if (this.isDead() !== other.isDead()) {
       return this.isDead() ? 1 : -1;

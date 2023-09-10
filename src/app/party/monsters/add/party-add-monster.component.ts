@@ -7,7 +7,7 @@ import {
   ViewChild,
 } from "@angular/core";
 import { TypeaheadMatch } from "ngx-bootstrap/typeahead";
-import { FigureClassId, FigureType } from "src/types/figure";
+import { FigureClassId, FigureType } from "src/types/figure-type";
 import { BossData, MonsterData, MonsterType } from "src/types/monster-data";
 import { Party } from "src/types/party";
 import { ScenarioFigureData } from "src/types/scenario-figure-data";
@@ -255,6 +255,28 @@ export class PartyAddMonsterComponent implements OnInit, OnDestroy {
       classId: summonId,
     };
     await this.db.createPartySummon(figure as ScenarioFigureData);
+    this.router.navigate(["/party/monsters"]);
+  }
+
+  async createObjective() {
+    const objectiveName = prompt("Enter the name of the objective.");
+    if (!objectiveName) {
+      return;
+    }
+    const maxHpStr = prompt("Enter the HP");
+    const maxHpInt = parseInt(maxHpStr);
+    if (!maxHpStr || isNaN(maxHpInt)) {
+      return;
+    }
+    const figure: Partial<ScenarioFigureData> = {
+      figureType: FigureType.SCENARIO_OBJECTIVE,
+      objectiveData: {
+        name: objectiveName,
+      },
+      health: maxHpInt,
+      maxHealth: maxHpInt,
+    };
+    await this.db.createPartyScenarioObjective(figure as ScenarioFigureData);
     this.router.navigate(["/party/monsters"]);
   }
 }

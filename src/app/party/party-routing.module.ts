@@ -7,7 +7,7 @@ import { AuthGuard } from "../auth/auth.guard";
 import { PartyMenuComponent } from "./party-menu.component";
 import { PartyCharacterComponent } from "./characters/party-character-page.component";
 import { PartyCreateCharacterComponent } from "./characters/party-create-character.component";
-import { PartyAddMonsterComponent } from "./monsters/party-add-monster.component";
+import { PartyAddMonsterComponent } from "./monsters/add/party-add-monster.component";
 import { PartyMonstersPageComponent } from "./monsters/party-monsters-page.component";
 
 const routes: Routes = [

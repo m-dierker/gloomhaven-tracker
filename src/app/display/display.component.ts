@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { DbService } from "../services/db.service";
 import { Party } from "../../types/party";
 import { Observable } from "rxjs";
-import { FigureClassId, FigureType } from "src/types/figure";
+import { FigureClassId, FigureType } from "src/types/figure-type";
 import { Figure } from "../db/figure";
 import { ScenarioInfo } from "../db/scenario-info";
 import { Character } from "../db/character";

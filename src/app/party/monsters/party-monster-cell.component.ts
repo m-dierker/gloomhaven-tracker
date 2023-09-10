@@ -8,7 +8,7 @@ import {
   ViewChild,
   OnDestroy,
 } from "@angular/core";
-import { FigureType } from "src/types/figure";
+import { FigureType } from "src/types/figure-type";
 import { Subscription } from "rxjs";
 import { Figure } from "src/app/db/figure";
 import { Monster } from "src/app/db/monster";

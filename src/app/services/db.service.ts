@@ -49,7 +49,7 @@ import {
   ScenarioFigureData,
 } from "src/types/scenario-figure-data";
 import { Figure } from "../db/figure";
-import { FigureClassId, FigureType } from "src/types/figure";
+import { FigureClassId, FigureType } from "src/types/figure-type";
 import { Boss } from "../db/boss";
 import { GameContext } from "src/types/game";
 import { ScenarioInfo } from "../db/scenario-info";
@@ -57,6 +57,7 @@ import { GameBox } from "src/types/gamebox";
 import { Character } from "../db/character";
 import { RoleClass } from "../db/role-class";
 import { Summon } from "../db/summon";
+import { ScenarioObjective } from "../db/scenario-objective";
 
 /**
  * NOTE: AngularFire exports the API from RxFire and then doesn't really document it. -_-
@@ -149,6 +150,12 @@ export class DbService {
 
   async createPartySummon(newSummon: ScenarioFigureData): Promise<void> {
     await addDoc(this.dbRef.partySummonsCollection(), newSummon);
+  }
+
+  async createPartyScenarioObjective(
+    objectiveData: ScenarioFigureData
+  ): Promise<void> {
+    await addDoc(this.dbRef.partyMonstersCollection(), objectiveData);
   }
 
   /** Creates a new character and returns the new ID once created. */
@@ -410,7 +417,7 @@ export class DbService {
               const map: Map<FigureClassId, Figure[]> = new Map();
               for (const figure of this.figureIdMap.values()) {
                 // Skip characters which shouldn't be exposed as party enemies.
-                if (figure.isCharacter()) {
+                if (figure.isCharacter() || figure.isScenarioObjective()) {
                   continue;
                 }
                 if (map.has(figure.classId)) {
@@ -532,7 +539,7 @@ export class DbService {
     scenarioData: ScenarioFigureData,
     context: GameContext
   ): Promise<Figure | undefined> {
-    if (scenarioData.figureType == FigureType.MONSTER) {
+    if (scenarioData.figureType === FigureType.MONSTER) {
       const classData = this.monsterDataMap.get(scenarioData.classId);
       if (!classData) {
         console.error("Unable to find Monster class data for", scenarioData);
@@ -540,13 +547,16 @@ export class DbService {
       }
       return new Monster(scenarioData, context, classData);
     }
-    if (scenarioData.figureType == FigureType.BOSS) {
+    if (scenarioData.figureType === FigureType.BOSS) {
       const classData = this.bossDataMap.get(scenarioData.classId);
       if (!classData) {
         console.error("Unable to find Boss class data for", scenarioData);
         return;
       }
       return new Boss(scenarioData, context, classData);
+    }
+    if (scenarioData.figureType === FigureType.SCENARIO_OBJECTIVE) {
+      return new ScenarioObjective(scenarioData, context);
     }
     console.error("Unable to find FigureType for ", scenarioData);
   }

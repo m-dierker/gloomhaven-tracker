@@ -1,4 +1,4 @@
-import { FigureType } from "./figure";
+import { FigureType } from "./figure-type";
 import { MonsterType } from "./monster-data";
 
 /** Info about the given instance of a figure in a round of gameplay.  */
@@ -36,6 +36,8 @@ export interface ScenarioFigureData {
 
   /** Metadata specific to being a Character. */
   characterData?: ScenarioCharacterData;
+
+  objectiveData?: ScenarioObjectiveData;
 }
 
 export interface ScenarioMonsterData {
@@ -45,6 +47,11 @@ export interface ScenarioMonsterData {
 export interface ScenarioCharacterData {
   name: string;
   xp: number;
+}
+
+export interface ScenarioObjectiveData {
+  /** Objective name, which might be a letter ("A"), a number, or something else. */
+  name: string;
 }
 
 /** Returns the name of the cards used. For monsters, this is usually their type (or a generic equivalent). For bosses, it's boss. */
