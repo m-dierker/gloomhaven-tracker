@@ -25,7 +25,7 @@ import {
 } from "@angular/fire/firestore";
 import { LoginComponent } from "./ui/login.component";
 import { Auth, provideAuth } from "@angular/fire/auth";
-import { getAuth } from "firebase/auth";
+import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { BossCellComponent } from "./display/boss-cell.component";
 import { MonsterAttackDeckDisplayComponent } from "./monster/attack-deck/monster-attack-deck-display.component";
 import { MonsterAttackDeckCardComponent } from "./monster/attack-deck/monster-attack-deck-card.component";
@@ -68,16 +68,18 @@ import { UiModule } from "./ui/ui.module";
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => {
       const firestore = getFirestore();
-      // enableMultiTabIndexedDbPersistence(firestore).then(() =>
-      //   console.log("offline persistence enabled")
-      // );
+      enableMultiTabIndexedDbPersistence(firestore).then(() =>
+        console.log("offline persistence enabled")
+      );
       return firestore;
     }),
     provideAuth(() => {
       const auth = getAuth();
       // TODO: Do this for offline sometime.
       // if (environment.useEmulators) {
-      //   connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
+      //   connectAuthEmulator(auth, "http://localhost:9099", {
+      //     disableWarnings: true,
+      //   });
       // }
       return auth;
     }),

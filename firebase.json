@@ -3,7 +3,9 @@
     {
       "target": "gloomhaven-tracker",
       "public": "dist/gloomhaven-tracker",
-      "ignore": ["**/.*"],
+      "ignore": [
+        "**/.*"
+      ],
       "headers": [
         {
           "source": "*.[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f].+(css|js)",
@@ -25,18 +27,24 @@
         }
       ],
       "rewrites": [
-        // Exclude assets that might be cached as a bad redirect.
-        // Inlcuding permanent redirects for these is a pain to clear from the browser cache.
         {
           "source": "**/*.@(js|css|png|jpg|jpeg|webp|gif|svg|woff|woff2|ttf|eot)",
           "destination": "404.html"
         },
-        // All other URLs go to the homepage.
         {
           "source": "**",
           "destination": "/index.html"
         }
       ]
     }
-  ]
+  ],
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
+  }
 }
