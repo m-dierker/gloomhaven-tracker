@@ -7,7 +7,11 @@ import {
   ViewChild,
 } from "@angular/core";
 import { TypeaheadMatch } from "ngx-bootstrap/typeahead";
-import { FigureClassId, FigureType } from "src/types/figure-type";
+import {
+  FigureClassId,
+  FigureType,
+  SCENARIO_OBJECTIVE_CLASS_ID,
+} from "src/types/figure-type";
 import { BossData, MonsterData, MonsterType } from "src/types/monster-data";
 import { Party } from "src/types/party";
 import { ScenarioFigureData } from "src/types/scenario-figure-data";
@@ -69,7 +73,7 @@ export class PartyAddMonsterComponent implements OnInit, OnDestroy {
         this.scenarioInfo = scenarioInfo;
       }),
       this.db
-        .getPartyEnemies()
+        .getPartyFigures()
         .subscribe((enemies) => (this.partyEnemiesByClass = enemies)),
       this.db.getEligibleSummonIds().subscribe((summons) => {
         this.eligibleSummonIds = summons;
@@ -270,6 +274,7 @@ export class PartyAddMonsterComponent implements OnInit, OnDestroy {
     }
     const figure: Partial<ScenarioFigureData> = {
       figureType: FigureType.SCENARIO_OBJECTIVE,
+      classId: SCENARIO_OBJECTIVE_CLASS_ID,
       objectiveData: {
         name: objectiveName,
       },

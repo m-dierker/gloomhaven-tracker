@@ -1,5 +1,9 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
-import { FigureClassId, FigureType } from "src/types/figure-type";
+import {
+  FigureClassId,
+  FigureType,
+  SCENARIO_OBJECTIVE_CLASS_ID,
+} from "src/types/figure-type";
 import { ActivatedRoute } from "@angular/router";
 import { map } from "rxjs";
 import { Figure } from "src/app/db/figure";
@@ -40,7 +44,7 @@ export class PartyMonstersPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.db.getPartyEnemies().subscribe((enemyMap) => {
+    this.db.getPartyFigures().subscribe((enemyMap) => {
       this.enemiesByClass = enemyMap;
       this.onPartyMonstersUpdate();
     });
@@ -71,6 +75,8 @@ export class PartyMonstersPageComponent implements OnInit {
 
     this.bossClassList.sort();
     this.monsterClassList.sort();
+    this.objectives =
+      this.enemiesByClass.get(SCENARIO_OBJECTIVE_CLASS_ID) || [];
   }
 
   async nextTurnClicked() {

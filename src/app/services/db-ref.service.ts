@@ -81,7 +81,11 @@ export class DbRefService {
       return this.partyCharacterDoc(figure.scenarioId);
     } else if (figure.isSummon()) {
       return this.partySummonDoc(figure.scenarioId);
-    } else if (figure.isBoss() || figure.isMonster()) {
+    } else if (
+      figure.isBoss() ||
+      figure.isMonster() ||
+      figure.isScenarioObjective()
+    ) {
       return this.partyMonsterDoc(figure.scenarioId);
     } else {
       console.error("Cannot save unknown figure", figure);

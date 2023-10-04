@@ -8,3 +8,5 @@ export enum FigureType {
 
 /** String that identifies a figure, unique across all types in all games. Should not be shown directly. */
 export type FigureClassId = string;
+
+export const SCENARIO_OBJECTIVE_CLASS_ID: FigureClassId = "scenario_objective";

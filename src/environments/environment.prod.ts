@@ -14,4 +14,5 @@ export const environment = {
     measurementId: "G-9MHPF6EEGR",
   },
   // useEmulators: true,
+  localGameData: false,
 };

@@ -40,7 +40,7 @@ export class PartyNavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.db.getPartyEnemies().subscribe((enemyMap) => {
+    this.db.getPartyFigures().subscribe((enemyMap) => {
       this.enemyClassIds = Array.from(enemyMap.keys()).sort();
     });
     this.db.getUserCharacter().subscribe((userChar) => {

@@ -53,6 +53,17 @@
       ></app-party-monster-cell>
     </ng-container>
 
+    <app-party-monster-name *ngIf="objectives?.length > 0 && !classIdFilter_">
+      Scenario Objectives
+    </app-party-monster-name>
+
+    <ng-container *ngFor="let obj of objectives">
+      <app-party-monster-cell
+        [figure]="obj"
+        *ngIf="!obj.isDead()"
+      ></app-party-monster-cell>
+    </ng-container>
+
     <app-next-turn-button
       (nextTurn)="nextTurnClicked()"
       *ngIf="classIdFilter_"

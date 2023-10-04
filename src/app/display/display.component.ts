@@ -32,7 +32,7 @@ export class DisplayComponent implements OnInit {
   ngOnInit() {
     this.party_ = this.db.getParty();
     this.party_.subscribe((party) => (this.party = party));
-    this.db.getPartyEnemies().subscribe((enemyMap) => {
+    this.db.getPartyFigures().subscribe((enemyMap) => {
       this.enemiesByClass = enemyMap;
       this.onPartyEnemiesUpdate();
     });

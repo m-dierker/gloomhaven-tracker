@@ -58,6 +58,7 @@ import { Character } from "../db/character";
 import { RoleClass } from "../db/role-class";
 import { Summon } from "../db/summon";
 import { ScenarioObjective } from "../db/scenario-objective";
+import { environment } from "src/environments/environment";
 
 /**
  * NOTE: AngularFire exports the API from RxFire and then doesn't really document it. -_-
@@ -393,7 +394,7 @@ export class DbService {
    *
    * Results are grouped by class since every current usage requires this.
    */
-  getPartyEnemies(): Observable<Map<FigureClassId, Figure[]>> {
+  getPartyFigures(): Observable<Map<FigureClassId, Figure[]>> {
     if (!this.partyEnemySubj) {
       this.partyEnemySubj = new ReplaySubject(1);
       combineLatest([
@@ -416,8 +417,8 @@ export class DbService {
               // Recalculate the "index" of FigureType --> Figure[].
               const map: Map<FigureClassId, Figure[]> = new Map();
               for (const figure of this.figureIdMap.values()) {
-                // Skip characters which shouldn't be exposed as party enemies.
-                if (figure.isCharacter() || figure.isScenarioObjective()) {
+                // Skip figures in figureIdMap which shouldn't be exposed as party figures.
+                if (figure.isCharacter()) {
                   continue;
                 }
                 if (map.has(figure.classId)) {
@@ -758,16 +759,23 @@ export class DbService {
 
   /** Loads static data (monsters, bosses, scenarios) from Cloud Storage. */
   private async loadGameBundle() {
-    const storage = getStorage();
-    const gameBundle = ref(storage, GAME_BUNDLE_NAME);
-    const gameBundleData = await getBlob(gameBundle);
-    const arrBuffer = await gameBundleData.arrayBuffer();
+    let bundleData: ArrayBuffer;
+    if (environment.localGameData) {
+      const data = await fetch("/assets/data/gamedata.local.bundle");
+      bundleData = await data.arrayBuffer();
+      console.log("Using local GameBundle data instead of prod");
+    } else {
+      const storage = getStorage();
+      const gameBundle = ref(storage, GAME_BUNDLE_NAME);
+      const gameBundleData = await getBlob(gameBundle);
+      bundleData = await gameBundleData.arrayBuffer();
+    }
     try {
       // There's a random "unimplemented" error here from a Google SDK,
       // but it seems to work...
       // TODO: Investigate error.
-      const result = await loadBundle(this.firestore, arrBuffer);
-      console.log("Game bundle loaded from Cloud Store successfully", result);
+      const result = await loadBundle(this.firestore, bundleData);
+      console.log("Game bundle loaded successfully", result);
       this.gameDataLoadedResolve();
     } catch (e) {
       console.error("Unable to load Game Bundle", e);
