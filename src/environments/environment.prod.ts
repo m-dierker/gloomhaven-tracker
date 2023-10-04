@@ -7,8 +7,11 @@ export const environment = {
     storageBucket: "glo2mhaven-tracker.appspot.com",
     locationId: "us-central",
     apiKey: "AIzaSyChJ0kL_gSZmimsTpJFDZfhlns1K_rX5OI",
-    authDomain: "haven.simba.dog",
+    authDomain: window.location.host.includes("simba.dog")
+      ? "haven.simba.dog"
+      : "gloomhaven.muri.ca",
     messagingSenderId: "45893613327",
     measurementId: "G-9MHPF6EEGR",
   },
+  // useEmulators: true,
 };
