@@ -24,6 +24,13 @@
             [figure]="summon"
           ></monster-cell>
         </div>
+        <div class="col" *ngIf="objectives.length > 0">
+          <div class="characters-header">Objectives</div>
+          <monster-cell
+            *ngFor="let objective of objectives"
+            [figure]="objective"
+          ></monster-cell>
+        </div>
         <div class="col" *ngFor="let monsterClassId of monsterClassList">
           <monster-name
             [monster]="enemiesByClass.get(monsterClassId)[0]"

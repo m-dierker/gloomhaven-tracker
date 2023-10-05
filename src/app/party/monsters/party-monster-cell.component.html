@@ -81,7 +81,9 @@
   <div class="monster-cell">
     <app-party-monster-token
       [classId]="figure.classId"
-      [tokenNum]="figure.tokenNum"
+      [tokenLabel]="
+        figure.isScenarioObjective() ? figure.displayName : figure.tokenNum
+      "
       [isBoss]="figure.isBoss()"
       [isElite]="monster && monster.isElite()"
       (click)="toggleStatusesVisible()"

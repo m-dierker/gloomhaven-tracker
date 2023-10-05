@@ -17,6 +17,11 @@
   .monster-token {
     font-size: 30pt;
     font-weight: bold;
+
+    &.stringToken {
+      font-size: 20pt;
+      margin-right: 8px;
+    }
   }
 }
 

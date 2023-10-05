@@ -20,7 +20,7 @@ export class PartyMonsterTokenComponent implements OnChanges {
   isBoss: boolean;
 
   @Input()
-  tokenNum: number;
+  tokenLabel: number | string;
 
   @Input()
   isElite: boolean;
@@ -34,5 +34,10 @@ export class PartyMonsterTokenComponent implements OnChanges {
     if (changes.classId) {
       this.gameBox = getGameBoxFromClassId(this.classId);
     }
+  }
+
+  // This is sketchy. -_-
+  isString(val: number | string) {
+    return typeof val === "string";
   }
 }

@@ -18,7 +18,7 @@ export class ScenarioObjective extends Figure {
   }
 
   get displayName(): string {
-    return `Objective ${this.scenarioData.objectiveData?.name}`;
+    return this.scenarioData.objectiveData?.name;
   }
 
   override isScenarioObjective(): boolean {

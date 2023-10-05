@@ -66,7 +66,7 @@
       <app-party-monster-token
         *ngFor="let pending of pendingTokens"
         [classId]="createMonsterData.autocompleteEntry.classId"
-        [tokenNum]="pending.tokenNum"
+        [tokenLabel]="pending.tokenNum"
         [isBoss]="
           createMonsterData.autocompleteEntry.figureType == FigureType.BOSS
         "

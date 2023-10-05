@@ -2,12 +2,17 @@ import { Component, OnInit } from "@angular/core";
 import { DbService } from "../services/db.service";
 import { Party } from "../../types/party";
 import { Observable } from "rxjs";
-import { FigureClassId, FigureType } from "src/types/figure-type";
+import {
+  FigureClassId,
+  FigureType,
+  SCENARIO_OBJECTIVE_CLASS_ID,
+} from "src/types/figure-type";
 import { Figure } from "../db/figure";
 import { ScenarioInfo } from "../db/scenario-info";
 import { Character } from "../db/character";
 import { RoleClass } from "../db/role-class";
 import { Summon } from "../db/summon";
+import { ScenarioObjective } from "../db/scenario-objective";
 
 @Component({
   selector: "app-display",
@@ -22,6 +27,7 @@ export class DisplayComponent implements OnInit {
   public bossClassList: FigureClassId[];
   public enemiesByClass: Map<FigureClassId, Figure[]> = new Map();
   public summons: Summon[] = [];
+  public objectives: ScenarioObjective[] = [];
 
   public partyCharacters: Character[] = [];
 
@@ -69,5 +75,7 @@ export class DisplayComponent implements OnInit {
 
     this.bossClassList.sort();
     this.monsterClassList.sort();
+    this.objectives =
+      this.enemiesByClass.get(SCENARIO_OBJECTIVE_CLASS_ID) || [];
   }
 }

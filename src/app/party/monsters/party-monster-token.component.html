@@ -11,7 +11,11 @@
     <app-enemy-image [classId]="classId"></app-enemy-image>
   </ng-template>
   <!-- Show token number for non-bosses and for bosses that aren't #1 in case there are ever be two of the same class.-->
-  <div class="monster-token" *ngIf="!isBoss || tokenNum !== 1">
-    {{ tokenNum }}
+  <div
+    class="monster-token"
+    *ngIf="!isBoss || tokenLabel !== 1"
+    [class.stringToken]="isString(tokenLabel)"
+  >
+    {{ tokenLabel }}
   </div>
 </div>

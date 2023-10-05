@@ -13,6 +13,9 @@
         {{ figure.tokenNum }}
       </div>
     </div>
+    <div class="objective-name" *ngIf="figure.isScenarioObjective()">
+      {{ figure.displayName }}&nbsp;
+    </div>
     <div
       class="character-icon {{ figure.classId }}"
       *ngIf="figure.isCharacter()"
