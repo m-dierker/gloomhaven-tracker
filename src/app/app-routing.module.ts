@@ -13,6 +13,7 @@ const routes: Routes = [
   {
     path: "display",
     component: DisplayComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: "monsterattacks",

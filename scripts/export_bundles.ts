@@ -39,6 +39,9 @@ async function saveBundles() {
     cacheControl: "private, max-age=3600",
   });
 
-  console.log("Bundle saved in Cloud Storage");
+  console.log("Saved in Cloud Storage, rewriting local bundle...");
+  fs.writeFileSync("./src/assets/data/gamedata.local.bundle", bundleBuffer);
+
+  console.log("Bundle updated!");
 }
 saveBundles();

@@ -91,27 +91,20 @@ function getScenario(
     const enemyId = `fh_${enemy.name.split(" ").join("_").toLowerCase()}`;
     let checkMonsters = false;
     // This is really messy but I'm tired. -_- Some bosses are broken.
-    if (enemy.boss) {
-      if (!allBossIds.has(enemyId)) {
-        console.log(`Missing boss ${enemyId} in scenario ${scenarioId}`);
-        checkMonsters = true;
-      } else {
-        if (!out.bossIds) {
-          out.bossIds = [];
-        }
-        out.bossIds.push(enemyId);
-      }
-    }
 
-    if (!enemy.boss || checkMonsters) {
-      if (!allMonsterIds.has(enemyId)) {
-        console.log(`Missing monster ${enemyId} in scenario ${scenarioId}`);
-        return undefined;
+    // enemy has a boss boolean, but it's not always accurate for every monster.
+    if (allBossIds.has(enemyId)) {
+      if (!out.bossIds) {
+        out.bossIds = [];
       }
+      out.bossIds.push(enemyId);
+    } else if (allMonsterIds.has(enemyId)) {
       if (!out.monsterIds) {
         out.monsterIds = [];
       }
       out.monsterIds.push(enemyId);
+    } else {
+      console.error("Unknown enemy", enemyId, enemy.name);
     }
   }
   return out as ScenarioInfo;

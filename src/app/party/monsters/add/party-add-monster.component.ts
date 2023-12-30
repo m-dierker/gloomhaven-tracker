@@ -70,6 +70,7 @@ export class PartyAddMonsterComponent implements OnInit, OnDestroy {
         this.party = party;
       }),
       this.db.getActiveScenarioInfo().subscribe((scenarioInfo) => {
+        console.log("scenario info", scenarioInfo);
         this.scenarioInfo = scenarioInfo;
       }),
       this.db
@@ -147,11 +148,13 @@ export class PartyAddMonsterComponent implements OnInit, OnDestroy {
   }
 
   selectEnemy(figureType: FigureType, classId: string) {
+    console.log("ft", figureType);
     this.createMonsterData.autocompleteEntry = {
       figureType: figureType,
       classId,
       title: classId,
     };
+    console.log("Selecting enemy", this.createMonsterData);
     this.createMonsterData.enemyDisplayName = classId;
     this.autocompleteVisible = false;
     // Fake an update for pending tokens.
