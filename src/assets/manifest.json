@@ -1,0 +1,6 @@
+{
+  "name": "Haven Helper",
+  "short_name": "Haven Helper",
+  "start_url": "https://haven.simba.dog",
+  "display": "standalone"
+}
