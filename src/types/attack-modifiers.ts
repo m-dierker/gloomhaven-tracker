@@ -40,8 +40,7 @@ export class AttackModifierUtil {
       AttackModifier.PLUS_ONE,
       AttackModifier.PLUS_ONE,
 
-      // Five -1s
-      AttackModifier.MINUS_ONE,
+      // Four -1s
       AttackModifier.MINUS_ONE,
       AttackModifier.MINUS_ONE,
       AttackModifier.MINUS_ONE,
@@ -49,7 +48,6 @@ export class AttackModifierUtil {
 
       // One of each 2
       AttackModifier.PLUS_TWO,
-      AttackModifier.MINUS_TWO,
 
       // Criticals
       AttackModifier.TWO_X,
